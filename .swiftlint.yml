@@ -1,0 +1,90 @@
+# =============================================================================
+# SwiftLint configuration for AquaMe
+# =============================================================================
+
+reporter: xcode
+
+included:
+  - AquaMe
+
+excluded:
+  - .build
+
+opt_in_rules:
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - unused_parameter
+  - redundant_self
+  - file_name
+  - file_name_no_space
+  - type_contents_order
+  - modifier_order
+  - attributes
+  - operator_usage_whitespace
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - multiline_arguments
+  - multiline_parameters
+  - sorted_imports
+  - unavailable_function
+
+analyzer_rules:
+  - unused_import
+  - unused_declaration
+
+force_unwrapping: error
+implicitly_unwrapped_optional: error
+unavailable_function: error
+class_delegate_protocol: error
+
+line_length:
+  warning: 120
+  ignores_comments: false
+  ignores_urls: true
+
+file_length:
+  warning: 800
+
+type_body_length:
+  warning: 800
+
+function_body_length:
+  warning: 230
+
+cyclomatic_complexity:
+  warning: 15
+
+nesting:
+  type_level: 2
+  statement_level: 5
+
+large_tuple:
+  warning: 3
+
+function_parameter_count:
+  warning: 6
+
+identifier_name:
+  min_length:
+    warning: 1
+    error: 1
+  allowed_symbols: ["_"]
+
+custom_rules:
+  no_custom_in_type_names:
+    name: "No 'Custom' in type names"
+    regex: '(?m)\b(class|struct|enum|protocol)\s+Custom[A-Za-z0-9_]*\b'
+    message: "It is forbidden to use 'Custom' in type names"
+    severity: error
+
+  no_init_named_types:
+    name: "No types starting with 'init'"
+    regex: '(?m)^\s*(?:public|open|internal|private|fileprivate)?\s*(?:final\s+)?(class|struct|enum|protocol)\s+init[A-Za-z_]\w*'
+    message: "Type names must not start with 'init'"
+    severity: error
+
+  no_init_named_methods:
+    name: "No methods starting with 'init'"
+    regex: '(?m)^\s*(?:public|open|internal|private|fileprivate)?\s*(?:static\s+|class\s+)?func\s+init[A-Za-z_]\w*\s*\('
+    message: "Do not use 'init' in method names. Use setup/configure instead."
+    severity: error
