@@ -24,8 +24,11 @@ final class MainCoordinator: Coordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
+}
 
-    // MARK: - Coordinator
+// MARK: - MainCoordinator + Coordinator
+
+extension MainCoordinator {
 
     func start() {
         let mainViewController = buildMainViewController()

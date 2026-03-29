@@ -42,7 +42,7 @@ final class OnboardingView: UIView {
     private lazy var startButton: UIButton = {
         let action = UIAction { [weak self] _ in
             guard let self else { return }
-            delegate?.onboardingViewDidTapStart(self)
+            didTapStartButton()
         }
         let button = UIButton(primaryAction: action)
         button.setTitle("Начать", for: .normal)
@@ -51,6 +51,7 @@ final class OnboardingView: UIView {
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         button.layer.cornerRadius = Constants.cornerRadius
         button.translatesAutoresizingMaskIntoConstraints = false
+
         return button
     }()
 
@@ -65,26 +66,42 @@ final class OnboardingView: UIView {
     required init?(coder: NSCoder) { fatalError() }
 }
 
+// MARK: - OnboardingView + Actions
+
+private extension OnboardingView {
+
+    func didTapStartButton() {
+        delegate?.onboardingViewDidTapStart(self)
+    }
+}
+
 // MARK: - OnboardingView + Setup
 
 private extension OnboardingView {
 
     func setup() {
-        setupView()
+        setupViews()
         setupConstraints()
     }
 
-    func setupView() {
+    func setupViews() {
         /// Фиолетовый фон — временная заготовка для онбординга.
         backgroundColor = .systemPurple
         addSubview(startButton)
     }
 
     func setupConstraints() {
+        setupConstraintsForStartButton()
+    }
+
+    func setupConstraintsForStartButton() {
         NSLayoutConstraint.activate([
             startButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.buttonHorizontalPadding),
             startButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.buttonHorizontalPadding),
-            startButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -Constants.buttonBottomPadding),
+            startButton.bottomAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.bottomAnchor,
+                constant: -Constants.buttonBottomPadding
+            ),
             startButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
         ])
     }

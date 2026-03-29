@@ -34,6 +34,7 @@ final class MainViewController: UIViewController {
         let view = MainTabBarView()
         view.delegate = self
         view.translatesAutoresizingMaskIntoConstraints = false
+
         return view
     }()
 
@@ -41,6 +42,7 @@ final class MainViewController: UIViewController {
     private lazy var contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
+
         return view
     }()
 
@@ -78,26 +80,35 @@ extension MainViewController: MainTabBarViewDelegate {
 private extension MainViewController {
 
     func setup() {
-        setupView()
+        setupViews()
         setupConstraints()
         setupChildViewControllers()
         showPage(at: currentIndex)
     }
 
-    func setupView() {
+    func setupViews() {
         view.backgroundColor = .systemBackground
         view.addSubview(contentView)
         view.addSubview(tabBarView)
     }
 
     func setupConstraints() {
+        setupConstraintsForContentView()
+        setupConstraintsForTabBarView()
+    }
+
+    func setupConstraintsForContentView() {
         NSLayoutConstraint.activate([
             /// Контент занимает всё пространство выше таб бара.
             contentView.topAnchor.constraint(equalTo: view.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: tabBarView.topAnchor),
+        ])
+    }
 
+    func setupConstraintsForTabBarView() {
+        NSLayoutConstraint.activate([
             /// Таб бар прижат к низу экрана, высота = barHeight + safe area.
             tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -115,20 +126,25 @@ private extension MainViewController {
             addChild(vc)
             contentView.addSubview(vc.view)
             vc.view.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                vc.view.topAnchor.constraint(equalTo: contentView.topAnchor),
-                vc.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                vc.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-                vc.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            ])
+            setupConstraintsForChildViewController(vc)
             vc.didMove(toParent: self)
             vc.view.isHidden = true
         }
     }
 
+    func setupConstraintsForChildViewController(_ vc: UIViewController) {
+        NSLayoutConstraint.activate([
+            vc.view.topAnchor.constraint(equalTo: contentView.topAnchor),
+            vc.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            vc.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            vc.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+        ])
+    }
+
     /// Показывает страницу по индексу, скрывает остальные.
     func showPage(at index: Int) {
         guard index < pages.count else { return }
+
         pages[currentIndex].view.isHidden = true
         currentIndex = index
         pages[currentIndex].view.isHidden = false

@@ -28,8 +28,11 @@ final class AppCoordinator: Coordinator {
         /// Скрываем стандартный nav bar — вся навигация управляется координаторами и кастомным UI.
         navigationController.setNavigationBarHidden(true, animated: false)
     }
+}
 
-    // MARK: - Coordinator
+// MARK: - AppCoordinator + Coordinator
+
+extension AppCoordinator {
 
     func start() {
         showOnboarding()

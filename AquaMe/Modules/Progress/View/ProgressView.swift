@@ -30,11 +30,11 @@ final class ProgressView: UIView {
 private extension ProgressView {
 
     func setup() {
-        setupView()
+        setupViews()
         setupConstraints()
     }
 
-    func setupView() {
+    func setupViews() {
         /// Синий фон — временная заготовка для экрана прогресса.
         backgroundColor = .systemBlue
     }

@@ -30,11 +30,11 @@ final class SettingsView: UIView {
 private extension SettingsView {
 
     func setup() {
-        setupView()
+        setupViews()
         setupConstraints()
     }
 
-    func setupView() {
+    func setupViews() {
         /// Оранжевый фон — временная заготовка для экрана настроек.
         backgroundColor = .systemOrange
     }

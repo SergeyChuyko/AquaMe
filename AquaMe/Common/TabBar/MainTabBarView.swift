@@ -26,6 +26,7 @@ final class MainTabBarView: UIView {
     // MARK: - Tab
 
     /// Перечисление вкладок таб бара.
+    /// Используется чтобы не оперировать голыми индексами (0, 1, 2) — только .progress, .today, .settings.
     enum Tab: Int {
         case progress = 0
         case today = 1
@@ -38,6 +39,7 @@ final class MainTabBarView: UIView {
         static let iconSize: CGFloat = 24
         static let centerIconSize: CGFloat = 30
         static let barHeight: CGFloat = 49
+        static let separatorHeight: CGFloat = 0.5
     }
 
     // MARK: - Public properties
@@ -46,23 +48,44 @@ final class MainTabBarView: UIView {
 
     // MARK: - Private properties
 
-    private lazy var progressButton: UIButton = makeButton(
-        image: "chart.bar.fill",
-        size: Constants.iconSize,
-        tab: .progress
-    )
+    private lazy var progressButton: UIButton = {
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            didTapTab(.progress)
+        }
+        let button = UIButton(primaryAction: action)
+        let config = UIImage.SymbolConfiguration(pointSize: Constants.iconSize, weight: .medium)
+        button.setImage(UIImage(systemName: "chart.bar.fill", withConfiguration: config), for: .normal)
+        button.tintColor = .systemGray
 
-    private lazy var todayButton: UIButton = makeButton(
-        image: "drop.fill",
-        size: Constants.centerIconSize,
-        tab: .today
-    )
+        return button
+    }()
 
-    private lazy var settingsButton: UIButton = makeButton(
-        image: "gearshape.fill",
-        size: Constants.iconSize,
-        tab: .settings
-    )
+    private lazy var todayButton: UIButton = {
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            didTapTab(.today)
+        }
+        let button = UIButton(primaryAction: action)
+        let config = UIImage.SymbolConfiguration(pointSize: Constants.centerIconSize, weight: .medium)
+        button.setImage(UIImage(systemName: "drop.fill", withConfiguration: config), for: .normal)
+        button.tintColor = .systemGray
+
+        return button
+    }()
+
+    private lazy var settingsButton: UIButton = {
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            didTapTab(.settings)
+        }
+        let button = UIButton(primaryAction: action)
+        let config = UIImage.SymbolConfiguration(pointSize: Constants.iconSize, weight: .medium)
+        button.setImage(UIImage(systemName: "gearshape.fill", withConfiguration: config), for: .normal)
+        button.tintColor = .systemGray
+
+        return button
+    }()
 
     /// Горизонтальный стек для трёх кнопок.
     private lazy var stackView: UIStackView = {
@@ -70,7 +93,17 @@ final class MainTabBarView: UIView {
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
+
         return stack
+    }()
+
+    /// Тонкая линия-разделитель сверху таб бара.
+    private lazy var separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .separator
+        view.translatesAutoresizingMaskIntoConstraints = false
+
+        return view
     }()
 
     // MARK: - Initialization
@@ -97,52 +130,51 @@ extension MainTabBarView {
     }
 }
 
+// MARK: - MainTabBarView + Actions
+
+private extension MainTabBarView {
+
+    func didTapTab(_ tab: Tab) {
+        selectTab(tab)
+        delegate?.mainTabBarView(self, didSelectTab: tab)
+    }
+}
+
 // MARK: - MainTabBarView + Setup
 
 private extension MainTabBarView {
 
     func setup() {
-        setupView()
+        setupViews()
         setupConstraints()
     }
 
-    func setupView() {
+    func setupViews() {
         backgroundColor = .systemBackground
-        /// Тонкая линия-разделитель сверху таб бара.
-        let separator = UIView()
-        separator.backgroundColor = .separator
-        separator.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(separator)
+        addSubview(separatorView)
         addSubview(stackView)
-
-        NSLayoutConstraint.activate([
-            separator.topAnchor.constraint(equalTo: topAnchor),
-            separator.leadingAnchor.constraint(equalTo: leadingAnchor),
-            separator.trailingAnchor.constraint(equalTo: trailingAnchor),
-            separator.heightAnchor.constraint(equalToConstant: 0.5),
-        ])
     }
 
     func setupConstraints() {
+        setupConstraintsForSeparatorView()
+        setupConstraintsForStackView()
+    }
+
+    func setupConstraintsForSeparatorView() {
+        NSLayoutConstraint.activate([
+            separatorView.topAnchor.constraint(equalTo: topAnchor),
+            separatorView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            separatorView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: Constants.separatorHeight),
+        ])
+    }
+
+    func setupConstraintsForStackView() {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor),
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stackView.heightAnchor.constraint(equalToConstant: Constants.barHeight),
         ])
-    }
-
-    /// Создаёт кнопку вкладки с системной иконкой.
-    func makeButton(image: String, size: CGFloat, tab: Tab) -> UIButton {
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            selectTab(tab)
-            delegate?.mainTabBarView(self, didSelectTab: tab)
-        }
-        let button = UIButton(primaryAction: action)
-        let config = UIImage.SymbolConfiguration(pointSize: size, weight: .medium)
-        button.setImage(UIImage(systemName: image, withConfiguration: config), for: .normal)
-        button.tintColor = .systemGray
-        return button
     }
 }

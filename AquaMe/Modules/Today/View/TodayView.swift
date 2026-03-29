@@ -55,12 +55,12 @@ final class TodayView: UIView {
 private extension TodayView {
 
     func setup() {
-        setupView()
+        setupViews()
         setupConstraints()
     }
 
     /// Настраивает внешний вид и добавляет все сабвью в иерархию.
-    func setupView() {
+    func setupViews() {
         backgroundColor = .white
         // TODO: Добавить сабвью (кольцо, пикер, кнопки)
     }
