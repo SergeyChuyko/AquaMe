@@ -26,6 +26,7 @@ final class OnboardingView: UIView {
     // MARK: - Private enums
 
     private enum Constants {
+
         static let buttonHeight: CGFloat = 52
         static let buttonHorizontalPadding: CGFloat = 24
         static let buttonBottomPadding: CGFloat = 60

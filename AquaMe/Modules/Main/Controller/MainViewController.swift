@@ -18,6 +18,7 @@ final class MainViewController: UIViewController {
     // MARK: - Private enums
 
     private enum Constants {
+
         /// Высота таб бара без учёта safe area снизу.
         static let tabBarHeight: CGFloat = 49
     }

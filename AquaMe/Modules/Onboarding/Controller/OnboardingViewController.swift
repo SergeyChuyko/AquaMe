@@ -20,6 +20,7 @@ final class OnboardingViewController: UIViewController {
     private lazy var onboardingView: OnboardingView = {
         let view = OnboardingView()
         view.delegate = self
+
         return view
     }()
 

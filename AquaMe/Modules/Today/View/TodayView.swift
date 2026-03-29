@@ -28,6 +28,7 @@ final class TodayView: UIView {
     // MARK: - Private enums
 
     private enum Constants {
+
         /// Горизонтальный отступ для основных UI-элементов.
         static let horizontalPadding: CGFloat = 24
         /// Стандартный радиус скругления для карточек и кнопок.

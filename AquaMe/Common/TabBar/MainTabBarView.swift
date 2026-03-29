@@ -28,6 +28,7 @@ final class MainTabBarView: UIView {
     /// Перечисление вкладок таб бара.
     /// Используется чтобы не оперировать голыми индексами (0, 1, 2) — только .progress, .today, .settings.
     enum Tab: Int {
+
         case progress = 0
         case today = 1
         case settings = 2
@@ -36,6 +37,7 @@ final class MainTabBarView: UIView {
     // MARK: - Private enums
 
     private enum Constants {
+
         static let iconSize: CGFloat = 24
         static let centerIconSize: CGFloat = 30
         static let barHeight: CGFloat = 49

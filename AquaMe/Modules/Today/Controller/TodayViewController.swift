@@ -21,6 +21,7 @@ final class TodayViewController: UIViewController {
     private lazy var todayView: TodayView = {
         let view = TodayView()
         view.delegate = self
+
         return view
     }()
 
