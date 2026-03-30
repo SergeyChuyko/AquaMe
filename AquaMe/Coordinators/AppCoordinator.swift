@@ -35,7 +35,8 @@ final class AppCoordinator: Coordinator {
 extension AppCoordinator {
 
     func start() {
-        showOnboarding()
+        /// Показываем экран приветствия — пользователь заполняет данные профиля.
+        showGreeting()
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
@@ -45,14 +46,11 @@ extension AppCoordinator {
 
 private extension AppCoordinator {
 
-    /// Показывает экран онбординга.
-    /// Устанавливает колбэк `onFinish` — когда пользователь нажмёт "Начать", запустим главный флоу.
-    func showOnboarding() {
-        let viewModel = OnboardingViewModel()
-        viewModel.onFinish = { [weak self] in
-            self?.showMain()
-        }
-        let viewController = OnboardingViewController(viewModel: viewModel)
+    /// Показывает экран приветствия (заполнение профиля).
+    /// Когда пользователь нажмёт Get Started — запустим главный флоу через showMain().
+    func showGreeting() {
+        let viewModel = GreetingViewModel()
+        let viewController = GreetingViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: false)
     }
 

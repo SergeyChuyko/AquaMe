@@ -30,6 +30,10 @@
 		FA000000000000000000043 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000043 /* SettingsViewController.swift */; };
 		FA000000000000000000050 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000050 /* MainTabBarView.swift */; };
 		FA000000000000000000051 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000051 /* MainViewController.swift */; };
+		FA000000000000000000060 /* GreetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000060 /* GreetingViewController.swift */; };
+		FA000000000000000000061 /* GreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000061 /* GreetingView.swift */; };
+		FA000000000000000000062 /* GreetingViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000062 /* GreetingViewModelProtocol.swift */; };
+		FA000000000000000000063 /* GreetingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000063 /* GreetingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +61,10 @@
 		FA100000000000000000043 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		FA100000000000000000050 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
 		FA100000000000000000051 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		FA100000000000000000060 /* GreetingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewController.swift; sourceTree = "<group>"; };
+		FA100000000000000000061 /* GreetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingView.swift; sourceTree = "<group>"; };
+		FA100000000000000000062 /* GreetingViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewModelProtocol.swift; sourceTree = "<group>"; };
+		FA100000000000000000063 /* GreetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewModel.swift; sourceTree = "<group>"; };
 		FA200000000000000000001 /* AquaMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AquaMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -113,12 +121,49 @@
 			isa = PBXGroup;
 			children = (
 				FA400000000000000000020 /* Onboarding */,
+				FA400000000000000000080 /* Greeting */,
 				FA400000000000000000012 /* Today */,
 				FA400000000000000000021 /* Progress */,
 				FA400000000000000000022 /* Settings */,
 				FA400000000000000000023 /* Main */,
 			);
 			path = Modules;
+			sourceTree = "<group>";
+		};
+		/* Greeting module */
+		FA400000000000000000080 /* Greeting */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000081 /* ViewModel */,
+				FA400000000000000000082 /* View */,
+				FA400000000000000000083 /* Controller */,
+			);
+			path = Greeting;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000081 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000062 /* GreetingViewModelProtocol.swift */,
+				FA100000000000000000063 /* GreetingViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000082 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000061 /* GreetingView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000083 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000060 /* GreetingViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		/* Today module */
@@ -384,6 +429,10 @@
 				FA000000000000000000043 /* SettingsViewController.swift in Sources */,
 				FA000000000000000000050 /* MainTabBarView.swift in Sources */,
 				FA000000000000000000051 /* MainViewController.swift in Sources */,
+				FA000000000000000000060 /* GreetingViewController.swift in Sources */,
+				FA000000000000000000061 /* GreetingView.swift in Sources */,
+				FA000000000000000000062 /* GreetingViewModelProtocol.swift in Sources */,
+				FA000000000000000000063 /* GreetingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
