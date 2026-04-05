@@ -38,11 +38,20 @@ final class RegisterViewController: UIViewController {
     override func loadView() {
         view = registerView
     }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        additionalSafeAreaInsets.bottom = view.safeAreaInsets.bottom == 0 ? 8 : 0
+    }
 }
 
 // MARK: - RegisterViewController + RegisterViewDelegate
 
 extension RegisterViewController: RegisterViewDelegate {
+
+    func registerViewDidTapBack(_ view: RegisterView) {
+        navigationController?.popViewController(animated: true)
+    }
 
     func registerViewDidTapRegister(_ view: RegisterView) {
         viewModel.didTapRegister()
@@ -50,5 +59,14 @@ extension RegisterViewController: RegisterViewDelegate {
 
     func registerViewDidTapLogin(_ view: RegisterView) {
         viewModel.didTapLogin()
+        navigationController?.popViewController(animated: true)
+    }
+
+    func registerViewDidTapApple(_ view: RegisterView) {
+        // TODO: handle Apple sign-in
+    }
+
+    func registerViewDidTapGoogle(_ view: RegisterView) {
+        // TODO: handle Google sign-in
     }
 }
