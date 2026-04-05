@@ -35,7 +35,7 @@ final class AppCoordinator: Coordinator {
 extension AppCoordinator {
 
     func start() {
-        showOnboarding()
+        showAuth()
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
@@ -44,6 +44,12 @@ extension AppCoordinator {
 // MARK: - AppCoordinator + Setup
 
 private extension AppCoordinator {
+
+    func showAuth() {
+        let viewModel = AuthViewModel()
+        let viewController = AuthViewController(viewModel: viewModel)
+        navigationController.setViewControllers([viewController], animated: false)
+    }
 
     /// Показывает экран онбординга.
     /// Устанавливает колбэк `onFinish` — когда пользователь нажмёт "Начать", запустим главный флоу.

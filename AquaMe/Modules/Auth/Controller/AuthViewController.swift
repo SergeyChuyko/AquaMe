@@ -38,6 +38,11 @@ final class AuthViewController: UIViewController {
     override func loadView() {
         view = authView
     }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        additionalSafeAreaInsets.bottom = view.safeAreaInsets.bottom == 0 ? 8 : 0
+    }
 }
 
 // MARK: - AuthViewController + AuthViewDelegate
@@ -48,7 +53,21 @@ extension AuthViewController: AuthViewDelegate {
         viewModel.didTapLogin()
     }
 
+    func authViewDidTapForgotPassword(_ view: AuthView) {
+        // TODO: navigate to forgot password
+    }
+
+    func authViewDidTapApple(_ view: AuthView) {
+        // TODO: handle Apple sign-in
+    }
+
+    func authViewDidTapGoogle(_ view: AuthView) {
+        // TODO: handle Google sign-in
+    }
+
     func authViewDidTapRegister(_ view: AuthView) {
         viewModel.didTapRegister()
+        let registerVC = RegisterViewController(viewModel: RegisterViewModel())
+        navigationController?.pushViewController(registerVC, animated: true)
     }
 }
