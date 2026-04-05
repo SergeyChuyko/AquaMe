@@ -21,6 +21,9 @@ final class CUIButton: UIView {
         static let pressedScale: CGFloat = 0.95
         static let pressAnimationDuration: TimeInterval = 0.1
         static let releaseAnimationDuration: TimeInterval = 0.2
+        static let springDamping: CGFloat = 0.5
+        static let springVelocity: CGFloat = 0.5
+        static let iconSize: CGFloat = 20
     }
 
     // MARK: - Public properties
@@ -29,7 +32,6 @@ final class CUIButton: UIView {
 
     var isEnabled: Bool = true {
         didSet {
-
             updateEnabledAppearance()
         }
     }
@@ -75,7 +77,9 @@ final class CUIButton: UIView {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 
     // MARK: - Touch handling
 
@@ -108,13 +112,8 @@ extension CUIButton {
 
     func configure(title: String, icon: UIImage? = nil) {
         titleLabel.text = title
-
-        if let icon {
-            iconImageView.image = icon.withRenderingMode(.alwaysTemplate)
-            iconImageView.isHidden = false
-        } else {
-            iconImageView.isHidden = true
-        }
+        iconImageView.image = icon?.withRenderingMode(.alwaysTemplate)
+        iconImageView.isHidden = icon == nil
     }
 }
 
@@ -124,7 +123,10 @@ private extension CUIButton {
 
     func animatePress() {
         UIView.animate(withDuration: Constants.pressAnimationDuration) {
-            self.transform = CGAffineTransform(scaleX: Constants.pressedScale, y: Constants.pressedScale)
+            self.transform = CGAffineTransform(
+                scaleX: Constants.pressedScale,
+                y: Constants.pressedScale
+            )
         }
     }
 
@@ -132,8 +134,8 @@ private extension CUIButton {
         UIView.animate(
             withDuration: Constants.releaseAnimationDuration,
             delay: 0,
-            usingSpringWithDamping: 0.5,
-            initialSpringVelocity: 0.5
+            usingSpringWithDamping: Constants.springDamping,
+            initialSpringVelocity: Constants.springVelocity
         ) {
             self.transform = .identity
         }
@@ -189,8 +191,8 @@ private extension CUIButton {
 
     func setupConstraintsForIconImageView() {
         NSLayoutConstraint.activate([
-            iconImageView.widthAnchor.constraint(equalToConstant: 20),
-            iconImageView.heightAnchor.constraint(equalToConstant: 20),
+            iconImageView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
+            iconImageView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
         ])
     }
 
