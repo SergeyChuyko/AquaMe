@@ -181,26 +181,14 @@ extension CUITextField {
 
         textField.placeholder = placeholder
 
-        if let suffix {
-            suffixLabel.text = suffix
-            suffixLabel.isHidden = false
-        } else {
-            suffixLabel.isHidden = true
-        }
+        suffixLabel.text = suffix
+        suffixLabel.isHidden = suffix == nil
 
-        if let hint {
-            hintLabel.text = hint
-            hintLabel.isHidden = false
-        } else {
-            hintLabel.isHidden = true
-        }
+        hintLabel.text = hint
+        hintLabel.isHidden = hint == nil
 
-        if let leftIcon {
-            leadingIconImageView.image = leftIcon.withRenderingMode(.alwaysTemplate)
-            leadingIconImageView.isHidden = false
-        } else {
-            leadingIconImageView.isHidden = true
-        }
+        leadingIconImageView.image = leftIcon?.withRenderingMode(.alwaysTemplate)
+        leadingIconImageView.isHidden = leftIcon == nil
     }
 }
 
