@@ -41,6 +41,7 @@ final class CUINavigationBar: UIView {
     private lazy var leftButton: UIButton = {
         let action = UIAction { [weak self] _ in
             guard let self else { return }
+
             onTapLeft?()
         }
         let button = UIButton(primaryAction: action)
@@ -54,6 +55,7 @@ final class CUINavigationBar: UIView {
     private lazy var rightButton: UIButton = {
         let action = UIAction { [weak self] _ in
             guard let self else { return }
+
             onTapRight?()
         }
         let button = UIButton(primaryAction: action)
@@ -81,7 +83,9 @@ final class CUINavigationBar: UIView {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 }
 
 // MARK: - CUINavigationBar + Public
@@ -91,21 +95,11 @@ extension CUINavigationBar {
     func configure(title: String, leftIcon: UIImage? = nil, rightIcon: UIImage? = nil) {
         titleLabel.text = title
 
-        if let leftIcon {
-            let config = UIImage.SymbolConfiguration(pointSize: Constants.buttonIconSize, weight: .semibold)
-            leftButton.setImage(leftIcon.withConfiguration(config), for: .normal)
-            leftButton.isHidden = false
-        } else {
-            leftButton.isHidden = true
-        }
-
-        if let rightIcon {
-            let config = UIImage.SymbolConfiguration(pointSize: Constants.buttonIconSize, weight: .semibold)
-            rightButton.setImage(rightIcon.withConfiguration(config), for: .normal)
-            rightButton.isHidden = false
-        } else {
-            rightButton.isHidden = true
-        }
+        let iconConfig = UIImage.SymbolConfiguration(pointSize: Constants.buttonIconSize, weight: .semibold)
+        leftButton.setImage(leftIcon?.withConfiguration(iconConfig), for: .normal)
+        leftButton.isHidden = leftIcon == nil
+        rightButton.setImage(rightIcon?.withConfiguration(iconConfig), for: .normal)
+        rightButton.isHidden = rightIcon == nil
     }
 }
 

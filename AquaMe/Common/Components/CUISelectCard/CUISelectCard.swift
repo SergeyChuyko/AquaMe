@@ -24,6 +24,7 @@ final class CUISelectCard: UIView {
         static let titleFontSize: CGFloat = 15
         static let subtitleFontSize: CGFloat = 13
         static let animationDuration: TimeInterval = 0.2
+        static let titleNumberOfLines: Int = 2
     }
 
     private enum Colors {
@@ -70,7 +71,7 @@ final class CUISelectCard: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: Constants.titleFontSize)
         label.textAlignment = .center
-        label.numberOfLines = 2
+        label.numberOfLines = Constants.titleNumberOfLines
 
         return label
     }()
@@ -106,7 +107,9 @@ final class CUISelectCard: UIView {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 }
 
 // MARK: - CUISelectCard + Public
@@ -116,31 +119,21 @@ extension CUISelectCard {
     func setSelected(_ selected: Bool, animated: Bool = true) {
         isSelected = selected
 
-        let apply = {
-            selected ? self.applySelectedStyle() : self.applyDeselectedStyle()
-        }
-
         guard animated else {
-            apply()
-
+            applyStyle()
             return
         }
 
         UIView.animate(withDuration: Constants.animationDuration) {
-            apply()
+            self.applyStyle()
         }
     }
 
     func configure(icon: UIImage?, title: String, subtitle: String? = nil) {
         iconImageView.image = icon
         titleLabel.text = title
-
-        if let subtitle {
-            subtitleLabel.text = subtitle
-            subtitleLabel.isHidden = false
-        } else {
-            subtitleLabel.isHidden = true
-        }
+        subtitleLabel.text = subtitle
+        subtitleLabel.isHidden = subtitle == nil
     }
 }
 
@@ -150,6 +143,10 @@ private extension CUISelectCard {
 
     @objc func handleTap() {
         onTap?()
+    }
+
+    func applyStyle() {
+        isSelected ? applySelectedStyle() : applyDeselectedStyle()
     }
 
     func applySelectedStyle() {

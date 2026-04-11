@@ -2,6 +2,9 @@
 //  CUITextField.swift
 //  AquaMe
 //
+//  Created by Sergey on 04.04.2026.
+//  Copyright © 2026. All rights reserved.
+//
 
 import UIKit
 
@@ -24,6 +27,7 @@ final class CUITextField: UIView {
         static let inputFontSize: CGFloat = 16
         static let suffixFontSize: CGFloat = 16
         static let hintFontSize: CGFloat = 13
+        static let leadingIconSize: CGFloat = 18
     }
 
     // MARK: - Public properties
@@ -31,23 +35,44 @@ final class CUITextField: UIView {
     var onTextChange: ((String?) -> Void)?
 
     var text: String? {
-        get { textField.text }
-        set { textField.text = newValue }
+        get {
+            textField.text
+        }
+        set {
+            textField.text = newValue
+        }
     }
 
     var keyboardType: UIKeyboardType {
-        get { textField.keyboardType }
-        set { textField.keyboardType = newValue }
+        get {
+            textField.keyboardType
+        }
+        set {
+            textField.keyboardType = newValue
+        }
     }
 
     var isEditing: Bool { textField.isEditing }
 
     var returnKeyType: UIReturnKeyType {
-        get { textField.returnKeyType }
-        set { textField.returnKeyType = newValue }
+        get {
+            textField.returnKeyType
+        }
+        set {
+            textField.returnKeyType = newValue
+        }
     }
 
     var onReturn: (() -> Void)?
+
+    var isSecureTextEntry: Bool {
+        get { textField.isSecureTextEntry }
+        set { textField.isSecureTextEntry = newValue }
+    }
+
+    func focus() {
+        textField.becomeFirstResponder()
+    }
 
     // MARK: - Private properties
 
@@ -81,6 +106,17 @@ final class CUITextField: UIView {
         return field
     }()
 
+    private lazy var leadingIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .secondaryLabel
+        imageView.isHidden = true
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+
+        return imageView
+    }()
+
     private lazy var suffixLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -94,7 +130,7 @@ final class CUITextField: UIView {
     }()
 
     private lazy var fieldStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [textField, suffixLabel])
+        let stack = UIStackView(arrangedSubviews: [leadingIconImageView, textField, suffixLabel])
         stack.axis = .horizontal
         stack.spacing = Constants.fieldInnerSpacing
         stack.alignment = .center
@@ -129,15 +165,18 @@ final class CUITextField: UIView {
         title: String? = nil,
         placeholder: String? = nil,
         suffix: String? = nil,
-        hint: String? = nil
+        hint: String? = nil,
+        leftIcon: UIImage? = nil
     ) {
         super.init(frame: .zero)
         setup()
-        configure(title: title, placeholder: placeholder, suffix: suffix, hint: hint)
+        configure(title: title, placeholder: placeholder, suffix: suffix, hint: hint, leftIcon: leftIcon)
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 }
 
 // MARK: - CUITextField + Public
@@ -148,26 +187,22 @@ extension CUITextField {
         title: String? = nil,
         placeholder: String? = nil,
         suffix: String? = nil,
-        hint: String? = nil
+        hint: String? = nil,
+        leftIcon: UIImage? = nil
     ) {
         titleLabel.text = title
         titleLabel.isHidden = title == nil
 
         textField.placeholder = placeholder
 
-        if let suffix {
-            suffixLabel.text = suffix
-            suffixLabel.isHidden = false
-        } else {
-            suffixLabel.isHidden = true
-        }
+        suffixLabel.text = suffix
+        suffixLabel.isHidden = suffix == nil
 
-        if let hint {
-            hintLabel.text = hint
-            hintLabel.isHidden = false
-        } else {
-            hintLabel.isHidden = true
-        }
+        hintLabel.text = hint
+        hintLabel.isHidden = hint == nil
+
+        leadingIconImageView.image = leftIcon?.withRenderingMode(.alwaysTemplate)
+        leadingIconImageView.isHidden = leftIcon == nil
     }
 }
 
@@ -241,6 +276,8 @@ private extension CUITextField {
                 constant: -Constants.horizontalPadding
             ),
             fieldStackView.centerYAnchor.constraint(equalTo: fieldContainerView.centerYAnchor),
+            leadingIconImageView.widthAnchor.constraint(equalToConstant: Constants.leadingIconSize),
+            leadingIconImageView.heightAnchor.constraint(equalToConstant: Constants.leadingIconSize),
         ])
     }
 }
