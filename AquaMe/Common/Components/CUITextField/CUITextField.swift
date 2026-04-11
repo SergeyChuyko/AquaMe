@@ -2,6 +2,9 @@
 //  CUITextField.swift
 //  AquaMe
 //
+//  Created by Sergey on 04.04.2026.
+//  Copyright © 2026. All rights reserved.
+//
 
 import UIKit
 
@@ -24,6 +27,7 @@ final class CUITextField: UIView {
         static let inputFontSize: CGFloat = 16
         static let suffixFontSize: CGFloat = 16
         static let hintFontSize: CGFloat = 13
+        static let leadingIconSize: CGFloat = 18
     }
 
     // MARK: - Public properties
@@ -61,6 +65,15 @@ final class CUITextField: UIView {
 
     var onReturn: (() -> Void)?
 
+    var isSecureTextEntry: Bool {
+        get { textField.isSecureTextEntry }
+        set { textField.isSecureTextEntry = newValue }
+    }
+
+    func focus() {
+        textField.becomeFirstResponder()
+    }
+
     // MARK: - Private properties
 
     private lazy var titleLabel: UILabel = {
@@ -93,6 +106,17 @@ final class CUITextField: UIView {
         return field
     }()
 
+    private lazy var leadingIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .secondaryLabel
+        imageView.isHidden = true
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+
+        return imageView
+    }()
+
     private lazy var suffixLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -106,7 +130,7 @@ final class CUITextField: UIView {
     }()
 
     private lazy var fieldStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [textField, suffixLabel])
+        let stack = UIStackView(arrangedSubviews: [leadingIconImageView, textField, suffixLabel])
         stack.axis = .horizontal
         stack.spacing = Constants.fieldInnerSpacing
         stack.alignment = .center
@@ -141,11 +165,12 @@ final class CUITextField: UIView {
         title: String? = nil,
         placeholder: String? = nil,
         suffix: String? = nil,
-        hint: String? = nil
+        hint: String? = nil,
+        leftIcon: UIImage? = nil
     ) {
         super.init(frame: .zero)
         setup()
-        configure(title: title, placeholder: placeholder, suffix: suffix, hint: hint)
+        configure(title: title, placeholder: placeholder, suffix: suffix, hint: hint, leftIcon: leftIcon)
     }
 
     @available(*, unavailable)
@@ -162,7 +187,8 @@ extension CUITextField {
         title: String? = nil,
         placeholder: String? = nil,
         suffix: String? = nil,
-        hint: String? = nil
+        hint: String? = nil,
+        leftIcon: UIImage? = nil
     ) {
         titleLabel.text = title
         titleLabel.isHidden = title == nil
@@ -174,6 +200,9 @@ extension CUITextField {
 
         hintLabel.text = hint
         hintLabel.isHidden = hint == nil
+
+        leadingIconImageView.image = leftIcon?.withRenderingMode(.alwaysTemplate)
+        leadingIconImageView.isHidden = leftIcon == nil
     }
 }
 
@@ -247,6 +276,8 @@ private extension CUITextField {
                 constant: -Constants.horizontalPadding
             ),
             fieldStackView.centerYAnchor.constraint(equalTo: fieldContainerView.centerYAnchor),
+            leadingIconImageView.widthAnchor.constraint(equalToConstant: Constants.leadingIconSize),
+            leadingIconImageView.heightAnchor.constraint(equalToConstant: Constants.leadingIconSize),
         ])
     }
 }
