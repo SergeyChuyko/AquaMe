@@ -6,12 +6,17 @@
 //  Copyright © 2026. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 // MARK: - AuthViewModelProtocol
 
 protocol AuthViewModelProtocol: AnyObject {
 
-    func didTapLogin()
+    var onLoginSuccess: (() -> Void)? { get set }
+    var onRegisterTapped: (() -> Void)? { get set }
+    var onError: ((String) -> Void)? { get set }
+
+    func didTapLogin(email: String, password: String)
+    func didTapGoogle(from viewController: UIViewController)
     func didTapRegister()
 }

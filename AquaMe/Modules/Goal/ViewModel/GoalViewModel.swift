@@ -12,7 +12,13 @@ import Foundation
 
 final class GoalViewModel: GoalViewModelProtocol {
 
+    // MARK: - Public properties
+
+    var onGetStarted: (() -> Void)?
+
+    // MARK: - GoalViewModelProtocol
+
     func didTapGetStarted() {
-        // TODO: navigate to main screen
+        onGetStarted?()
     }
 }

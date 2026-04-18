@@ -6,12 +6,13 @@
 //  Copyright © 2026. All rights reserved.
 //
 
-import Foundation
-
 // MARK: - RegisterViewModelProtocol
 
 protocol RegisterViewModelProtocol: AnyObject {
 
-    func didTapRegister()
+    var onRegisterSuccess: (() -> Void)? { get set }
+    var onError: ((String) -> Void)? { get set }
+
+    func didTapRegister(email: String, password: String, confirmPassword: String)
     func didTapLogin()
 }
