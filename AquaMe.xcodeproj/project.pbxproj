@@ -38,12 +38,20 @@
 		FA000000000000000000043 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000043 /* SettingsViewController.swift */; };
 		FA000000000000000000050 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000050 /* MainTabBarView.swift */; };
 		FA000000000000000000051 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000051 /* MainViewController.swift */; };
-		FA000000000000000000060 /* CUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000060 /* CUITextField.swift */; };
-		FA000000000000000000061 /* CUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000061 /* CUIButton.swift */; };
-		FA000000000000000000062 /* CUISelectCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000062 /* CUISelectCard.swift */; };
-		FA000000000000000000063 /* CUIText.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000063 /* CUIText.swift */; };
-		FA000000000000000000064 /* CUINavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000064 /* CUINavigationBar.swift */; };
+		FA000000000000000000060 /* GreetingViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000060 /* GreetingViewModelProtocol.swift */; };
+		FA000000000000000000061 /* GreetingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000061 /* GreetingViewModel.swift */; };
+		FA000000000000000000062 /* GreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000062 /* GreetingView.swift */; };
+		FA000000000000000000063 /* GreetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000063 /* GreetingViewController.swift */; };
 		FA000000000000000000065 /* CUISocialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000065 /* CUISocialButton.swift */; };
+		FA000000000000000000070 /* GoalViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000070 /* GoalViewModelProtocol.swift */; };
+		FA000000000000000000071 /* GoalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000071 /* GoalViewModel.swift */; };
+		FA000000000000000000072 /* GoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000072 /* GoalView.swift */; };
+		FA000000000000000000073 /* GoalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000073 /* GoalViewController.swift */; };
+		FA000000000000000000080 /* CUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000080 /* CUIButton.swift */; };
+		FA000000000000000000081 /* CUINavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000081 /* CUINavigationBar.swift */; };
+		FA000000000000000000082 /* CUISelectCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000082 /* CUISelectCard.swift */; };
+		FA000000000000000000083 /* CUIText.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000083 /* CUIText.swift */; };
+		FA000000000000000000084 /* CUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000084 /* CUITextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,12 +87,20 @@
 		FA100000000000000000043 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		FA100000000000000000050 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
 		FA100000000000000000051 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		FA100000000000000000060 /* CUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUITextField.swift; sourceTree = "<group>"; };
-		FA100000000000000000061 /* CUIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUIButton.swift; sourceTree = "<group>"; };
-		FA100000000000000000062 /* CUISelectCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUISelectCard.swift; sourceTree = "<group>"; };
-		FA100000000000000000063 /* CUIText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUIText.swift; sourceTree = "<group>"; };
-		FA100000000000000000064 /* CUINavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUINavigationBar.swift; sourceTree = "<group>"; };
+		FA100000000000000000060 /* GreetingViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewModelProtocol.swift; sourceTree = "<group>"; };
+		FA100000000000000000061 /* GreetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewModel.swift; sourceTree = "<group>"; };
+		FA100000000000000000062 /* GreetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingView.swift; sourceTree = "<group>"; };
+		FA100000000000000000063 /* GreetingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewController.swift; sourceTree = "<group>"; };
 		FA100000000000000000065 /* CUISocialButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUISocialButton.swift; sourceTree = "<group>"; };
+		FA100000000000000000070 /* GoalViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalViewModelProtocol.swift; sourceTree = "<group>"; };
+		FA100000000000000000071 /* GoalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalViewModel.swift; sourceTree = "<group>"; };
+		FA100000000000000000072 /* GoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalView.swift; sourceTree = "<group>"; };
+		FA100000000000000000073 /* GoalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalViewController.swift; sourceTree = "<group>"; };
+		FA100000000000000000080 /* CUIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUIButton.swift; sourceTree = "<group>"; };
+		FA100000000000000000081 /* CUINavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUINavigationBar.swift; sourceTree = "<group>"; };
+		FA100000000000000000082 /* CUISelectCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUISelectCard.swift; sourceTree = "<group>"; };
+		FA100000000000000000083 /* CUIText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUIText.swift; sourceTree = "<group>"; };
+		FA100000000000000000084 /* CUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUITextField.swift; sourceTree = "<group>"; };
 		FA200000000000000000001 /* AquaMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AquaMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -214,6 +230,8 @@
 				EA5B6A572F81612F005357F6 /* Register */,
 				EA5B6A4B2F816128005357F6 /* Auth */,
 				FA400000000000000000020 /* Onboarding */,
+				FA400000000000000000026 /* Greeting */,
+				FA400000000000000000027 /* Goal */,
 				FA400000000000000000012 /* Today */,
 				FA400000000000000000021 /* Progress */,
 				FA400000000000000000022 /* Settings */,
@@ -398,6 +416,89 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		/* Greeting module */
+		FA400000000000000000026 /* Greeting */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000080 /* ViewModel */,
+				FA400000000000000000081 /* View */,
+				FA400000000000000000082 /* Controller */,
+			);
+			path = Greeting;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000080 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000060 /* GreetingViewModelProtocol.swift */,
+				FA100000000000000000061 /* GreetingViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000081 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000062 /* GreetingView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000082 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000063 /* GreetingViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		/* Goal module */
+		FA400000000000000000027 /* Goal */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000083 /* ViewModel */,
+				FA400000000000000000084 /* View */,
+				FA400000000000000000085 /* Controller */,
+			);
+			path = Goal;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000083 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000070 /* GoalViewModelProtocol.swift */,
+				FA100000000000000000071 /* GoalViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000084 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000072 /* GoalView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000085 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000073 /* GoalViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		/* Progress module */
+		FA400000000000000000021 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000066 /* ViewModel */,
+				FA400000000000000000067 /* View */,
+				FA400000000000000000068 /* Controller */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
 		FA400000000000000000066 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -454,6 +555,85 @@
 				FA100000000000000000051 /* MainViewController.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		/* Common */
+		FA400000000000000000024 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000025 /* TabBar */,
+				FA400000000000000000028 /* Components */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000025 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000050 /* MainTabBarView.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000028 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000086 /* CUIButton */,
+				FA400000000000000000087 /* CUINavigationBar */,
+				FA400000000000000000088 /* CUISelectCard */,
+				FA400000000000000000089 /* CUIText */,
+				FA400000000000000000090 /* CUITextField */,
+				FA400000000000000000091 /* CUISocialButton */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000086 /* CUIButton */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000080 /* CUIButton.swift */,
+			);
+			path = CUIButton;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000087 /* CUINavigationBar */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000081 /* CUINavigationBar.swift */,
+			);
+			path = CUINavigationBar;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000088 /* CUISelectCard */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000082 /* CUISelectCard.swift */,
+			);
+			path = CUISelectCard;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000089 /* CUIText */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000083 /* CUIText.swift */,
+			);
+			path = CUIText;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000090 /* CUITextField */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000084 /* CUITextField.swift */,
+			);
+			path = CUITextField;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000091 /* CUISocialButton */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000065 /* CUISocialButton.swift */,
+			);
+			path = CUISocialButton;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -555,12 +735,20 @@
 				FA000000000000000000043 /* SettingsViewController.swift in Sources */,
 				FA000000000000000000050 /* MainTabBarView.swift in Sources */,
 				FA000000000000000000051 /* MainViewController.swift in Sources */,
-				FA000000000000000000060 /* CUITextField.swift in Sources */,
-				FA000000000000000000061 /* CUIButton.swift in Sources */,
-				FA000000000000000000062 /* CUISelectCard.swift in Sources */,
-				FA000000000000000000063 /* CUIText.swift in Sources */,
-				FA000000000000000000064 /* CUINavigationBar.swift in Sources */,
+				FA000000000000000000060 /* GreetingViewModelProtocol.swift in Sources */,
+				FA000000000000000000061 /* GreetingViewModel.swift in Sources */,
+				FA000000000000000000062 /* GreetingView.swift in Sources */,
+				FA000000000000000000063 /* GreetingViewController.swift in Sources */,
 				FA000000000000000000065 /* CUISocialButton.swift in Sources */,
+				FA000000000000000000070 /* GoalViewModelProtocol.swift in Sources */,
+				FA000000000000000000071 /* GoalViewModel.swift in Sources */,
+				FA000000000000000000072 /* GoalView.swift in Sources */,
+				FA000000000000000000073 /* GoalViewController.swift in Sources */,
+				FA000000000000000000080 /* CUIButton.swift in Sources */,
+				FA000000000000000000081 /* CUINavigationBar.swift in Sources */,
+				FA000000000000000000082 /* CUISelectCard.swift in Sources */,
+				FA000000000000000000083 /* CUIText.swift in Sources */,
+				FA000000000000000000084 /* CUITextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

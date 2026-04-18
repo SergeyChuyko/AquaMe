@@ -59,7 +59,9 @@ final class CUIText: UIView {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 }
 
 // MARK: - CUIText + Public
@@ -68,13 +70,8 @@ extension CUIText {
 
     func configure(title: String, subtitle: String? = nil) {
         titleLabel.text = title
-
-        if let subtitle {
-            subtitleLabel.text = subtitle
-            subtitleLabel.isHidden = false
-        } else {
-            subtitleLabel.isHidden = true
-        }
+        subtitleLabel.text = subtitle
+        subtitleLabel.isHidden = subtitle == nil
     }
 }
 

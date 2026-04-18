@@ -35,20 +35,32 @@ final class CUITextField: UIView {
     var onTextChange: ((String?) -> Void)?
 
     var text: String? {
-        get { textField.text }
-        set { textField.text = newValue }
+        get {
+            textField.text
+        }
+        set {
+            textField.text = newValue
+        }
     }
 
     var keyboardType: UIKeyboardType {
-        get { textField.keyboardType }
-        set { textField.keyboardType = newValue }
+        get {
+            textField.keyboardType
+        }
+        set {
+            textField.keyboardType = newValue
+        }
     }
 
     var isEditing: Bool { textField.isEditing }
 
     var returnKeyType: UIReturnKeyType {
-        get { textField.returnKeyType }
-        set { textField.returnKeyType = newValue }
+        get {
+            textField.returnKeyType
+        }
+        set {
+            textField.returnKeyType = newValue
+        }
     }
 
     var onReturn: (() -> Void)?
@@ -162,7 +174,9 @@ final class CUITextField: UIView {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 }
 
 // MARK: - CUITextField + Public
@@ -181,26 +195,14 @@ extension CUITextField {
 
         textField.placeholder = placeholder
 
-        if let suffix {
-            suffixLabel.text = suffix
-            suffixLabel.isHidden = false
-        } else {
-            suffixLabel.isHidden = true
-        }
+        suffixLabel.text = suffix
+        suffixLabel.isHidden = suffix == nil
 
-        if let hint {
-            hintLabel.text = hint
-            hintLabel.isHidden = false
-        } else {
-            hintLabel.isHidden = true
-        }
+        hintLabel.text = hint
+        hintLabel.isHidden = hint == nil
 
-        if let leftIcon {
-            leadingIconImageView.image = leftIcon.withRenderingMode(.alwaysTemplate)
-            leadingIconImageView.isHidden = false
-        } else {
-            leadingIconImageView.isHidden = true
-        }
+        leadingIconImageView.image = leftIcon?.withRenderingMode(.alwaysTemplate)
+        leadingIconImageView.isHidden = leftIcon == nil
     }
 }
 
