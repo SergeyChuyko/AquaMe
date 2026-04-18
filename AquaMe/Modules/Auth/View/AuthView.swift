@@ -58,7 +58,7 @@ final class AuthView: UIView {
 
         static let title = "Welcome back"
         static let subtitle = "Sign in to track your daily water intake"
-        static let emailTitle = "Email or phone"
+        static let emailTitle = "Email"
         static let emailPlaceholder = "example@mail.com"
         static let passwordTitle = "Password"
         static let forgotPassword = "Forgot password?"
@@ -76,6 +76,13 @@ final class AuthView: UIView {
     // MARK: - Public properties
 
     weak var delegate: AuthViewDelegate?
+
+    var email: String? { emailInput.text }
+    var password: String? { passwordInput.text }
+
+    func setLoginLoading(_ loading: Bool) {
+        loginButton.isLoading = loading
+    }
 
     // MARK: - Private properties
 
@@ -262,11 +269,7 @@ final class AuthView: UIView {
 
     private lazy var appleButton: CUISocialButton = {
         let button = CUISocialButton(provider: .apple)
-        button.onTap = { [weak self] in
-            guard let self else { return }
-            print("tapped continue with Apple")
-            delegate?.authViewDidTapApple(self)
-        }
+        button.isEnabled = false
 
         return button
     }()

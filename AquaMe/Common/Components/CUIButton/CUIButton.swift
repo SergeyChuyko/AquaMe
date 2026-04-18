@@ -36,7 +36,22 @@ final class CUIButton: UIView {
         }
     }
 
+    var isLoading: Bool = false {
+        didSet {
+            updateLoadingState()
+        }
+    }
+
     // MARK: - Private properties
+
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+
+        return indicator
+    }()
 
     private lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
@@ -95,6 +110,7 @@ final class CUIButton: UIView {
         guard isEnabled else { return }
 
         animateRelease()
+        guard !isLoading else { return }
         onTap?()
     }
 
@@ -155,17 +171,30 @@ private extension CUIButton {
     func setupViews() {
         layer.cornerRadius = Constants.cornerRadius
         addSubview(contentStackView)
+        addSubview(activityIndicator)
         updateEnabledAppearance()
     }
 
     func updateEnabledAppearance() {
-        backgroundColor = isEnabled ? .systemIndigo : .systemIndigo.withAlphaComponent(0.35)
+        backgroundColor = isEnabled && !isLoading ? .systemIndigo : .systemIndigo.withAlphaComponent(0.35)
+    }
+
+    func updateLoadingState() {
+        if isLoading {
+            activityIndicator.startAnimating()
+            contentStackView.alpha = 0
+        } else {
+            activityIndicator.stopAnimating()
+            contentStackView.alpha = 1
+        }
+        updateEnabledAppearance()
     }
 
     func setupConstraints() {
         setupConstraintsForHeight()
         setupConstraintsForContentStackView()
         setupConstraintsForIconImageView()
+        setupConstraintsForActivityIndicator()
     }
 
     func setupConstraintsForHeight() {
@@ -193,6 +222,13 @@ private extension CUIButton {
         NSLayoutConstraint.activate([
             iconImageView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
             iconImageView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
+        ])
+    }
+
+    func setupConstraintsForActivityIndicator() {
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
 
