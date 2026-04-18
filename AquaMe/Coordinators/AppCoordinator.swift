@@ -35,7 +35,7 @@ final class AppCoordinator: Coordinator {
 extension AppCoordinator {
 
     func start() {
-        showGreeting()
+        showAuth()
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
@@ -45,11 +45,9 @@ extension AppCoordinator {
 
 private extension AppCoordinator {
 
-    /// Показывает первый экран онбординга — Profile Setup (Greeting).
-    /// Дальше навигация идёт через `pushViewController` внутри Greeting → Goal.
-    func showGreeting() {
-        let viewModel = GreetingViewModel()
-        let viewController = GreetingViewController(viewModel: viewModel)
+    func showAuth() {
+        let viewModel = AuthViewModel()
+        let viewController = AuthViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: false)
     }
 

@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA5B6A4C2F816128005357F6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A482F816128005357F6 /* AuthViewModel.swift */; };
+		EA5B6A4D2F816128005357F6 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A442F816128005357F6 /* AuthViewController.swift */; };
+		EA5B6A4E2F816128005357F6 /* AuthViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */; };
+		EA5B6A4F2F816128005357F6 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A462F816128005357F6 /* AuthView.swift */; };
+		EA5B6A582F81612F005357F6 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A502F81612F005357F6 /* RegisterViewController.swift */; };
+		EA5B6A592F81612F005357F6 /* RegisterViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A552F81612F005357F6 /* RegisterViewModelProtocol.swift */; };
+		EA5B6A5A2F81612F005357F6 /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A542F81612F005357F6 /* RegisterViewModel.swift */; };
+		EA5B6A5B2F81612F005357F6 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A522F81612F005357F6 /* RegisterView.swift */; };
 		FA000000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000001 /* AppDelegate.swift */; };
 		FA000000000000000000002 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000002 /* SceneDelegate.swift */; };
 		FA000000000000000000010 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000010 /* Coordinator.swift */; };
@@ -34,6 +42,7 @@
 		FA000000000000000000061 /* GreetingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000061 /* GreetingViewModel.swift */; };
 		FA000000000000000000062 /* GreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000062 /* GreetingView.swift */; };
 		FA000000000000000000063 /* GreetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000063 /* GreetingViewController.swift */; };
+		FA000000000000000000065 /* CUISocialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000065 /* CUISocialButton.swift */; };
 		FA000000000000000000070 /* GoalViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000070 /* GoalViewModelProtocol.swift */; };
 		FA000000000000000000071 /* GoalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000071 /* GoalViewModel.swift */; };
 		FA000000000000000000072 /* GoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100000000000000000072 /* GoalView.swift */; };
@@ -46,6 +55,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EA5B6A442F816128005357F6 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
+		EA5B6A462F816128005357F6 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		EA5B6A482F816128005357F6 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModelProtocol.swift; sourceTree = "<group>"; };
+		EA5B6A502F81612F005357F6 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		EA5B6A522F81612F005357F6 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		EA5B6A542F81612F005357F6 /* RegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModel.swift; sourceTree = "<group>"; };
+		EA5B6A552F81612F005357F6 /* RegisterViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModelProtocol.swift; sourceTree = "<group>"; };
 		FA100000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FA100000000000000000002 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		FA100000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -74,6 +91,7 @@
 		FA100000000000000000061 /* GreetingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewModel.swift; sourceTree = "<group>"; };
 		FA100000000000000000062 /* GreetingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingView.swift; sourceTree = "<group>"; };
 		FA100000000000000000063 /* GreetingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingViewController.swift; sourceTree = "<group>"; };
+		FA100000000000000000065 /* CUISocialButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CUISocialButton.swift; sourceTree = "<group>"; };
 		FA100000000000000000070 /* GoalViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalViewModelProtocol.swift; sourceTree = "<group>"; };
 		FA100000000000000000071 /* GoalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalViewModel.swift; sourceTree = "<group>"; };
 		FA100000000000000000072 /* GoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalView.swift; sourceTree = "<group>"; };
@@ -90,12 +108,83 @@
 		FA300000000000000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA5B6A452F816128005357F6 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A442F816128005357F6 /* AuthViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		EA5B6A472F816128005357F6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A462F816128005357F6 /* AuthView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		EA5B6A4A2F816128005357F6 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A482F816128005357F6 /* AuthViewModel.swift */,
+				EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EA5B6A4B2F816128005357F6 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A452F816128005357F6 /* Controller */,
+				EA5B6A472F816128005357F6 /* View */,
+				EA5B6A4A2F816128005357F6 /* ViewModel */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		EA5B6A512F81612F005357F6 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A502F81612F005357F6 /* RegisterViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		EA5B6A532F81612F005357F6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A522F81612F005357F6 /* RegisterView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		EA5B6A562F81612F005357F6 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A542F81612F005357F6 /* RegisterViewModel.swift */,
+				EA5B6A552F81612F005357F6 /* RegisterViewModelProtocol.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EA5B6A572F81612F005357F6 /* Register */ = {
+			isa = PBXGroup;
+			children = (
+				EA5B6A512F81612F005357F6 /* Controller */,
+				EA5B6A532F81612F005357F6 /* View */,
+				EA5B6A562F81612F005357F6 /* ViewModel */,
+			);
+			path = Register;
+			sourceTree = "<group>";
+		};
 		FA400000000000000000001 = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +227,8 @@
 		FA400000000000000000011 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				EA5B6A572F81612F005357F6 /* Register */,
+				EA5B6A4B2F816128005357F6 /* Auth */,
 				FA400000000000000000020 /* Onboarding */,
 				FA400000000000000000026 /* Greeting */,
 				FA400000000000000000027 /* Goal */,
@@ -149,7 +240,6 @@
 			path = Modules;
 			sourceTree = "<group>";
 		};
-		/* Today module */
 		FA400000000000000000012 /* Today */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +248,122 @@
 				FA400000000000000000062 /* Controller */,
 			);
 			path = Today;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000020 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000063 /* ViewModel */,
+				FA400000000000000000064 /* View */,
+				FA400000000000000000065 /* Controller */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000021 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000066 /* ViewModel */,
+				FA400000000000000000067 /* View */,
+				FA400000000000000000068 /* Controller */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000022 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000069 /* ViewModel */,
+				FA400000000000000000070 /* View */,
+				FA400000000000000000071 /* Controller */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000023 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000072 /* Controller */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000024 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000025 /* TabBar */,
+				FA400000000000000000080 /* Components */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000080 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				FA400000000000000000081 /* CUITextField */,
+				FA400000000000000000082 /* CUIButton */,
+				FA400000000000000000083 /* CUISelectCard */,
+				FA400000000000000000084 /* CUIText */,
+				FA400000000000000000085 /* CUINavigationBar */,
+				FA400000000000000000086 /* CUISocialButton */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000081 /* CUITextField */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000060 /* CUITextField.swift */,
+			);
+			path = CUITextField;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000082 /* CUIButton */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000061 /* CUIButton.swift */,
+			);
+			path = CUIButton;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000083 /* CUISelectCard */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000062 /* CUISelectCard.swift */,
+			);
+			path = CUISelectCard;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000084 /* CUIText */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000063 /* CUIText.swift */,
+			);
+			path = CUIText;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000085 /* CUINavigationBar */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000064 /* CUINavigationBar.swift */,
+			);
+			path = CUINavigationBar;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000086 /* CUISocialButton */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000065 /* CUISocialButton.swift */,
+			);
+			path = CUISocialButton;
+			sourceTree = "<group>";
+		};
+		FA400000000000000000025 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000050 /* MainTabBarView.swift */,
+			);
+			path = TabBar;
 			sourceTree = "<group>";
 		};
 		FA400000000000000000060 /* ViewModel */ = {
@@ -183,17 +389,6 @@
 				FA100000000000000000016 /* TodayViewController.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		/* Onboarding module */
-		FA400000000000000000020 /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				FA400000000000000000063 /* ViewModel */,
-				FA400000000000000000064 /* View */,
-				FA400000000000000000065 /* Controller */,
-			);
-			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		FA400000000000000000063 /* ViewModel */ = {
@@ -329,17 +524,6 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		/* Settings module */
-		FA400000000000000000022 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				FA400000000000000000069 /* ViewModel */,
-				FA400000000000000000070 /* View */,
-				FA400000000000000000071 /* Controller */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
 		FA400000000000000000069 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -363,15 +547,6 @@
 				FA100000000000000000043 /* SettingsViewController.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		/* Main module */
-		FA400000000000000000023 /* Main */ = {
-			isa = PBXGroup;
-			children = (
-				FA400000000000000000072 /* Controller */,
-			);
-			path = Main;
 			sourceTree = "<group>";
 		};
 		FA400000000000000000072 /* Controller */ = {
@@ -408,6 +583,7 @@
 				FA400000000000000000088 /* CUISelectCard */,
 				FA400000000000000000089 /* CUIText */,
 				FA400000000000000000090 /* CUITextField */,
+				FA400000000000000000091 /* CUISocialButton */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -452,6 +628,14 @@
 			path = CUITextField;
 			sourceTree = "<group>";
 		};
+		FA400000000000000000091 /* CUISocialButton */ = {
+			isa = PBXGroup;
+			children = (
+				FA100000000000000000065 /* CUISocialButton.swift */,
+			);
+			path = CUISocialButton;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -463,8 +647,10 @@
 				FA300000000000000000001 /* Frameworks */,
 				FA600000000000000000002 /* Resources */,
 			);
-			buildRules = ();
-			dependencies = ();
+			buildRules = (
+			);
+			dependencies = (
+			);
 			name = AquaMe;
 			productName = AquaMe;
 			productReference = FA200000000000000000001 /* AquaMe.app */;
@@ -489,7 +675,10 @@
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
-			knownRegions = (en, Base);
+			knownRegions = (
+				en,
+				Base,
+			);
 			mainGroup = FA400000000000000000001;
 			productRefGroup = FA400000000000000000003 /* Products */;
 			projectDirPath = "";
@@ -504,7 +693,8 @@
 		FA600000000000000000002 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -526,10 +716,18 @@
 				FA000000000000000000020 /* OnboardingViewModelProtocol.swift in Sources */,
 				FA000000000000000000021 /* OnboardingViewModel.swift in Sources */,
 				FA000000000000000000022 /* OnboardingView.swift in Sources */,
+				EA5B6A4C2F816128005357F6 /* AuthViewModel.swift in Sources */,
+				EA5B6A4D2F816128005357F6 /* AuthViewController.swift in Sources */,
+				EA5B6A4E2F816128005357F6 /* AuthViewModelProtocol.swift in Sources */,
+				EA5B6A4F2F816128005357F6 /* AuthView.swift in Sources */,
 				FA000000000000000000023 /* OnboardingViewController.swift in Sources */,
 				FA000000000000000000030 /* ProgressViewModelProtocol.swift in Sources */,
 				FA000000000000000000031 /* ProgressViewModel.swift in Sources */,
 				FA000000000000000000032 /* ProgressView.swift in Sources */,
+				EA5B6A582F81612F005357F6 /* RegisterViewController.swift in Sources */,
+				EA5B6A592F81612F005357F6 /* RegisterViewModelProtocol.swift in Sources */,
+				EA5B6A5A2F81612F005357F6 /* RegisterViewModel.swift in Sources */,
+				EA5B6A5B2F81612F005357F6 /* RegisterView.swift in Sources */,
 				FA000000000000000000033 /* ProgressViewController.swift in Sources */,
 				FA000000000000000000040 /* SettingsViewModelProtocol.swift in Sources */,
 				FA000000000000000000041 /* SettingsViewModel.swift in Sources */,
@@ -541,6 +739,7 @@
 				FA000000000000000000061 /* GreetingViewModel.swift in Sources */,
 				FA000000000000000000062 /* GreetingView.swift in Sources */,
 				FA000000000000000000063 /* GreetingViewController.swift in Sources */,
+				FA000000000000000000065 /* CUISocialButton.swift in Sources */,
 				FA000000000000000000070 /* GoalViewModelProtocol.swift in Sources */,
 				FA000000000000000000071 /* GoalViewModel.swift in Sources */,
 				FA000000000000000000072 /* GoalView.swift in Sources */,
@@ -566,7 +765,10 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)");
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -602,7 +804,10 @@
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AquaMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.AquaMe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -622,7 +827,10 @@
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AquaMe/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.AquaMe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -635,15 +843,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FA700000000000000000002 /* Build configuration list for PBXProject "AquaMe" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				FA700000000000000000003 /* Debug */,
-				FA700000000000000000004 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		FA700000000000000000001 /* Build configuration list for PBXNativeTarget "AquaMe" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -653,8 +852,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		FA700000000000000000002 /* Build configuration list for PBXProject "AquaMe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA700000000000000000003 /* Debug */,
+				FA700000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = FA800000000000000000001 /* Project object */;
 }
