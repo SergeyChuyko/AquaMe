@@ -79,6 +79,14 @@ final class RegisterView: UIView {
 
     weak var delegate: RegisterViewDelegate?
 
+    var email: String? { emailInput.text }
+    var password: String? { passwordInput.text }
+    var confirmPassword: String? { confirmPasswordInput.text }
+
+    func setRegisterLoading(_ loading: Bool) {
+        createButton.isLoading = loading
+    }
+
     // MARK: - Private properties
 
     private lazy var navigationBar: CUINavigationBar = {
@@ -325,11 +333,7 @@ final class RegisterView: UIView {
 
     private lazy var appleButton: CUISocialButton = {
         let button = CUISocialButton(provider: .apple)
-        button.onTap = { [weak self] in
-            guard let self else { return }
-            print("tapped continue with Apple")
-            delegate?.registerViewDidTapApple(self)
-        }
+        button.isEnabled = false
 
         return button
     }()

@@ -28,6 +28,7 @@ final class AuthViewController: UIViewController {
     init(viewModel: AuthViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        setupBindings()
     }
 
     @available(*, unavailable)
@@ -50,7 +51,11 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: AuthViewDelegate {
 
     func authViewDidTapLogin(_ view: AuthView) {
-        viewModel.didTapLogin()
+        view.setLoginLoading(true)
+        viewModel.didTapLogin(
+            email: view.email ?? "",
+            password: view.password ?? ""
+        )
     }
 
     func authViewDidTapForgotPassword(_ view: AuthView) {
@@ -62,12 +67,28 @@ extension AuthViewController: AuthViewDelegate {
     }
 
     func authViewDidTapGoogle(_ view: AuthView) {
-        // TODO: handle Google sign-in
+        viewModel.didTapGoogle(from: self)
     }
 
     func authViewDidTapRegister(_ view: AuthView) {
         viewModel.didTapRegister()
-        let registerVC = RegisterViewController(viewModel: RegisterViewModel())
-        navigationController?.pushViewController(registerVC, animated: true)
+    }
+}
+
+// MARK: - AuthViewController + Setup
+
+private extension AuthViewController {
+
+    func setupBindings() {
+        viewModel.onError = { [weak self] message in
+            self?.authView.setLoginLoading(false)
+            self?.showAlert(message: message)
+        }
+    }
+
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }

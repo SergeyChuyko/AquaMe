@@ -35,7 +35,11 @@ final class AppCoordinator: Coordinator {
 extension AppCoordinator {
 
     func start() {
-        showAuth()
+        if AuthService.shared.isLoggedIn {
+            showMain()
+        } else {
+            showAuth()
+        }
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
@@ -47,23 +51,51 @@ private extension AppCoordinator {
 
     func showAuth() {
         let viewModel = AuthViewModel()
+        viewModel.onLoginSuccess = { [weak self] in
+            self?.showTest()
+        }
+        viewModel.onRegisterTapped = { [weak self] in
+            self?.showRegister()
+        }
         let viewController = AuthViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: false)
     }
 
-    /// Показывает экран онбординга.
-    /// Устанавливает колбэк `onFinish` — когда пользователь нажмёт "Начать", запустим главный флоу.
+    func showRegister() {
+        let viewModel = RegisterViewModel()
+        viewModel.onRegisterSuccess = { [weak self] in
+            self?.showGoal()
+        }
+        let viewController = RegisterViewController(viewModel: viewModel)
+        navigationController.pushViewController(viewController, animated: true)
+    }
+
+    func showGoal() {
+        let viewModel = GoalViewModel()
+        viewModel.onGetStarted = { [weak self] in
+            self?.showTest()
+        }
+        let viewController = GoalViewController(viewModel: viewModel)
+        navigationController.setViewControllers([viewController], animated: true)
+    }
+
     func showOnboarding() {
         let viewModel = OnboardingViewModel()
         viewModel.onFinish = { [weak self] in
-            self?.showMain()
+            self?.showTest()
         }
         let viewController = OnboardingViewController(viewModel: viewModel)
         navigationController.setViewControllers([viewController], animated: false)
     }
 
-    /// Запускает главный флоу с таб баром.
-    /// В будущем: сначала проверять завершён ли онбординг (флаг в UserDefaults).
+    func showTest() {
+        let viewController = TestViewController()
+        viewController.onLogout = { [weak self] in
+            self?.showAuth()
+        }
+        navigationController.setViewControllers([viewController], animated: true)
+    }
+
     func showMain() {
         let coordinator = MainCoordinator(navigationController: navigationController)
         coordinator.start()

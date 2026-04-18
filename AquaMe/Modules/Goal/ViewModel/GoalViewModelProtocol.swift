@@ -12,5 +12,7 @@ import Foundation
 
 protocol GoalViewModelProtocol: AnyObject {
 
+    var onGetStarted: (() -> Void)? { get set }
+
     func didTapGetStarted()
 }

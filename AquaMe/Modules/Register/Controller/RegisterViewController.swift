@@ -28,6 +28,7 @@ final class RegisterViewController: UIViewController {
     init(viewModel: RegisterViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        setupBindings()
     }
 
     @available(*, unavailable)
@@ -54,7 +55,12 @@ extension RegisterViewController: RegisterViewDelegate {
     }
 
     func registerViewDidTapRegister(_ view: RegisterView) {
-        viewModel.didTapRegister()
+        view.setRegisterLoading(true)
+        viewModel.didTapRegister(
+            email: view.email ?? "",
+            password: view.password ?? "",
+            confirmPassword: view.confirmPassword ?? ""
+        )
     }
 
     func registerViewDidTapLogin(_ view: RegisterView) {
@@ -67,6 +73,33 @@ extension RegisterViewController: RegisterViewDelegate {
     }
 
     func registerViewDidTapGoogle(_ view: RegisterView) {
-        // TODO: handle Google sign-in
+        AuthService.shared.signInWithGoogle(presenting: self) { [weak self] result in
+            switch result {
+            case .success:
+                self?.viewModel.onRegisterSuccess?()
+
+            case .failure(let error):
+                if (error as NSError).code == -5 { return }
+                self?.showAlert(message: error.localizedDescription)
+            }
+        }
+    }
+}
+
+// MARK: - RegisterViewController + Setup
+
+private extension RegisterViewController {
+
+    func setupBindings() {
+        viewModel.onError = { [weak self] message in
+            self?.registerView.setRegisterLoading(false)
+            self?.showAlert(message: message)
+        }
+    }
+
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }

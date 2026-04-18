@@ -38,6 +38,12 @@ final class CUISocialButton: UIView {
 
     var onTap: (() -> Void)?
 
+    var isEnabled: Bool = true {
+        didSet {
+            updateEnabledAppearance()
+        }
+    }
+
     // MARK: - Private properties
 
     private let provider: Provider
@@ -79,17 +85,20 @@ final class CUISocialButton: UIView {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
+        guard isEnabled else { return }
         animatePress()
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
+        guard isEnabled else { return }
         animateRelease()
         onTap?()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
+        guard isEnabled else { return }
         animateRelease()
     }
 }
@@ -132,6 +141,11 @@ private extension CUISocialButton {
         layer.borderWidth = Constants.borderWidth
         layer.borderColor = UIColor.systemGray4.cgColor
         addSubview(contentStack)
+        updateEnabledAppearance()
+    }
+
+    func updateEnabledAppearance() {
+        alpha = isEnabled ? 1.0 : 0.4
     }
 
     func setupConstraints() {
