@@ -12,7 +12,19 @@ import Foundation
 
 final class GreetingViewModel: GreetingViewModelProtocol {
 
-    func didTapNext() {
-        // TODO: navigate to GoalViewController
+    // MARK: - Public properties
+
+    var onNext: ((String, Int, Double) -> Void)?
+    var onLogout: (() -> Void)?
+
+    // MARK: - GreetingViewModelProtocol
+
+    func didTapNext(name: String, age: Int, weight: Double) {
+        onNext?(name, age, weight)
+    }
+
+    func didTapLogout() {
+        try? AuthService.shared.signOut()
+        onLogout?()
     }
 }

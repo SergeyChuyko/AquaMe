@@ -13,6 +13,7 @@ import Foundation
 protocol GoalViewModelProtocol: AnyObject {
 
     var onGetStarted: (() -> Void)? { get set }
+    var onError: ((String) -> Void)? { get set }
 
-    func didTapGetStarted()
+    func didTapGetStarted(goal: UserProfile.Goal)
 }
