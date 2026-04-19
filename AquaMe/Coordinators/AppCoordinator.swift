@@ -36,7 +36,7 @@ extension AppCoordinator {
 
     func start() {
         if AuthService.shared.isLoggedIn {
-            showMain()
+            showTest()
         } else {
             showAuth()
         }
@@ -64,19 +64,31 @@ private extension AppCoordinator {
     func showRegister() {
         let viewModel = RegisterViewModel()
         viewModel.onRegisterSuccess = { [weak self] in
-            self?.showGoal()
+            self?.showGreeting()
         }
         let viewController = RegisterViewController(viewModel: viewModel)
         navigationController.pushViewController(viewController, animated: true)
     }
 
-    func showGoal() {
-        let viewModel = GoalViewModel()
+    func showGreeting() {
+        let viewModel = GreetingViewModel()
+        viewModel.onNext = { [weak self] name, age, weight in
+            self?.showGoal(name: name, age: age, weight: weight)
+        }
+        viewModel.onLogout = { [weak self] in
+            self?.showAuth()
+        }
+        let viewController = GreetingViewController(viewModel: viewModel)
+        navigationController.setViewControllers([viewController], animated: true)
+    }
+
+    func showGoal(name: String, age: Int, weight: Double) {
+        let viewModel = GoalViewModel(name: name, age: age, weight: weight)
         viewModel.onGetStarted = { [weak self] in
-            self?.showTest()
+            self?.showMain()
         }
         let viewController = GoalViewController(viewModel: viewModel)
-        navigationController.setViewControllers([viewController], animated: true)
+        navigationController.pushViewController(viewController, animated: true)
     }
 
     func showOnboarding() {
@@ -98,6 +110,9 @@ private extension AppCoordinator {
 
     func showMain() {
         let coordinator = MainCoordinator(navigationController: navigationController)
+        coordinator.onLogout = { [weak self] in
+            self?.showAuth()
+        }
         coordinator.start()
     }
 }

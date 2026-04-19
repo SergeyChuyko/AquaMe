@@ -12,6 +12,9 @@
 		FB000000000000000000002 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000002 /* GoogleService-Info.plist */; };
 		FB000000000000000000010 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = FB200000000000000000002 /* FirebaseAuth */; };
 		FB000000000000000000012 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = FB200000000000000000011 /* GoogleSignIn */; };
+		FB000000000000000000013 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = FB200000000000000000012 /* FirebaseFirestore */; };
+		FB000000000000000000014 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000004 /* UserProfile.swift */; };
+		FB000000000000000000015 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000005 /* ProfileService.swift */; };
 		EA5B6A4C2F816128005357F6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A482F816128005357F6 /* AuthViewModel.swift */; };
 		EA5B6A4D2F816128005357F6 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A442F816128005357F6 /* AuthViewController.swift */; };
 		EA5B6A4E2F816128005357F6 /* AuthViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */; };
@@ -69,6 +72,8 @@
 		EA5B6A542F81612F005357F6 /* RegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModel.swift; sourceTree = "<group>"; };
 		EA5B6A552F81612F005357F6 /* RegisterViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModelProtocol.swift; sourceTree = "<group>"; };
 		FB100000000000000000001 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		FB100000000000000000004 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		FB100000000000000000005 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		FB100000000000000000003 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		FB100000000000000000002 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA100000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -119,6 +124,7 @@
 			files = (
 				FB000000000000000000010 /* FirebaseAuth in Frameworks */,
 				FB000000000000000000012 /* GoogleSignIn in Frameworks */,
+				FB000000000000000000013 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +219,7 @@
 				FA400000000000000000011 /* Modules */,
 				FA400000000000000000024 /* Common */,
 				FB400000000000000000001 /* Services */,
+				FB400000000000000000003 /* Models */,
 				FB100000000000000000002 /* GoogleService-Info.plist */,
 			);
 			path = AquaMe;
@@ -649,6 +656,14 @@
 			path = CUISocialButton;
 			sourceTree = "<group>";
 		};
+		FB400000000000000000003 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FB100000000000000000004 /* UserProfile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		FB400000000000000000002 /* Test */ = {
 			isa = PBXGroup;
 			children = (
@@ -661,6 +676,7 @@
 			isa = PBXGroup;
 			children = (
 				FB100000000000000000001 /* AuthService.swift */,
+				FB100000000000000000005 /* ProfileService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -684,6 +700,7 @@
 			packageProductDependencies = (
 				FB200000000000000000002 /* FirebaseAuth */,
 				FB200000000000000000011 /* GoogleSignIn */,
+				FB200000000000000000012 /* FirebaseFirestore */,
 			);
 			productName = AquaMe;
 			productReference = FA200000000000000000001 /* AquaMe.app */;
@@ -789,6 +806,8 @@
 				FA000000000000000000084 /* CUITextField.swift in Sources */,
 				FB000000000000000000001 /* AuthService.swift in Sources */,
 				FB000000000000000000003 /* TestViewController.swift in Sources */,
+				FB000000000000000000014 /* UserProfile.swift in Sources */,
+				FB000000000000000000015 /* ProfileService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -932,6 +951,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FB200000000000000000010 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignIn;
+		};
+		FB200000000000000000012 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FB200000000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

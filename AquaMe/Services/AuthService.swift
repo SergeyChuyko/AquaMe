@@ -17,7 +17,10 @@ protocol AuthServiceProtocol: AnyObject {
 
     func signIn(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void)
     func register(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void)
-    func signInWithGoogle(presenting viewController: UIViewController, completion: @escaping (Result<Void, Error>) -> Void)
+    func signInWithGoogle(
+        presenting viewController: UIViewController,
+        completion: @escaping (Result<Void, Error>) -> Void
+    )
     func signOut() throws
     var isLoggedIn: Bool { get }
 }
@@ -41,28 +44,42 @@ final class AuthService: AuthServiceProtocol {
     // MARK: - Public methods
 
     func signIn(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        Auth.auth().signIn(withEmail: email, password: password) { _, error in
+        print("[Auth] Sign in attempt: email=\(email)")
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error {
+                print("[Auth] Sign in failed: \(error.localizedDescription)")
                 completion(.failure(error))
             } else {
+                print("[Auth] Sign in success: uid=\(result?.user.uid ?? "nil"), email=\(result?.user.email ?? "nil")")
                 completion(.success(()))
             }
         }
     }
 
     func register(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        Auth.auth().createUser(withEmail: email, password: password) { _, error in
+        print("[Auth] Register attempt: email=\(email)")
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error {
+                print("[Auth] Register failed: \(error.localizedDescription)")
                 completion(.failure(error))
             } else {
+                print("[Auth] Register success: uid=\(result?.user.uid ?? "nil"), email=\(result?.user.email ?? "nil")")
                 completion(.success(()))
             }
         }
     }
 
-    func signInWithGoogle(presenting viewController: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
+    func signInWithGoogle(
+        presenting viewController: UIViewController,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
-            completion(.failure(NSError(domain: "AuthService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Firebase clientID not found"])))
+            let error = NSError(
+                domain: "AuthService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Firebase clientID not found"]
+            )
+            completion(.failure(error))
             return
         }
 
@@ -76,7 +93,12 @@ final class AuthService: AuthServiceProtocol {
             }
 
             guard let user = result?.user, let idToken = user.idToken?.tokenString else {
-                completion(.failure(NSError(domain: "AuthService", code: -2, userInfo: [NSLocalizedDescriptionKey: "Google Sign-In failed"])))
+                let error = NSError(
+                    domain: "AuthService",
+                    code: -2,
+                    userInfo: [NSLocalizedDescriptionKey: "Google Sign-In failed"]
+                )
+                completion(.failure(error))
                 return
             }
 
@@ -85,10 +107,14 @@ final class AuthService: AuthServiceProtocol {
                 accessToken: user.accessToken.tokenString
             )
 
-            Auth.auth().signIn(with: credential) { _, error in
+            Auth.auth().signIn(with: credential) { result, error in
                 if let error {
+                    print("[Auth] Google sign in failed: \(error.localizedDescription)")
                     completion(.failure(error))
                 } else {
+                    let uid = result?.user.uid ?? "nil"
+                    let email = result?.user.email ?? "nil"
+                    print("[Auth] Google sign in success: uid=\(uid), email=\(email)")
                     completion(.success(()))
                 }
             }
@@ -96,6 +122,7 @@ final class AuthService: AuthServiceProtocol {
     }
 
     func signOut() throws {
+        print("[Auth] Sign out: uid=\(Auth.auth().currentUser?.uid ?? "nil")")
         GIDSignIn.sharedInstance.signOut()
         try Auth.auth().signOut()
     }

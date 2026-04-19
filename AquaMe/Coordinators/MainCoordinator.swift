@@ -15,6 +15,10 @@ import UIKit
 /// MainViewController управляет переключением между ними через кастомный таб бар.
 final class MainCoordinator: Coordinator {
 
+    // MARK: - Public properties
+
+    var onLogout: (() -> Void)?
+
     // MARK: - Private properties
 
     private let navigationController: UINavigationController
@@ -32,6 +36,7 @@ extension MainCoordinator {
 
     func start() {
         let mainViewController = buildMainViewController()
+        mainViewController.onLogout = onLogout
         /// Переход без анимации — экран онбординга просто заменяется главным.
         navigationController.setViewControllers([mainViewController], animated: false)
     }

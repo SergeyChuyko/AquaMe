@@ -18,6 +18,20 @@ final class TestViewController: UIViewController {
 
     // MARK: - Private properties
 
+    private lazy var navigationBar: CUINavigationBar = {
+        let bar = CUINavigationBar(
+            title: "Home",
+            rightIcon: UIImage(systemName: "rectangle.portrait.and.arrow.right")
+        )
+        bar.rightButtonTintColor = .systemRed
+        bar.onTapRight = { [weak self] in
+            try? AuthService.shared.signOut()
+            self?.onLogout?()
+        }
+
+        return bar
+    }()
+
     private lazy var logoutButton: UIButton = {
         let action = UIAction { [weak self] _ in
             try? AuthService.shared.signOut()
@@ -39,9 +53,14 @@ final class TestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        view.addSubview(navigationBar)
         view.addSubview(logoutButton)
 
         NSLayoutConstraint.activate([
+            navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
             logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoutButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             logoutButton.widthAnchor.constraint(equalToConstant: 200),
