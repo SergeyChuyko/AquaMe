@@ -46,6 +46,13 @@ final class GoalView: UIView {
 
     weak var delegate: GoalViewDelegate?
 
+    var selectedGoal: UserProfile.Goal? {
+        if stayHealthyCard.isSelected { return .stayHealthy }
+        if loseWeightCard.isSelected { return .loseWeight }
+        if stayActiveCard.isSelected { return .stayActive }
+        return nil
+    }
+
     // MARK: - Private properties
 
     private lazy var navigationBar: CUINavigationBar = {
