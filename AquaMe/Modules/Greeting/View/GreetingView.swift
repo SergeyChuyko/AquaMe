@@ -77,7 +77,7 @@ final class GreetingView: UIView {
         bar.rightButtonTintColor = .systemRed
         bar.onTapRight = { [weak self] in
             guard let self else { return }
-            delegate?.greetingViewDidTapLogout(self)
+            handleLogoutTap()
         }
 
         return bar
@@ -225,6 +225,10 @@ final class GreetingView: UIView {
 // MARK: - GreetingView + Actions
 
 private extension GreetingView {
+
+    func handleLogoutTap() {
+        delegate?.greetingViewDidTapLogout(self)
+    }
 
     @objc func handleAddPhotoTap() {
         print("ты нажал добавить фото")

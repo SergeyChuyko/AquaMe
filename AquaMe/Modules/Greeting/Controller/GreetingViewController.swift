@@ -79,7 +79,8 @@ extension GreetingViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true)
 
-        guard let provider = results.first?.itemProvider, provider.canLoadObject(ofClass: UIImage.self) else { return }
+        guard let provider = results.first?.itemProvider,
+              provider.canLoadObject(ofClass: UIImage.self) else { return }
 
         provider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
             guard let image = image as? UIImage else { return }

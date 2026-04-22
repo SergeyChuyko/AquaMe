@@ -50,8 +50,7 @@ final class MainViewController: UIViewController {
         )
         bar.rightButtonTintColor = .systemRed
         bar.onTapRight = { [weak self] in
-            try? AuthService.shared.signOut()
-            self?.onLogout?()
+            self?.handleLogoutTap()
         }
 
         return bar
@@ -168,6 +167,11 @@ private extension MainViewController {
             vc.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             vc.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
+    }
+
+    func handleLogoutTap() {
+        try? AuthService.shared.signOut()
+        onLogout?()
     }
 
     /// Показывает страницу по индексу, скрывает остальные.

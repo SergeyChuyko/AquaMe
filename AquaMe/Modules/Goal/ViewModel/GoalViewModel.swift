@@ -26,7 +26,12 @@ final class GoalViewModel: GoalViewModelProtocol {
 
     // MARK: - Initialization
 
-    init(name: String, age: Int, weight: Double, profileService: ProfileServiceProtocol = ProfileService.shared) {
+    init(
+        name: String,
+        age: Int,
+        weight: Double,
+        profileService: ProfileServiceProtocol = ProfileService.shared
+    ) {
         self.name = name
         self.age = age
         self.weight = weight
@@ -36,7 +41,10 @@ final class GoalViewModel: GoalViewModelProtocol {
     // MARK: - GoalViewModelProtocol
 
     func didTapGetStarted(goal: UserProfile.Goal) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let uid = Auth.auth().currentUser?.uid else {
+            onError?("Not authenticated")
+            return
+        }
 
         let dailyGoal = UserProfile.calculateDailyGoal(weight: weight, goal: goal)
 

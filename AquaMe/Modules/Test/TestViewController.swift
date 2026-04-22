@@ -25,8 +25,7 @@ final class TestViewController: UIViewController {
         )
         bar.rightButtonTintColor = .systemRed
         bar.onTapRight = { [weak self] in
-            try? AuthService.shared.signOut()
-            self?.onLogout?()
+            self?.handleLogoutTap()
         }
 
         return bar
@@ -34,8 +33,7 @@ final class TestViewController: UIViewController {
 
     private lazy var logoutButton: UIButton = {
         let action = UIAction { [weak self] _ in
-            try? AuthService.shared.signOut()
-            self?.onLogout?()
+            self?.handleLogoutTap()
         }
         let button = UIButton(primaryAction: action)
         button.setTitle("Выйти", for: .normal)
@@ -52,19 +50,49 @@ final class TestViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
+    }
+}
+
+// MARK: - TestViewController + Setup
+
+private extension TestViewController {
+
+    func setup() {
+        setupViews()
+        setupConstraints()
+    }
+
+    func setupViews() {
         view.backgroundColor = .white
         view.addSubview(navigationBar)
         view.addSubview(logoutButton)
+    }
 
+    func setupConstraints() {
+        setupConstraintsForNavigationBar()
+        setupConstraintsForLogoutButton()
+    }
+
+    func setupConstraintsForNavigationBar() {
         NSLayoutConstraint.activate([
             navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+    }
 
+    func setupConstraintsForLogoutButton() {
+        NSLayoutConstraint.activate([
             logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoutButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             logoutButton.widthAnchor.constraint(equalToConstant: 200),
             logoutButton.heightAnchor.constraint(equalToConstant: 56),
         ])
+    }
+
+    func handleLogoutTap() {
+        try? AuthService.shared.signOut()
+        onLogout?()
     }
 }
