@@ -23,6 +23,10 @@ final class MainViewController: UIViewController {
         static let tabBarHeight: CGFloat = 49
     }
 
+    // MARK: - Public properties
+
+    var onLogout: (() -> Void)?
+
     // MARK: - Private properties
 
     /// Дочерние view controller-ы в порядке: Progress, Today, Settings.
@@ -37,6 +41,19 @@ final class MainViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
 
         return view
+    }()
+
+    private lazy var navigationBar: CUINavigationBar = {
+        let bar = CUINavigationBar(
+            title: "AquaMe",
+            rightIcon: UIImage(systemName: "rectangle.portrait.and.arrow.right")
+        )
+        bar.rightButtonTintColor = .systemRed
+        bar.onTapRight = { [weak self] in
+            self?.handleLogoutTap()
+        }
+
+        return bar
     }()
 
     /// Контейнер для вью дочерних VC — занимает всё пространство выше таб бара.
@@ -89,19 +106,29 @@ private extension MainViewController {
 
     func setupViews() {
         view.backgroundColor = .systemBackground
+        view.addSubview(navigationBar)
         view.addSubview(contentView)
         view.addSubview(tabBarView)
     }
 
     func setupConstraints() {
+        setupConstraintsForNavigationBar()
         setupConstraintsForContentView()
         setupConstraintsForTabBarView()
+    }
+
+    func setupConstraintsForNavigationBar() {
+        NSLayoutConstraint.activate([
+            navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
     }
 
     func setupConstraintsForContentView() {
         NSLayoutConstraint.activate([
             /// Контент занимает всё пространство выше таб бара.
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
+            contentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: tabBarView.topAnchor),
@@ -140,6 +167,11 @@ private extension MainViewController {
             vc.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             vc.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
+    }
+
+    func handleLogoutTap() {
+        try? AuthService.shared.signOut()
+        onLogout?()
     }
 
     /// Показывает страницу по индексу, скрывает остальные.

@@ -15,6 +15,7 @@ protocol GreetingViewDelegate: AnyObject {
 
     func greetingViewDidTapNext(_ view: GreetingView)
     func greetingViewDidTapCamera(_ view: GreetingView)
+    func greetingViewDidTapLogout(_ view: GreetingView)
 }
 
 // MARK: - GreetingView
@@ -57,10 +58,27 @@ final class GreetingView: UIView {
 
     weak var delegate: GreetingViewDelegate?
 
+    var name: String? { nameInput.text }
+    var age: String? { ageInput.text }
+    var weight: String? { weightInput.text }
+
+    func setProfileImage(_ image: UIImage) {
+        profileImageView.image = image
+        profileImageView.contentMode = .scaleAspectFill
+    }
+
     // MARK: - Private properties
 
     private lazy var navigationBar: CUINavigationBar = {
-        let bar = CUINavigationBar(title: Strings.navigationTitle)
+        let bar = CUINavigationBar(
+            title: Strings.navigationTitle,
+            rightIcon: UIImage(systemName: "rectangle.portrait.and.arrow.right")
+        )
+        bar.rightButtonTintColor = .systemRed
+        bar.onTapRight = { [weak self] in
+            guard let self else { return }
+            handleLogoutTap()
+        }
 
         return bar
     }()
@@ -207,6 +225,10 @@ final class GreetingView: UIView {
 // MARK: - GreetingView + Actions
 
 private extension GreetingView {
+
+    func handleLogoutTap() {
+        delegate?.greetingViewDidTapLogout(self)
+    }
 
     @objc func handleAddPhotoTap() {
         print("ты нажал добавить фото")

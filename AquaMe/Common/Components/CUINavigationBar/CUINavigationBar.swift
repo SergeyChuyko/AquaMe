@@ -27,6 +27,12 @@ final class CUINavigationBar: UIView {
     var onTapLeft: (() -> Void)?
     var onTapRight: (() -> Void)?
 
+    var rightButtonTintColor: UIColor? {
+        didSet {
+            rightButton.tintColor = rightButtonTintColor ?? .systemIndigo
+        }
+    }
+
     // MARK: - Private properties
 
     private lazy var titleLabel: UILabel = {

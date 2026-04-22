@@ -33,6 +33,7 @@ final class GoalViewController: UIViewController {
     init(viewModel: GoalViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        setupBindings()
     }
 
     @available(*, unavailable)
@@ -55,6 +56,27 @@ extension GoalViewController: GoalViewDelegate {
     }
 
     func goalViewDidTapGetStarted(_ view: GoalView) {
-        viewModel.didTapGetStarted()
+        guard let goal = view.selectedGoal else {
+            showAlert(message: "Выберите цель")
+            return
+        }
+        viewModel.didTapGetStarted(goal: goal)
+    }
+}
+
+// MARK: - GoalViewController + Setup
+
+private extension GoalViewController {
+
+    func setupBindings() {
+        viewModel.onError = { [weak self] message in
+            self?.showAlert(message: message)
+        }
+    }
+
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }

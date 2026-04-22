@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 // MARK: - GreetingViewController
 
@@ -51,12 +52,41 @@ final class GreetingViewController: UIViewController {
 extension GreetingViewController: GreetingViewDelegate {
 
     func greetingViewDidTapNext(_ view: GreetingView) {
-        viewModel.didTapNext()
-        let goalViewController = GoalViewController(viewModel: GoalViewModel())
-        navigationController?.pushViewController(goalViewController, animated: true)
+        let name = view.name ?? ""
+        let age = Int(view.age ?? "") ?? 0
+        let weight = Double(view.weight ?? "") ?? 0
+        viewModel.didTapNext(name: name, age: age, weight: weight)
     }
 
     func greetingViewDidTapCamera(_ view: GreetingView) {
-        // TODO: open photo picker
+        var config = PHPickerConfiguration()
+        config.filter = .images
+        config.selectionLimit = 1
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+
+    func greetingViewDidTapLogout(_ view: GreetingView) {
+        viewModel.didTapLogout()
+    }
+}
+
+// MARK: - GreetingViewController + PHPickerViewControllerDelegate
+
+extension GreetingViewController: PHPickerViewControllerDelegate {
+
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+
+        guard let provider = results.first?.itemProvider,
+              provider.canLoadObject(ofClass: UIImage.self) else { return }
+
+        provider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
+            guard let image = image as? UIImage else { return }
+            DispatchQueue.main.async {
+                self?.greetingView.setProfileImage(image)
+            }
+        }
     }
 }
