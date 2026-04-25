@@ -29,7 +29,7 @@ final class TodayPresetCardView: UIView {
 
     private enum Images {
 
-        static let glass = UIImage(systemName: "cup.and.saucer.fill")
+        static let glass = UIImage(systemName: "mug.fill")
 
         /// Бутылка появилась в SF Symbols только в iOS 17.4 — для более ранних версий
         /// откатываемся на бокал, чтобы карточка не оставалась без иконки.

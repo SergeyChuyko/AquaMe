@@ -34,12 +34,11 @@ final class TodayView: UIView {
         static let smallTitleFontSize: CGFloat = 13
         static let valueFontSize: CGFloat = 20
         static let modeRowHeight: CGFloat = 44
-        static let avatarSize: CGFloat = 40
+        static let headerHeight: CGFloat = 32
     }
 
     private enum Images {
 
-        static let avatarPlaceholder = UIImage(systemName: "person.crop.circle.fill")
         static let modeSwap = UIImage(systemName: "arrow.triangle.2.circlepath")
     }
 
@@ -74,6 +73,7 @@ final class TodayView: UIView {
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: Constants.titleFontSize, weight: .bold)
         label.text = "AquaMe"
         label.textAlignment = .center
@@ -81,31 +81,14 @@ final class TodayView: UIView {
         return label
     }()
 
-    private lazy var avatarImageView: UIImageView = {
-        let imageView = UIImageView(image: Images.avatarPlaceholder)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.tintColor = .systemIndigo.withAlphaComponent(0.3)
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = Constants.avatarSize / 2
-
-        return imageView
-    }()
-
     private lazy var headerRow: UIView = {
         let view = UIView()
         view.addSubview(titleLabel)
-        view.addSubview(avatarImageView)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            avatarImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            avatarImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            avatarImageView.widthAnchor.constraint(equalToConstant: Constants.avatarSize),
-            avatarImageView.heightAnchor.constraint(equalToConstant: Constants.avatarSize),
-            view.heightAnchor.constraint(equalToConstant: Constants.avatarSize + 8),
+            view.heightAnchor.constraint(equalToConstant: Constants.headerHeight),
         ])
 
         return view
@@ -264,11 +247,6 @@ extension TodayView {
 
         if modeSwitch.isOn != state.isRemoveMode {
             modeSwitch.setOn(state.isRemoveMode, animated: false)
-        }
-
-        if let path = state.avatarPath, let image = UIImage(contentsOfFile: path) {
-            avatarImageView.image = image
-            avatarImageView.tintColor = .clear
         }
     }
 }
