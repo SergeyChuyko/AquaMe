@@ -39,7 +39,6 @@ final class TodayPresetCardView: UIView {
 
     // MARK: - Private properties
 
-    private var isSelected: Bool = false
     private var isRemoveMode: Bool = false
 
     private lazy var iconBackground: UIView = {
@@ -93,8 +92,7 @@ final class TodayPresetCardView: UIView {
 
 extension TodayPresetCardView {
 
-    func update(isSelected: Bool, isRemoveMode: Bool, title: String) {
-        self.isSelected = isSelected
+    func update(isRemoveMode: Bool, title: String) {
         self.isRemoveMode = isRemoveMode
         titleLabel.text = title
         applyStyle()
@@ -133,20 +131,11 @@ private extension TodayPresetCardView {
 
     func applyStyle() {
         let accent: UIColor = isRemoveMode ? .systemRed : .systemIndigo
-
-        if isSelected {
-            backgroundColor = accent.withAlphaComponent(0.07)
-            layer.borderColor = accent.cgColor
-            iconBackground.backgroundColor = accent
-            iconImageView.tintColor = .white
-            titleLabel.textColor = accent
-        } else {
-            backgroundColor = .secondarySystemBackground
-            layer.borderColor = UIColor.separator.withAlphaComponent(0.4).cgColor
-            iconBackground.backgroundColor = .systemBackground
-            iconImageView.tintColor = .secondaryLabel
-            titleLabel.textColor = .label
-        }
+        backgroundColor = accent.withAlphaComponent(0.07)
+        layer.borderColor = accent.withAlphaComponent(0.5).cgColor
+        iconBackground.backgroundColor = accent
+        iconImageView.tintColor = .white
+        titleLabel.textColor = accent
     }
 
     @objc

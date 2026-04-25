@@ -12,10 +12,8 @@ import UIKit
 
 protocol TodayViewDelegate: AnyObject {
 
-    func todayView(_ view: TodayView, didSelectPreset amount: Int)
-    func todayView(_ view: TodayView, didTapQuickAmount amount: Int)
+    func todayView(_ view: TodayView, didTapAmount amount: Int)
     func todayView(_ view: TodayView, didToggleRemoveMode isOn: Bool)
-    func todayViewDidTapLogIntake(_ view: TodayView)
 }
 
 // MARK: - TodayView
@@ -30,10 +28,8 @@ final class TodayView: UIView {
 
         static let horizontalPadding: CGFloat = 24
         static let verticalSpacing: CGFloat = 24
-        static let groupSpacing: CGFloat = 16
+        static let groupSpacing: CGFloat = 14
         static let ringSize: CGFloat = 240
-        static let cardCornerRadius: CGFloat = 16
-        static let cardPadding: CGFloat = 16
         static let titleFontSize: CGFloat = 22
         static let smallTitleFontSize: CGFloat = 13
         static let valueFontSize: CGFloat = 20
@@ -44,8 +40,8 @@ final class TodayView: UIView {
     private enum Images {
 
         static let avatarPlaceholder = UIImage(systemName: "person.crop.circle.fill")
-        static let plus = UIImage(systemName: "plus")
-        static let minus = UIImage(systemName: "minus")
+        static let plusCircle = UIImage(systemName: "plus")
+        static let minusCircle = UIImage(systemName: "minus")
     }
 
     // MARK: - Public properties
@@ -146,43 +142,6 @@ final class TodayView: UIView {
         return stack
     }()
 
-    private lazy var customAmountHeader: UIView = {
-        let container = UIView()
-        let title = UILabel()
-        title.text = "Custom Amount"
-        title.font = .systemFont(ofSize: 17, weight: .semibold)
-        title.translatesAutoresizingMaskIntoConstraints = false
-
-        selectedAmountBadge.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(title)
-        container.addSubview(selectedAmountBadge)
-
-        NSLayoutConstraint.activate([
-            title.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            title.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            selectedAmountBadge.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            selectedAmountBadge.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            container.heightAnchor.constraint(equalToConstant: 28),
-        ])
-
-        return container
-    }()
-
-    private lazy var selectedAmountBadge: PaddedLabel = {
-        let label = PaddedLabel(insets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
-        label.font = .systemFont(ofSize: 13, weight: .semibold)
-        label.textColor = .systemIndigo
-        label.backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.12)
-        label.layer.cornerRadius = 11
-        label.layer.masksToBounds = true
-        label.textAlignment = .center
-
-        let height = label.heightAnchor.constraint(equalToConstant: 22)
-        height.isActive = true
-
-        return label
-    }()
-
     private lazy var quickRow: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -225,7 +184,7 @@ final class TodayView: UIView {
         view.layer.cornerRadius = 16
         view.backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.12)
 
-        let icon = UIImageView(image: Images.plus)
+        let icon = UIImageView(image: Images.plusCircle)
         icon.translatesAutoresizingMaskIntoConstraints = false
         icon.tintColor = .systemIndigo
         icon.contentMode = .scaleAspectFit
@@ -236,7 +195,6 @@ final class TodayView: UIView {
             icon.widthAnchor.constraint(equalToConstant: 16),
             icon.heightAnchor.constraint(equalToConstant: 16),
         ])
-        view.tag = 1
 
         return view
     }()
@@ -256,30 +214,6 @@ final class TodayView: UIView {
         toggle.addTarget(self, action: #selector(handleModeChanged), for: .valueChanged)
 
         return toggle
-    }()
-
-    private lazy var logButton: CUIButton = {
-        let button = CUIButton(title: "+ Log Intake")
-        button.onTap = { [weak self] in
-            guard let self else { return }
-            self.delegate?.todayViewDidTapLogIntake(self)
-        }
-
-        return button
-    }()
-
-    private lazy var logButtonContainer: UIView = {
-        let container = UIView()
-        logButton.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(logButton)
-        NSLayoutConstraint.activate([
-            logButton.topAnchor.constraint(equalTo: container.topAnchor),
-            logButton.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            logButton.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            logButton.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-        ])
-
-        return container
     }()
 
     // MARK: - Initialization
@@ -319,7 +253,6 @@ extension TodayView {
 
         for card in presetCards {
             card.update(
-                isSelected: card.amount == state.selectedAmount,
                 isRemoveMode: state.isRemoveMode,
                 title: "\(card.amount)\(state.unit.rawValue)"
             )
@@ -327,11 +260,6 @@ extension TodayView {
         for button in quickButtons {
             button.update(isRemoveMode: state.isRemoveMode)
         }
-
-        selectedAmountBadge.text = "\(state.selectedAmount) \(state.unit.rawValue)"
-        selectedAmountBadge.textColor = state.isRemoveMode ? .systemRed : .systemIndigo
-        selectedAmountBadge.backgroundColor = (state.isRemoveMode ? UIColor.systemRed : UIColor.systemIndigo)
-            .withAlphaComponent(0.12)
 
         applyMode(isRemoveMode: state.isRemoveMode)
 
@@ -364,13 +292,10 @@ private extension TodayView {
         contentStack.addArrangedSubview(ringContainer)
         contentStack.addArrangedSubview(goalRow)
         contentStack.addArrangedSubview(presetsRow)
-        contentStack.addArrangedSubview(customAmountHeader)
         contentStack.addArrangedSubview(quickRow)
         contentStack.addArrangedSubview(modeRow)
-        contentStack.addArrangedSubview(logButtonContainer)
 
-        contentStack.setCustomSpacing(Constants.groupSpacing, after: customAmountHeader)
-        contentStack.setCustomSpacing(Constants.groupSpacing, after: quickRow)
+        contentStack.setCustomSpacing(Constants.groupSpacing, after: presetsRow)
     }
 
     func setupConstraints() {
@@ -444,7 +369,7 @@ private extension TodayView {
             let card = TodayPresetCardView(amount: amount)
             card.onTap = { [weak self] in
                 guard let self else { return }
-                self.delegate?.todayView(self, didSelectPreset: amount)
+                self.delegate?.todayView(self, didTapAmount: amount)
             }
             return card
         }
@@ -459,7 +384,7 @@ private extension TodayView {
             let button = TodayQuickAmountButton(amount: amount)
             button.onTap = { [weak self] in
                 guard let self else { return }
-                self.delegate?.todayView(self, didTapQuickAmount: amount)
+                self.delegate?.todayView(self, didTapAmount: amount)
             }
             return button
         }
@@ -472,13 +397,11 @@ private extension TodayView {
         let accent: UIColor = isRemoveMode ? .systemRed : .systemIndigo
         modeIconBackground.backgroundColor = accent.withAlphaComponent(0.12)
         if let icon = modeIconBackground.subviews.first as? UIImageView {
-            icon.image = isRemoveMode ? Images.minus : Images.plus
+            icon.image = isRemoveMode ? Images.minusCircle : Images.plusCircle
             icon.tintColor = accent
         }
         modeLabel.text = isRemoveMode ? "Remove intake" : "Add intake"
         modeLabel.textColor = isRemoveMode ? .systemRed : .label
-        logButton.configure(title: isRemoveMode ? "− Remove Intake" : "+ Log Intake")
-        logButton.backgroundColor = accent
     }
 
     @objc

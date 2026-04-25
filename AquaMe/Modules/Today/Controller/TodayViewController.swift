@@ -66,19 +66,11 @@ private extension TodayViewController {
 
 extension TodayViewController: TodayViewDelegate {
 
-    func todayView(_ view: TodayView, didSelectPreset amount: Int) {
-        viewModel.didSelectPreset(amount: amount)
-    }
-
-    func todayView(_ view: TodayView, didTapQuickAmount amount: Int) {
-        viewModel.didTapQuickAmount(amount)
+    func todayView(_ view: TodayView, didTapAmount amount: Int) {
+        viewModel.didTapAmount(amount)
     }
 
     func todayView(_ view: TodayView, didToggleRemoveMode isOn: Bool) {
         viewModel.didToggleRemoveMode(isOn)
-    }
-
-    func todayViewDidTapLogIntake(_ view: TodayView) {
-        viewModel.didTapLogIntake()
     }
 }

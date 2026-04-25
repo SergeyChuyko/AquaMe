@@ -19,7 +19,6 @@ final class TodayViewModel: TodayViewModelProtocol {
     private enum Defaults {
 
         static let dailyGoal = 2400
-        static let selectedAmount = 250
         static let presets = [250, 500]
         static let quick = [100, 200, 300, 400]
     }
@@ -47,7 +46,6 @@ final class TodayViewModel: TodayViewModelProtocol {
         self.state = TodayState(
             totalDrunk: storage.todayTotal(),
             dailyGoal: Defaults.dailyGoal,
-            selectedAmount: Defaults.selectedAmount,
             isRemoveMode: false,
             presetAmounts: Defaults.presets,
             quickAmounts: Defaults.quick,
@@ -63,23 +61,13 @@ final class TodayViewModel: TodayViewModelProtocol {
         loadProfile()
     }
 
-    func didSelectPreset(amount: Int) {
-        guard state.selectedAmount != amount else { return }
-        state.selectedAmount = amount
-        emit()
-    }
-
     func didToggleRemoveMode(_ isOn: Bool) {
         guard state.isRemoveMode != isOn else { return }
         state.isRemoveMode = isOn
         emit()
     }
 
-    func didTapLogIntake() {
-        commit(amount: state.selectedAmount)
-    }
-
-    func didTapQuickAmount(_ amount: Int) {
+    func didTapAmount(_ amount: Int) {
         commit(amount: amount)
     }
 }

@@ -15,7 +15,6 @@ struct TodayState: Equatable {
 
     var totalDrunk: Int
     var dailyGoal: Int
-    var selectedAmount: Int
     var isRemoveMode: Bool
     var presetAmounts: [Int]
     var quickAmounts: [Int]
@@ -50,8 +49,6 @@ protocol TodayViewModelProtocol: AnyObject {
 
     // MARK: - Действия пользователя
 
-    func didSelectPreset(amount: Int)
     func didToggleRemoveMode(_ isOn: Bool)
-    func didTapLogIntake()
-    func didTapQuickAmount(_ amount: Int)
+    func didTapAmount(_ amount: Int)
 }
