@@ -15,6 +15,10 @@
 		FB000000000000000000013 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = FB200000000000000000012 /* FirebaseFirestore */; };
 		FB000000000000000000014 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000004 /* UserProfile.swift */; };
 		FB000000000000000000015 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000005 /* ProfileService.swift */; };
+		FB000000000000000000016 /* ProfileSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000006 /* ProfileSheetView.swift */; };
+		FB000000000000000000017 /* ProfileSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000007 /* ProfileSheetViewController.swift */; };
+		FB000000000000000000018 /* ProfileSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000008 /* ProfileSheetViewModel.swift */; };
+		FB000000000000000000019 /* ProfileSheetViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000009 /* ProfileSheetViewModelProtocol.swift */; };
 		EA5B6A4C2F816128005357F6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A482F816128005357F6 /* AuthViewModel.swift */; };
 		EA5B6A4D2F816128005357F6 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A442F816128005357F6 /* AuthViewController.swift */; };
 		EA5B6A4E2F816128005357F6 /* AuthViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */; };
@@ -74,6 +78,10 @@
 		FB100000000000000000001 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		FB100000000000000000004 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		FB100000000000000000005 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		FB100000000000000000006 /* ProfileSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetView.swift; sourceTree = "<group>"; };
+		FB100000000000000000007 /* ProfileSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetViewController.swift; sourceTree = "<group>"; };
+		FB100000000000000000008 /* ProfileSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetViewModel.swift; sourceTree = "<group>"; };
+		FB100000000000000000009 /* ProfileSheetViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetViewModelProtocol.swift; sourceTree = "<group>"; };
 		FB100000000000000000003 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		FB100000000000000000002 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA100000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -256,6 +264,7 @@
 				FA400000000000000000022 /* Settings */,
 				FA400000000000000000023 /* Main */,
 				FB400000000000000000002 /* Test */,
+				FB400000000000000000004 /* Profile */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -664,6 +673,41 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		FB400000000000000000004 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				FB400000000000000000005 /* View */,
+				FB400000000000000000006 /* Controller */,
+				FB400000000000000000007 /* ViewModel */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		FB400000000000000000005 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FB100000000000000000006 /* ProfileSheetView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FB400000000000000000006 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FB100000000000000000007 /* ProfileSheetViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FB400000000000000000007 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FB100000000000000000008 /* ProfileSheetViewModel.swift */,
+				FB100000000000000000009 /* ProfileSheetViewModelProtocol.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		FB400000000000000000002 /* Test */ = {
 			isa = PBXGroup;
 			children = (
@@ -808,6 +852,10 @@
 				FB000000000000000000003 /* TestViewController.swift in Sources */,
 				FB000000000000000000014 /* UserProfile.swift in Sources */,
 				FB000000000000000000015 /* ProfileService.swift in Sources */,
+				FB000000000000000000016 /* ProfileSheetView.swift in Sources */,
+				FB000000000000000000017 /* ProfileSheetViewController.swift in Sources */,
+				FB000000000000000000018 /* ProfileSheetViewModel.swift in Sources */,
+				FB000000000000000000019 /* ProfileSheetViewModelProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
