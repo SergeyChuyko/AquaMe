@@ -20,6 +20,7 @@ struct UserProfile: Codable {
     var avatarURL: String?
     var unit: MeasureUnit
     var dailyGoal: Int
+    var memberSince: Date
 
     // MARK: - Goal
 

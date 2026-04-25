@@ -14,13 +14,22 @@ final class GreetingViewModel: GreetingViewModelProtocol {
 
     // MARK: - Public properties
 
-    var onNext: ((String, Int, Double) -> Void)?
+    var onNext: ((String, Int, Double, String?) -> Void)?
     var onLogout: (() -> Void)?
+    var avatarPath: String?
+    private(set) var initialProfile: UserProfile?
+
+    // MARK: - Initialization
+
+    init(profile: UserProfile? = nil) {
+        self.initialProfile = profile
+        self.avatarPath = profile?.avatarURL
+    }
 
     // MARK: - GreetingViewModelProtocol
 
     func didTapNext(name: String, age: Int, weight: Double) {
-        onNext?(name, age, weight)
+        onNext?(name, age, weight, avatarPath)
     }
 
     func didTapLogout() {

@@ -14,6 +14,8 @@ protocol GoalViewModelProtocol: AnyObject {
 
     var onGetStarted: (() -> Void)? { get set }
     var onError: ((String) -> Void)? { get set }
+    var isEditing: Bool { get }
+    var initialGoal: UserProfile.Goal? { get }
 
     func didTapGetStarted(goal: UserProfile.Goal)
 }

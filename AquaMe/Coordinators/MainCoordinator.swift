@@ -37,6 +37,9 @@ extension MainCoordinator {
     func start() {
         let mainViewController = buildMainViewController()
         mainViewController.onLogout = onLogout
+        mainViewController.onEditProfile = { [weak self] in
+            self?.showEditProfile()
+        }
         /// Переход без анимации — экран онбординга просто заменяется главным.
         navigationController.setViewControllers([mainViewController], animated: false)
     }
@@ -54,5 +57,58 @@ private extension MainCoordinator {
         let settingsVC = SettingsViewController(viewModel: SettingsViewModel())
 
         return MainViewController(viewControllers: [progressVC, todayVC, settingsVC])
+    }
+
+    func showEditProfile() {
+        ProfileService.shared.loadProfile { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self else { return }
+
+                switch result {
+                case .success(let profile):
+                    let viewModel = GreetingViewModel(profile: profile)
+                    viewModel.onNext = { [weak self] name, age, weight, avatarPath in
+                        self?.showGoal(
+                            name: name,
+                            age: age,
+                            weight: weight,
+                            avatarPath: avatarPath,
+                            initialGoal: profile.goal,
+                            memberSince: profile.memberSince
+                        )
+                    }
+                    viewModel.onLogout = self.onLogout
+                    let viewController = GreetingViewController(viewModel: viewModel)
+                    self.navigationController.pushViewController(viewController, animated: true)
+
+                case .failure:
+                    break
+                }
+            }
+        }
+    }
+
+    func showGoal(
+        name: String,
+        age: Int,
+        weight: Double,
+        avatarPath: String?,
+        initialGoal: UserProfile.Goal? = nil,
+        memberSince: Date = Date()
+    ) {
+        let viewModel = GoalViewModel(
+            name: name,
+            age: age,
+            weight: weight,
+            avatarPath: avatarPath,
+            isEditing: true,
+            initialGoal: initialGoal,
+            memberSince: memberSince
+        )
+        viewModel.onGetStarted = { [weak self] in
+            self?.start()
+        }
+        let viewController = GoalViewController(viewModel: viewModel)
+        navigationController.pushViewController(viewController, animated: true)
     }
 }

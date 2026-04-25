@@ -12,8 +12,11 @@ import Foundation
 
 protocol GreetingViewModelProtocol: AnyObject {
 
-    var onNext: ((String, Int, Double) -> Void)? { get set }
+    var onNext: ((String, Int, Double, String?) -> Void)? { get set }
     var onLogout: (() -> Void)? { get set }
+
+    var avatarPath: String? { get set }
+    var initialProfile: UserProfile? { get }
 
     func didTapNext(name: String, age: Int, weight: Double)
     func didTapLogout()

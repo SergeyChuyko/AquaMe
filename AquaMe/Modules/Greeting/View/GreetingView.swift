@@ -16,6 +16,7 @@ protocol GreetingViewDelegate: AnyObject {
     func greetingViewDidTapNext(_ view: GreetingView)
     func greetingViewDidTapCamera(_ view: GreetingView)
     func greetingViewDidTapLogout(_ view: GreetingView)
+    func greetingViewDidTapBack(_ view: GreetingView)
 }
 
 // MARK: - GreetingView
@@ -65,6 +66,36 @@ final class GreetingView: UIView {
     func setProfileImage(_ image: UIImage) {
         profileImageView.image = image
         profileImageView.contentMode = .scaleAspectFill
+    }
+
+    func showBackButton() {
+        navigationBar.configure(
+            title: Strings.navigationTitle,
+            leftIcon: UIImage(systemName: "chevron.left")
+        )
+        navigationBar.onTapLeft = { [weak self] in
+            guard let self else { return }
+
+            handleBackTap()
+        }
+    }
+
+    func configure(name: String, age: Int, weight: Double, avatarPath: String?) {
+        nameInput.text = name
+        ageInput.text = "\(age)"
+        weightInput.text = "\(Int(weight))"
+        updateNextButtonState()
+
+        guard let avatarPath else { return }
+
+        let url = FileManager.default.urls(
+            for: .documentDirectory,
+            in: .userDomainMask
+        )[0].appendingPathComponent(avatarPath)
+
+        if let image = UIImage(contentsOfFile: url.path) {
+            setProfileImage(image)
+        }
     }
 
     // MARK: - Private properties
@@ -225,6 +256,10 @@ final class GreetingView: UIView {
 // MARK: - GreetingView + Actions
 
 private extension GreetingView {
+
+    func handleBackTap() {
+        delegate?.greetingViewDidTapBack(self)
+    }
 
     func handleLogoutTap() {
         delegate?.greetingViewDidTapLogout(self)

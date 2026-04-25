@@ -19,6 +19,7 @@ final class AppCoordinator: Coordinator {
 
     private let window: UIWindow
     private let navigationController: UINavigationController
+    private var mainCoordinator: MainCoordinator?
 
     // MARK: - Initialization
 
@@ -36,7 +37,7 @@ extension AppCoordinator {
 
     func start() {
         if AuthService.shared.isLoggedIn {
-            showTest()
+            showMain()
         } else {
             showAuth()
         }
@@ -72,8 +73,8 @@ private extension AppCoordinator {
 
     func showGreeting() {
         let viewModel = GreetingViewModel()
-        viewModel.onNext = { [weak self] name, age, weight in
-            self?.showGoal(name: name, age: age, weight: weight)
+        viewModel.onNext = { [weak self] name, age, weight, avatarPath in
+            self?.showGoal(name: name, age: age, weight: weight, avatarPath: avatarPath)
         }
         viewModel.onLogout = { [weak self] in
             self?.showAuth()
@@ -82,8 +83,13 @@ private extension AppCoordinator {
         navigationController.setViewControllers([viewController], animated: true)
     }
 
-    func showGoal(name: String, age: Int, weight: Double) {
-        let viewModel = GoalViewModel(name: name, age: age, weight: weight)
+    func showGoal(name: String, age: Int, weight: Double, avatarPath: String?) {
+        let viewModel = GoalViewModel(
+            name: name,
+            age: age,
+            weight: weight,
+            avatarPath: avatarPath
+        )
         viewModel.onGetStarted = { [weak self] in
             self?.showMain()
         }
@@ -111,8 +117,10 @@ private extension AppCoordinator {
     func showMain() {
         let coordinator = MainCoordinator(navigationController: navigationController)
         coordinator.onLogout = { [weak self] in
+            self?.mainCoordinator = nil
             self?.showAuth()
         }
+        mainCoordinator = coordinator
         coordinator.start()
     }
 }

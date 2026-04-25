@@ -21,11 +21,13 @@ final class MainViewController: UIViewController {
 
         /// Высота таб бара без учёта safe area снизу.
         static let tabBarHeight: CGFloat = 49
+        static let profileSheetHeight: CGFloat = 480
     }
 
     // MARK: - Public properties
 
     var onLogout: (() -> Void)?
+    var onEditProfile: (() -> Void)?
 
     // MARK: - Private properties
 
@@ -90,6 +92,10 @@ extension MainViewController: MainTabBarViewDelegate {
     /// Переключает на выбранную вкладку.
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab) {
         showPage(at: tab.rawValue)
+    }
+
+    func mainTabBarViewDidTapProfile(_ view: MainTabBarView) {
+        handleProfileTap()
     }
 }
 
@@ -172,6 +178,24 @@ private extension MainViewController {
     func handleLogoutTap() {
         try? AuthService.shared.signOut()
         onLogout?()
+    }
+
+    func handleProfileTap() {
+        let viewModel = ProfileSheetViewModel()
+        let sheetVC = ProfileSheetViewController(viewModel: viewModel)
+        sheetVC.onEditProfile = { [weak self] in
+            self?.onEditProfile?()
+        }
+
+        if let sheet = sheetVC.sheetPresentationController {
+            let customDetent = UISheetPresentationController.Detent.custom { _ in
+                Constants.profileSheetHeight
+            }
+            sheet.detents = [customDetent]
+            sheet.prefersGrabberVisible = true
+        }
+
+        present(sheetVC, animated: true)
     }
 
     /// Показывает страницу по индексу, скрывает остальные.
