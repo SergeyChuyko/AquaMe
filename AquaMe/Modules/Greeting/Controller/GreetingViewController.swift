@@ -42,8 +42,21 @@ final class GreetingViewController: UIViewController {
     // MARK: - Lifecycle
 
     override func loadView() {
-        /// Устанавливаем GreetingView как корневую вью контроллера — она занимает весь экран.
         view = greetingView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if let profile = viewModel.initialProfile {
+            greetingView.showBackButton()
+            greetingView.configure(
+                name: profile.name,
+                age: profile.age,
+                weight: profile.weight,
+                avatarPath: profile.avatarURL
+            )
+        }
     }
 }
 
@@ -70,6 +83,10 @@ extension GreetingViewController: GreetingViewDelegate {
     func greetingViewDidTapLogout(_ view: GreetingView) {
         viewModel.didTapLogout()
     }
+
+    func greetingViewDidTapBack(_ view: GreetingView) {
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 // MARK: - GreetingViewController + PHPickerViewControllerDelegate
@@ -84,6 +101,17 @@ extension GreetingViewController: PHPickerViewControllerDelegate {
 
         provider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
             guard let image = image as? UIImage else { return }
+
+            let fileName = "avatar_\(UUID().uuidString).jpg"
+            if let data = image.jpegData(compressionQuality: 0.8) {
+                let url = FileManager.default.urls(
+                    for: .documentDirectory,
+                    in: .userDomainMask
+                )[0].appendingPathComponent(fileName)
+                try? data.write(to: url)
+                self?.viewModel.avatarPath = fileName
+            }
+
             DispatchQueue.main.async {
                 self?.greetingView.setProfileImage(image)
             }
