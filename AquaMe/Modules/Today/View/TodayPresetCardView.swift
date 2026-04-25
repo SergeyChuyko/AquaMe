@@ -29,7 +29,12 @@ final class TodayPresetCardView: UIView {
 
     private enum Images {
 
-        static let cup = UIImage(systemName: "cup.and.saucer.fill")
+        static let glass = UIImage(systemName: "cup.and.saucer.fill")
+
+        /// Бутылка появилась в SF Symbols только в iOS 17.4 — для более ранних версий
+        /// откатываемся на бокал, чтобы карточка не оставалась без иконки.
+        static let bottle: UIImage? = UIImage(systemName: "waterbottle.fill")
+            ?? UIImage(systemName: "wineglass.fill")
     }
 
     // MARK: - Public properties
@@ -50,7 +55,8 @@ final class TodayPresetCardView: UIView {
     }()
 
     private lazy var iconImageView: UIImageView = {
-        let imageView = UIImageView(image: Images.cup)
+        let image = amount >= 500 ? Images.bottle : Images.glass
+        let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
 

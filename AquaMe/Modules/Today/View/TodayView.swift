@@ -40,8 +40,7 @@ final class TodayView: UIView {
     private enum Images {
 
         static let avatarPlaceholder = UIImage(systemName: "person.crop.circle.fill")
-        static let plusCircle = UIImage(systemName: "plus")
-        static let minusCircle = UIImage(systemName: "minus")
+        static let modeSwap = UIImage(systemName: "arrow.triangle.2.circlepath")
     }
 
     // MARK: - Public properties
@@ -184,7 +183,7 @@ final class TodayView: UIView {
         view.layer.cornerRadius = 16
         view.backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.12)
 
-        let icon = UIImageView(image: Images.plusCircle)
+        let icon = UIImageView(image: Images.modeSwap)
         icon.translatesAutoresizingMaskIntoConstraints = false
         icon.tintColor = .systemIndigo
         icon.contentMode = .scaleAspectFit
@@ -192,8 +191,8 @@ final class TodayView: UIView {
         NSLayoutConstraint.activate([
             icon.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             icon.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            icon.widthAnchor.constraint(equalToConstant: 16),
-            icon.heightAnchor.constraint(equalToConstant: 16),
+            icon.widthAnchor.constraint(equalToConstant: 18),
+            icon.heightAnchor.constraint(equalToConstant: 18),
         ])
 
         return view
@@ -397,7 +396,6 @@ private extension TodayView {
         let accent: UIColor = isRemoveMode ? .systemRed : .systemIndigo
         modeIconBackground.backgroundColor = accent.withAlphaComponent(0.12)
         if let icon = modeIconBackground.subviews.first as? UIImageView {
-            icon.image = isRemoveMode ? Images.minusCircle : Images.plusCircle
             icon.tintColor = accent
         }
         modeLabel.text = isRemoveMode ? "Remove intake" : "Add intake"
