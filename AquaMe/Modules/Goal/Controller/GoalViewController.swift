@@ -42,8 +42,27 @@ final class GoalViewController: UIViewController {
     // MARK: - Lifecycle
 
     override func loadView() {
-        /// Устанавливаем GoalView как корневую вью контроллера — она занимает весь экран.
         view = goalView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if viewModel.isEditing {
+            goalView.setButtonTitle("Save Changes")
+            goalView.setButtonEnabled(false)
+
+            if let goal = viewModel.initialGoal {
+                goalView.selectGoal(goal)
+            }
+
+            goalView.onGoalChanged = { [weak self] in
+                guard let self else { return }
+
+                let changed = goalView.selectedGoal != viewModel.initialGoal
+                goalView.setButtonEnabled(changed)
+            }
+        }
     }
 }
 

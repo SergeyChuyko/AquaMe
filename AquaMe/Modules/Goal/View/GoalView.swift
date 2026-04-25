@@ -40,11 +40,45 @@ final class GoalView: UIView {
         static let descriptionTitle = "What is your goal?"
         static let descriptionSubtitle = "We will calculate your daily intake based on this."
         static let getStartedButton = "Get Started"
+        static let stayHealthyDescription = "Maintain your current hydration level. "
+            + "Recommended daily intake based on your weight × 30ml."
+        static let loseWeightDescription = "Boost your metabolism with extra water. "
+            + "10% more than the base intake to support weight loss."
+        static let stayActiveDescription = "Stay hydrated during workouts. "
+            + "20% more than the base intake for active lifestyle."
     }
 
     // MARK: - Public properties
 
     weak var delegate: GoalViewDelegate?
+    var onGoalChanged: (() -> Void)?
+
+    func setButtonTitle(_ title: String) {
+        getStartedButton.configure(title: title)
+    }
+
+    func setButtonEnabled(_ enabled: Bool) {
+        getStartedButton.isEnabled = enabled
+    }
+
+    func selectGoal(_ goal: UserProfile.Goal) {
+        let allCards = [stayHealthyCard, loseWeightCard, stayActiveCard]
+
+        allCards.forEach { card in
+            card.setSelected(false)
+        }
+
+        switch goal {
+        case .stayHealthy:
+            stayHealthyCard.setSelected(true)
+        case .loseWeight:
+            loseWeightCard.setSelected(true)
+        case .stayActive:
+            stayActiveCard.setSelected(true)
+        }
+
+        updateGoalDescription()
+    }
 
     var selectedGoal: UserProfile.Goal? {
         if stayHealthyCard.isSelected { return .stayHealthy }
@@ -146,6 +180,18 @@ final class GoalView: UIView {
         return stack
     }()
 
+    private lazy var goalDescriptionLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .systemGray
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.isHidden = true
+
+        return label
+    }()
+
     private lazy var getStartedButton: CUIButton = {
         let button = CUIButton(title: Strings.getStartedButton)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -178,6 +224,27 @@ private extension GoalView {
         allCards.forEach { card in
             card.setSelected(card === selected)
         }
+
+        updateGoalDescription()
+        onGoalChanged?()
+    }
+
+    func updateGoalDescription() {
+        guard let goal = selectedGoal else {
+            goalDescriptionLabel.isHidden = true
+            return
+        }
+
+        switch goal {
+        case .stayHealthy:
+            goalDescriptionLabel.text = Strings.stayHealthyDescription
+        case .loseWeight:
+            goalDescriptionLabel.text = Strings.loseWeightDescription
+        case .stayActive:
+            goalDescriptionLabel.text = Strings.stayActiveDescription
+        }
+
+        goalDescriptionLabel.isHidden = false
     }
 }
 
@@ -198,6 +265,7 @@ private extension GoalView {
         scrollView.addSubview(contentView)
         contentView.addSubview(descriptionText)
         contentView.addSubview(goalsStack)
+        contentView.addSubview(goalDescriptionLabel)
     }
 
     func setupConstraints() {
@@ -207,6 +275,7 @@ private extension GoalView {
         setupConstraintsForContentView()
         setupConstraintsForDescriptionText()
         setupConstraintsForGoalsStack()
+        setupConstraintsForGoalDescriptionLabel()
     }
 
     func setupConstraintsForNavigationBar() {
@@ -287,7 +356,24 @@ private extension GoalView {
                 equalTo: descriptionText.bottomAnchor,
                 constant: Constants.goalsStackTopSpacing
             ),
-            goalsStack.bottomAnchor.constraint(
+        ])
+    }
+
+    func setupConstraintsForGoalDescriptionLabel() {
+        NSLayoutConstraint.activate([
+            goalDescriptionLabel.topAnchor.constraint(
+                equalTo: goalsStack.bottomAnchor,
+                constant: 16
+            ),
+            goalDescriptionLabel.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor,
+                constant: Constants.sidePadding
+            ),
+            goalDescriptionLabel.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor,
+                constant: -Constants.sidePadding
+            ),
+            goalDescriptionLabel.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor,
                 constant: -Constants.goalsStackBottomSpacing
             ),
