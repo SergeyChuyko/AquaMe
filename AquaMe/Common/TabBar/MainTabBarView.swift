@@ -15,6 +15,7 @@ protocol MainTabBarViewDelegate: AnyObject {
 
     /// Вызывается когда пользователь нажал на одну из вкладок таб бара.
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab)
+    func mainTabBarViewDidTapProfile(_ view: MainTabBarView)
 }
 
 // MARK: - MainTabBarView
@@ -89,9 +90,27 @@ final class MainTabBarView: UIView {
         return button
     }()
 
-    /// Горизонтальный стек для трёх кнопок.
+    private lazy var profileButton: UIButton = {
+        let action = UIAction { [weak self] _ in
+            guard let self else { return }
+            didTapProfile()
+        }
+        let button = UIButton(primaryAction: action)
+        let config = UIImage.SymbolConfiguration(pointSize: Constants.iconSize, weight: .medium)
+        button.setImage(
+            UIImage(systemName: "person.crop.circle.fill", withConfiguration: config),
+            for: .normal
+        )
+        button.tintColor = .systemGray
+
+        return button
+    }()
+
+    /// Горизонтальный стек для кнопок.
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [progressButton, todayButton, settingsButton])
+        let stack = UIStackView(
+            arrangedSubviews: [progressButton, todayButton, settingsButton, profileButton]
+        )
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -125,10 +144,12 @@ extension MainTabBarView {
 
     /// Обновляет визуальное состояние кнопок — выделяет активную вкладку.
     func selectTab(_ tab: Tab) {
-        [progressButton, todayButton, settingsButton].enumerated().forEach { index, button in
+        let buttons = [progressButton, todayButton, settingsButton]
+        buttons.enumerated().forEach { index, button in
             let isSelected = index == tab.rawValue
             button.tintColor = isSelected ? .systemBlue : .systemGray
         }
+        profileButton.tintColor = .systemGray
     }
 }
 
@@ -139,6 +160,10 @@ private extension MainTabBarView {
     func didTapTab(_ tab: Tab) {
         selectTab(tab)
         delegate?.mainTabBarView(self, didSelectTab: tab)
+    }
+
+    func didTapProfile() {
+        delegate?.mainTabBarViewDidTapProfile(self)
     }
 }
 
