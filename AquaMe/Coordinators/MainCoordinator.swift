@@ -73,7 +73,8 @@ private extension MainCoordinator {
                             age: age,
                             weight: weight,
                             avatarPath: avatarPath,
-                            initialGoal: profile.goal
+                            initialGoal: profile.goal,
+                            memberSince: profile.memberSince
                         )
                     }
                     viewModel.onLogout = self.onLogout
@@ -92,7 +93,8 @@ private extension MainCoordinator {
         age: Int,
         weight: Double,
         avatarPath: String?,
-        initialGoal: UserProfile.Goal? = nil
+        initialGoal: UserProfile.Goal? = nil,
+        memberSince: Date = Date()
     ) {
         let viewModel = GoalViewModel(
             name: name,
@@ -100,7 +102,8 @@ private extension MainCoordinator {
             weight: weight,
             avatarPath: avatarPath,
             isEditing: true,
-            initialGoal: initialGoal
+            initialGoal: initialGoal,
+            memberSince: memberSince
         )
         viewModel.onGetStarted = { [weak self] in
             self?.start()

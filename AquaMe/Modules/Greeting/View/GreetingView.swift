@@ -76,7 +76,7 @@ final class GreetingView: UIView {
         navigationBar.onTapLeft = { [weak self] in
             guard let self else { return }
 
-            delegate?.greetingViewDidTapBack(self)
+            handleBackTap()
         }
     }
 
@@ -256,6 +256,10 @@ final class GreetingView: UIView {
 // MARK: - GreetingView + Actions
 
 private extension GreetingView {
+
+    func handleBackTap() {
+        delegate?.greetingViewDidTapBack(self)
+    }
 
     func handleLogoutTap() {
         delegate?.greetingViewDidTapLogout(self)

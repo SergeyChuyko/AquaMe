@@ -30,6 +30,7 @@ final class GoalView: UIView {
         static let goalsStackTopSpacing: CGFloat = 16
         static let goalsStackSpacing: CGFloat = 12
         static let goalsStackBottomSpacing: CGFloat = 32
+        static let goalDescriptionTopSpacing: CGFloat = 16
         static let getStartedButtonSpacing: CGFloat = 12
         static let sidePadding: CGFloat = 16
     }
@@ -363,7 +364,7 @@ private extension GoalView {
         NSLayoutConstraint.activate([
             goalDescriptionLabel.topAnchor.constraint(
                 equalTo: goalsStack.bottomAnchor,
-                constant: 16
+                constant: Constants.goalDescriptionTopSpacing
             ),
             goalDescriptionLabel.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor,

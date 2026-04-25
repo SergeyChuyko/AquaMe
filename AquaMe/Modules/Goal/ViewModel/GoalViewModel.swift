@@ -25,6 +25,7 @@ final class GoalViewModel: GoalViewModelProtocol {
     private let age: Int
     private let weight: Double
     private let avatarPath: String?
+    private let memberSince: Date
     private let profileService: ProfileServiceProtocol
 
     // MARK: - Initialization
@@ -36,6 +37,7 @@ final class GoalViewModel: GoalViewModelProtocol {
         avatarPath: String? = nil,
         isEditing: Bool = false,
         initialGoal: UserProfile.Goal? = nil,
+        memberSince: Date = Date(),
         profileService: ProfileServiceProtocol = ProfileService.shared
     ) {
         self.name = name
@@ -44,6 +46,7 @@ final class GoalViewModel: GoalViewModelProtocol {
         self.avatarPath = avatarPath
         self.isEditing = isEditing
         self.initialGoal = initialGoal
+        self.memberSince = memberSince
         self.profileService = profileService
     }
 
@@ -66,7 +69,7 @@ final class GoalViewModel: GoalViewModelProtocol {
             avatarURL: avatarPath,
             unit: .ml,
             dailyGoal: dailyGoal,
-            memberSince: Date()
+            memberSince: memberSince
         )
 
         profileService.saveProfile(profile) { [weak self] result in

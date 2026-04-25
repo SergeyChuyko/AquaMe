@@ -21,6 +21,7 @@ final class MainViewController: UIViewController {
 
         /// Высота таб бара без учёта safe area снизу.
         static let tabBarHeight: CGFloat = 49
+        static let profileSheetHeight: CGFloat = 480
     }
 
     // MARK: - Public properties
@@ -188,7 +189,7 @@ private extension MainViewController {
 
         if let sheet = sheetVC.sheetPresentationController {
             let customDetent = UISheetPresentationController.Detent.custom { _ in
-                480
+                Constants.profileSheetHeight
             }
             sheet.detents = [customDetent]
             sheet.prefersGrabberVisible = true
