@@ -68,13 +68,18 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     func didChangeWeight(_ value: Double) {
         let clamped = max(20, min(300, value))
         guard state.weight != clamped else { return }
-        state.weight = clamped
-        state.recommendedDailyGoal = UserProfile.calculateDailyGoal(
+        let recommended = UserProfile.calculateDailyGoal(
             weight: clamped,
             goal: profile?.goal ?? .stayHealthy
         )
+        state.weight = clamped
+        state.recommendedDailyGoal = recommended
+        state.dailyGoal = recommended
         emit()
-        update { $0.weight = clamped }
+        update {
+            $0.weight = clamped
+            $0.dailyGoal = recommended
+        }
     }
 
     func didChangeAge(_ value: Int) {
