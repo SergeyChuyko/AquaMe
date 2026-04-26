@@ -153,8 +153,8 @@ extension SettingsView {
         remindersCard.update(enabled: state.remindersEnabled, time: state.reminderStartTime)
 
         weightCard.configure(
-            title: "WEIGHT (KG)",
-            value: "\(Int(state.weight.rounded()))",
+            title: "WEIGHT (\(state.unit.weightLabel))",
+            value: state.unit.formatWeight(kg: state.weight),
             suffix: nil,
             badge: nil,
             footnote: nil
@@ -188,7 +188,7 @@ extension SettingsView: SettingsValueCardDelegate {
 
         case weightCard:
             if let parsed = Double(trimmed.replacingOccurrences(of: ",", with: ".")) {
-                delegate?.settingsView(self, didChangeWeight: parsed)
+                delegate?.settingsView(self, didChangeWeight: currentUnit.kgValue(from: parsed))
             }
 
         case ageCard:

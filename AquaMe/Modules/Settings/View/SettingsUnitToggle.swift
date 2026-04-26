@@ -39,11 +39,11 @@ final class SettingsUnitToggle: UIView {
 
     private var selectedUnit: UserProfile.MeasureUnit = .ml
 
-    private lazy var mlSegment = makeSegment(text: "Milliliters (ml)") { [weak self] in
+    private lazy var mlSegment = makeSegment(text: "Metric (ml, kg)") { [weak self] in
         self?.handleSelect(.ml)
     }
 
-    private lazy var ozSegment = makeSegment(text: "Ounces (oz)") { [weak self] in
+    private lazy var ozSegment = makeSegment(text: "Imperial (oz, lb)") { [weak self] in
         self?.handleSelect(.oz)
     }
 
