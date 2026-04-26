@@ -21,6 +21,10 @@ struct UserProfile: Codable {
     var unit: MeasureUnit
     var dailyGoal: Int
     var memberSince: Date
+    /// Включены ли push-напоминания о воде. Optional, чтобы старые документы декодировались.
+    var remindersEnabled: Bool?
+    /// Время начала напоминаний в формате "HH:mm". Optional по той же причине.
+    var reminderStartTime: String?
 
     // MARK: - Goal
 
