@@ -1,0 +1,151 @@
+//
+//  TodayPresetCardView.swift
+//  AquaMe
+//
+//  Created by Friday on 25.04.2026.
+//  Copyright © 2026. All rights reserved.
+//
+
+import UIKit
+
+// MARK: - TodayPresetCardView
+
+/// Карточка пресета объёма (250 мл / 500 мл).
+/// Имеет состояние выбран/не выбран и режим remove (красный).
+final class TodayPresetCardView: UIView {
+
+    // MARK: - Private enums
+
+    private enum Constants {
+
+        static let cornerRadius: CGFloat = 16
+        static let borderWidth: CGFloat = 1.5
+        static let height: CGFloat = 96
+        static let iconSize: CGFloat = 28
+        static let iconBackgroundSize: CGFloat = 44
+        static let titleFontSize: CGFloat = 17
+        static let stackSpacing: CGFloat = 8
+    }
+
+    private enum Images {
+
+        static let glass = UIImage(systemName: "mug.fill")
+
+        /// Бутылка появилась в SF Symbols только в iOS 17.4 — для более ранних версий
+        /// откатываемся на бокал, чтобы карточка не оставалась без иконки.
+        static let bottle: UIImage? = UIImage(systemName: "waterbottle.fill")
+            ?? UIImage(systemName: "wineglass.fill")
+    }
+
+    // MARK: - Public properties
+
+    let amount: Int
+    var onTap: (() -> Void)?
+
+    // MARK: - Private properties
+
+    private var isRemoveMode: Bool = false
+
+    private lazy var iconBackground: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = Constants.iconBackgroundSize / 2
+
+        return view
+    }()
+
+    private lazy var iconImageView: UIImageView = {
+        let image = amount >= 500 ? Images.bottle : Images.glass
+        let imageView = UIImageView(image: image)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+
+        return imageView
+    }()
+
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: Constants.titleFontSize, weight: .semibold)
+        label.textAlignment = .center
+
+        return label
+    }()
+
+    private lazy var contentStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [iconBackground, titleLabel])
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = Constants.stackSpacing
+
+        return stack
+    }()
+
+    // MARK: - Initialization
+
+    init(amount: Int) {
+        self.amount = amount
+        super.init(frame: .zero)
+        setup()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError() }
+}
+
+// MARK: - TodayPresetCardView + Public
+
+extension TodayPresetCardView {
+
+    func update(isRemoveMode: Bool, title: String) {
+        self.isRemoveMode = isRemoveMode
+        titleLabel.text = title
+        applyStyle()
+    }
+}
+
+// MARK: - TodayPresetCardView + Setup
+
+private extension TodayPresetCardView {
+
+    func setup() {
+        layer.cornerRadius = Constants.cornerRadius
+        layer.borderWidth = Constants.borderWidth
+        translatesAutoresizingMaskIntoConstraints = false
+
+        iconBackground.addSubview(iconImageView)
+        addSubview(contentStack)
+
+        NSLayoutConstraint.activate([
+            heightAnchor.constraint(equalToConstant: Constants.height),
+            iconBackground.widthAnchor.constraint(equalToConstant: Constants.iconBackgroundSize),
+            iconBackground.heightAnchor.constraint(equalToConstant: Constants.iconBackgroundSize),
+            iconImageView.centerXAnchor.constraint(equalTo: iconBackground.centerXAnchor),
+            iconImageView.centerYAnchor.constraint(equalTo: iconBackground.centerYAnchor),
+            iconImageView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
+            iconImageView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
+            contentStack.centerXAnchor.constraint(equalTo: centerXAnchor),
+            contentStack.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ])
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tap)
+        isUserInteractionEnabled = true
+        applyStyle()
+    }
+
+    func applyStyle() {
+        let accent: UIColor = isRemoveMode ? .systemRed : .systemIndigo
+        backgroundColor = accent.withAlphaComponent(0.07)
+        layer.borderColor = accent.withAlphaComponent(0.5).cgColor
+        iconBackground.backgroundColor = accent
+        iconImageView.tintColor = .white
+        titleLabel.textColor = accent
+    }
+
+    @objc
+    func handleTap() {
+        onTap?()
+    }
+}

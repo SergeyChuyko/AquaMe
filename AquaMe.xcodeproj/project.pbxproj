@@ -19,6 +19,11 @@
 		FB000000000000000000017 /* ProfileSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000007 /* ProfileSheetViewController.swift */; };
 		FB000000000000000000018 /* ProfileSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000008 /* ProfileSheetViewModel.swift */; };
 		FB000000000000000000019 /* ProfileSheetViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000009 /* ProfileSheetViewModelProtocol.swift */; };
+		FB000000000000000000020 /* WaterRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000020 /* WaterRecord.swift */; };
+		FB000000000000000000021 /* WaterStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000021 /* WaterStorage.swift */; };
+		FB000000000000000000022 /* TodayProgressRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000022 /* TodayProgressRingView.swift */; };
+		FB000000000000000000023 /* TodayPresetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000023 /* TodayPresetCardView.swift */; };
+		FB000000000000000000024 /* TodayQuickAmountButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000024 /* TodayQuickAmountButton.swift */; };
 		EA5B6A4C2F816128005357F6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A482F816128005357F6 /* AuthViewModel.swift */; };
 		EA5B6A4D2F816128005357F6 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A442F816128005357F6 /* AuthViewController.swift */; };
 		EA5B6A4E2F816128005357F6 /* AuthViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */; };
@@ -82,6 +87,11 @@
 		FB100000000000000000007 /* ProfileSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetViewController.swift; sourceTree = "<group>"; };
 		FB100000000000000000008 /* ProfileSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetViewModel.swift; sourceTree = "<group>"; };
 		FB100000000000000000009 /* ProfileSheetViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetViewModelProtocol.swift; sourceTree = "<group>"; };
+		FB100000000000000000020 /* WaterRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterRecord.swift; sourceTree = "<group>"; };
+		FB100000000000000000021 /* WaterStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterStorage.swift; sourceTree = "<group>"; };
+		FB100000000000000000022 /* TodayProgressRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayProgressRingView.swift; sourceTree = "<group>"; };
+		FB100000000000000000023 /* TodayPresetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayPresetCardView.swift; sourceTree = "<group>"; };
+		FB100000000000000000024 /* TodayQuickAmountButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayQuickAmountButton.swift; sourceTree = "<group>"; };
 		FB100000000000000000003 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		FB100000000000000000002 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA100000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -408,6 +418,9 @@
 			isa = PBXGroup;
 			children = (
 				FA100000000000000000015 /* TodayView.swift */,
+				FB100000000000000000022 /* TodayProgressRingView.swift */,
+				FB100000000000000000023 /* TodayPresetCardView.swift */,
+				FB100000000000000000024 /* TodayQuickAmountButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -669,6 +682,7 @@
 			isa = PBXGroup;
 			children = (
 				FB100000000000000000004 /* UserProfile.swift */,
+				FB100000000000000000020 /* WaterRecord.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -721,6 +735,7 @@
 			children = (
 				FB100000000000000000001 /* AuthService.swift */,
 				FB100000000000000000005 /* ProfileService.swift */,
+				FB100000000000000000021 /* WaterStorage.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -856,6 +871,11 @@
 				FB000000000000000000017 /* ProfileSheetViewController.swift in Sources */,
 				FB000000000000000000018 /* ProfileSheetViewModel.swift in Sources */,
 				FB000000000000000000019 /* ProfileSheetViewModelProtocol.swift in Sources */,
+				FB000000000000000000020 /* WaterRecord.swift in Sources */,
+				FB000000000000000000021 /* WaterStorage.swift in Sources */,
+				FB000000000000000000022 /* TodayProgressRingView.swift in Sources */,
+				FB000000000000000000023 /* TodayPresetCardView.swift in Sources */,
+				FB000000000000000000024 /* TodayQuickAmountButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

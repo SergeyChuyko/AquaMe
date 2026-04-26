@@ -10,14 +10,10 @@ import UIKit
 
 // MARK: - TodayViewController
 
-/// View controller экрана Today.
-/// Отвечает только за отображение данных из ViewModel и передачу действий пользователя обратно.
-/// Не содержит никакой бизнес-логики.
 final class TodayViewController: UIViewController {
 
     // MARK: - Private properties
 
-    /// Типизирован как TodayView — даёт прямой доступ к его публичному интерфейсу без каста.
     private lazy var todayView: TodayView = {
         let view = TodayView()
         view.delegate = self
@@ -25,7 +21,6 @@ final class TodayViewController: UIViewController {
         return view
     }()
 
-    /// Хранится как протокол — VC не знает о внутреннем устройстве TodayViewModel.
     private var viewModel: TodayViewModelProtocol
 
     // MARK: - Initialization
@@ -33,6 +28,7 @@ final class TodayViewController: UIViewController {
     init(viewModel: TodayViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        bindViewModel()
     }
 
     @available(*, unavailable)
@@ -41,14 +37,28 @@ final class TodayViewController: UIViewController {
     // MARK: - Lifecycle
 
     override func loadView() {
-        /// Заменяем стандартную UIView на нашу кастомную TodayView.
         view = todayView
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        /// Уведомляем ViewModel что вью готова — запускает начальную загрузку данных.
         viewModel.viewDidLoad()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        todayView.update(with: viewModel.state)
+    }
+}
+
+// MARK: - TodayViewController + Setup
+
+private extension TodayViewController {
+
+    func bindViewModel() {
+        viewModel.onStateChange = { [weak self] state in
+            self?.todayView.update(with: state)
+        }
     }
 }
 
@@ -56,8 +66,11 @@ final class TodayViewController: UIViewController {
 
 extension TodayViewController: TodayViewDelegate {
 
-    /// Пользователь нажал Add — просим ViewModel записать выбранное количество воды.
-    func todayViewDidTapAdd(_ view: TodayView) {
-        // TODO: Передать выбранное количество из пикера в viewModel.didTapAdd(amount:)
+    func todayView(_ view: TodayView, didTapAmount amount: Int) {
+        viewModel.didTapAmount(amount)
+    }
+
+    func todayView(_ view: TodayView, didToggleRemoveMode isOn: Bool) {
+        viewModel.didToggleRemoveMode(isOn)
     }
 }
