@@ -30,11 +30,9 @@ final class TodayView: UIView {
         static let verticalSpacing: CGFloat = 24
         static let groupSpacing: CGFloat = 14
         static let ringSize: CGFloat = 240
-        static let titleFontSize: CGFloat = 22
         static let smallTitleFontSize: CGFloat = 13
         static let valueFontSize: CGFloat = 20
         static let modeRowHeight: CGFloat = 44
-        static let headerHeight: CGFloat = 32
     }
 
     private enum Images {
@@ -69,29 +67,6 @@ final class TodayView: UIView {
         stack.spacing = Constants.verticalSpacing
 
         return stack
-    }()
-
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: Constants.titleFontSize, weight: .bold)
-        label.text = "AquaMe"
-        label.textAlignment = .center
-
-        return label
-    }()
-
-    private lazy var headerRow: UIView = {
-        let view = UIView()
-        view.addSubview(titleLabel)
-
-        NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            view.heightAnchor.constraint(equalToConstant: Constants.headerHeight),
-        ])
-
-        return view
     }()
 
     private lazy var ringView = TodayProgressRingView()
@@ -240,7 +215,7 @@ extension TodayView {
             )
         }
         for button in quickButtons {
-            button.update(isRemoveMode: state.isRemoveMode)
+            button.update(isRemoveMode: state.isRemoveMode, unit: state.unit.rawValue)
         }
 
         applyMode(isRemoveMode: state.isRemoveMode)
@@ -265,7 +240,6 @@ private extension TodayView {
         addSubview(scrollView)
         scrollView.addSubview(contentStack)
 
-        contentStack.addArrangedSubview(headerRow)
         contentStack.addArrangedSubview(ringContainer)
         contentStack.addArrangedSubview(goalRow)
         contentStack.addArrangedSubview(presetsRow)

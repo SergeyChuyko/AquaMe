@@ -51,7 +51,6 @@ final class TodayQuickAmountButton: UIControl {
         label.font = .systemFont(ofSize: Constants.unitFontSize, weight: .medium)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
-        label.text = "ML"
 
         return label
     }()
@@ -93,9 +92,10 @@ final class TodayQuickAmountButton: UIControl {
 
 extension TodayQuickAmountButton {
 
-    func update(isRemoveMode: Bool) {
+    func update(isRemoveMode: Bool, unit: String) {
         self.isRemoveMode = isRemoveMode
         amountLabel.text = "\(amount)"
+        unitLabel.text = unit.uppercased()
         applyStyle()
     }
 }

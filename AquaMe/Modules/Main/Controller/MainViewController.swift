@@ -206,5 +206,17 @@ private extension MainViewController {
         currentIndex = index
         pages[currentIndex].view.isHidden = false
         tabBarView.selectTab(MainTabBarView.Tab(rawValue: index) ?? .today)
+        navigationBar.configure(
+            title: title(for: index),
+            rightIcon: UIImage(systemName: "rectangle.portrait.and.arrow.right")
+        )
+    }
+
+    func title(for index: Int) -> String {
+        switch MainTabBarView.Tab(rawValue: index) {
+        case .progress: return "Progress"
+        case .settings: return "Settings"
+        default: return "AquaMe"
+        }
     }
 }

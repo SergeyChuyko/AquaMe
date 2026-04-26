@@ -32,7 +32,6 @@ final class SettingsView: UIView {
         static let sectionSpacing: CGFloat = 24
         static let groupSpacing: CGFloat = 12
         static let columnSpacing: CGFloat = 12
-        static let titleFontSize: CGFloat = 20
         static let footerFontSize: CGFloat = 11
     }
 
@@ -68,16 +67,6 @@ final class SettingsView: UIView {
         stack.spacing = Constants.sectionSpacing
 
         return stack
-    }()
-
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Settings"
-        label.font = .systemFont(ofSize: Constants.titleFontSize, weight: .bold)
-        label.textAlignment = .center
-
-        return label
     }()
 
     private lazy var dailyTargetCard: SettingsValueCard = {
@@ -240,9 +229,6 @@ private extension SettingsView {
     }
 
     func setupContent() {
-        contentStack.addArrangedSubview(titleLabel)
-        contentStack.setCustomSpacing(Constants.sectionSpacing, after: titleLabel)
-
         addSection(
             icon: Images.goal,
             title: "Your goal",
