@@ -49,6 +49,10 @@ final class SettingsView: UIView {
 
     // MARK: - Private properties
 
+    private var currentUnit: UserProfile.MeasureUnit = .ml
+
+    // MARK: - Private properties
+
     private lazy var scrollView: UIScrollView = {
         let view = UIScrollView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -135,13 +139,14 @@ final class SettingsView: UIView {
 extension SettingsView {
 
     func update(with state: SettingsState) {
+        currentUnit = state.unit
         let unitSuffix = state.unit.rawValue
 
         dailyTargetCard.configure(
             title: "Daily Target",
-            value: "\(state.dailyGoal)",
+            value: state.unit.format(ml: state.dailyGoal),
             suffix: unitSuffix,
-            badge: "Recommended: \(formatLiters(state.recommendedDailyGoal))",
+            badge: "Recommended: \(formatRecommended(state.recommendedDailyGoal, unit: state.unit))",
             footnote: "Based on your weight and activity level."
         )
 
@@ -177,8 +182,8 @@ extension SettingsView: SettingsValueCardDelegate {
         let trimmed = value.trimmingCharacters(in: .whitespaces)
         switch card {
         case dailyTargetCard:
-            if let parsed = Int(trimmed) {
-                delegate?.settingsView(self, didChangeDailyGoal: parsed)
+            if let parsed = Double(trimmed.replacingOccurrences(of: ",", with: ".")) {
+                delegate?.settingsView(self, didChangeDailyGoal: currentUnit.mlValue(from: parsed))
             }
 
         case weightCard:
@@ -316,9 +321,15 @@ private extension SettingsView {
         addGestureRecognizer(tap)
     }
 
-    func formatLiters(_ amount: Int) -> String {
-        let liters = Double(amount) / 1000
-        return String(format: "%.1fL", liters)
+    func formatRecommended(_ ml: Int, unit: UserProfile.MeasureUnit) -> String {
+        switch unit {
+        case .ml:
+            let liters = Double(ml) / 1000
+            return String(format: "%.1fL", liters)
+
+        case .oz:
+            return "\(unit.format(ml: ml)) oz"
+        }
     }
 
     @objc

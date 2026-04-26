@@ -199,23 +199,27 @@ extension TodayView {
 
         ringView.update(
             progress: state.progress,
-            valueText: "\(state.totalDrunk)",
+            valueText: state.unit.format(ml: state.totalDrunk),
             unitText: state.unit.rawValue,
             percentText: "\(state.progressPercent)% OF GOAL"
         )
 
-        dailyGoalValueLabel.text = "\(state.dailyGoal) \(state.unit.rawValue)"
-        remainingValueLabel.text = "\(state.remaining) \(state.unit.rawValue)"
+        dailyGoalValueLabel.text = "\(state.unit.format(ml: state.dailyGoal)) \(state.unit.rawValue)"
+        remainingValueLabel.text = "\(state.unit.format(ml: state.remaining)) \(state.unit.rawValue)"
         remainingValueLabel.textColor = state.isRemoveMode ? .systemRed : .systemIndigo
 
         for card in presetCards {
             card.update(
                 isRemoveMode: state.isRemoveMode,
-                title: "\(card.amount)\(state.unit.rawValue)"
+                title: "\(state.unit.format(ml: card.amount))\(state.unit.rawValue)"
             )
         }
         for button in quickButtons {
-            button.update(isRemoveMode: state.isRemoveMode, unit: state.unit.rawValue)
+            button.update(
+                isRemoveMode: state.isRemoveMode,
+                displayValue: state.unit.format(ml: button.amount),
+                unit: state.unit.rawValue
+            )
         }
 
         applyMode(isRemoveMode: state.isRemoveMode)

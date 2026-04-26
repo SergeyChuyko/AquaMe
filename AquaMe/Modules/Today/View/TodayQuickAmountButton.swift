@@ -92,9 +92,9 @@ final class TodayQuickAmountButton: UIControl {
 
 extension TodayQuickAmountButton {
 
-    func update(isRemoveMode: Bool, unit: String) {
+    func update(isRemoveMode: Bool, displayValue: String, unit: String) {
         self.isRemoveMode = isRemoveMode
-        amountLabel.text = "\(amount)"
+        amountLabel.text = displayValue
         unitLabel.text = unit.uppercased()
         applyStyle()
     }

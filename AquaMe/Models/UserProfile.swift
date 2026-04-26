@@ -44,6 +44,31 @@ struct UserProfile: Codable {
     }
 }
 
+// MARK: - UserProfile.MeasureUnit + Conversion
+
+extension UserProfile.MeasureUnit {
+
+    /// US fluid ounce → мл. Используется одинаково при чтении и записи,
+    /// чтобы избежать рассинхрона.
+    static let mlPerOunce: Double = 29.5735
+
+    /// Превращает значение в мл в строку в текущих единицах: "2460" в режиме .ml или "83" в .oz.
+    func format(ml value: Int) -> String {
+        switch self {
+        case .ml: return "\(value)"
+        case .oz: return "\(Int((Double(value) / Self.mlPerOunce).rounded()))"
+        }
+    }
+
+    /// Парсит значение, которое юзер ввёл в текущих единицах, и приводит к мл.
+    func mlValue(from displayValue: Double) -> Int {
+        switch self {
+        case .ml: return Int(displayValue.rounded())
+        case .oz: return Int((displayValue * Self.mlPerOunce).rounded())
+        }
+    }
+}
+
 // MARK: - UserProfile + Daily Goal Calculation
 
 extension UserProfile {
