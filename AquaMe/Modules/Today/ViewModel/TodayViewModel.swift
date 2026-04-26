@@ -11,7 +11,8 @@ import Foundation
 // MARK: - TodayViewModel
 
 /// Бизнес-логика экрана Today.
-/// Загружает профиль (для дневной нормы), хранит выпитое за сегодня, отдаёт во view готовый TodayState.
+/// Грузит профиль (для дневной нормы) и сегодняшние записи воды из Firestore,
+/// поддерживает мгновенный оптимистический ответ на тап и фоновую запись на сервер.
 final class TodayViewModel: TodayViewModelProtocol {
 
     // MARK: - Private enums
@@ -34,6 +35,7 @@ final class TodayViewModel: TodayViewModelProtocol {
 
     private let profileService: ProfileServiceProtocol
     private let storage: WaterStorageProtocol
+    private var records: [WaterRecord] = []
 
     // MARK: - Initialization
 
@@ -44,7 +46,7 @@ final class TodayViewModel: TodayViewModelProtocol {
         self.profileService = profileService
         self.storage = storage
         self.state = TodayState(
-            totalDrunk: storage.todayTotal(),
+            totalDrunk: 0,
             dailyGoal: Defaults.dailyGoal,
             isRemoveMode: false,
             presetAmounts: Defaults.presets,
@@ -59,6 +61,7 @@ final class TodayViewModel: TodayViewModelProtocol {
     func viewDidLoad() {
         emit()
         loadProfile()
+        loadRecords()
     }
 
     func didToggleRemoveMode(_ isOn: Bool) {
@@ -68,7 +71,24 @@ final class TodayViewModel: TodayViewModelProtocol {
     }
 
     func didTapAmount(_ amount: Int) {
-        commit(amount: amount)
+        guard amount > 0 else { return }
+        let signed = state.isRemoveMode ? -amount : amount
+        let record = WaterRecord(amount: signed)
+
+        records.append(record)
+        recomputeTotal()
+        emit()
+
+        storage.add(record) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                if case .failure = result {
+                    self.records.removeAll { $0.id == record.id }
+                    self.recomputeTotal()
+                    self.emit()
+                }
+            }
+        }
     }
 }
 
@@ -76,12 +96,16 @@ final class TodayViewModel: TodayViewModelProtocol {
 
 private extension TodayViewModel {
 
-    func commit(amount: Int) {
-        guard amount > 0 else { return }
-        let signed = state.isRemoveMode ? -amount : amount
-        storage.add(WaterRecord(amount: signed))
-        state.totalDrunk = storage.todayTotal()
-        emit()
+    func loadRecords() {
+        storage.loadTodayRecords { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                guard case .success(let loaded) = result else { return }
+                self.records = loaded
+                self.recomputeTotal()
+                self.emit()
+            }
+        }
     }
 
     func loadProfile() {
@@ -95,6 +119,10 @@ private extension TodayViewModel {
                 self.emit()
             }
         }
+    }
+
+    func recomputeTotal() {
+        state.totalDrunk = max(0, records.reduce(0) { $0 + $1.amount })
     }
 
     func emit() {
