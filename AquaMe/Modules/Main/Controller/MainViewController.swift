@@ -22,6 +22,8 @@ final class MainViewController: UIViewController {
         /// Высота таб бара без учёта safe area снизу. Без учёта плавающего круга,
         /// который у MainTabBarView выходит за верхнюю границу — это рисуется вне `bounds`.
         static let tabBarHeight: CGFloat = 64
+        static let tabBarHorizontalInset: CGFloat = 16
+        static let tabBarBottomInset: CGFloat = 12
         static let profileSheetHeight: CGFloat = 480
     }
 
@@ -140,13 +142,20 @@ private extension MainViewController {
 
     func setupConstraintsForTabBarView() {
         NSLayoutConstraint.activate([
-            /// Таб бар прижат к низу экрана, высота = barHeight + safe area.
-            tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tabBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tabBarView.heightAnchor.constraint(
-                equalToConstant: Constants.tabBarHeight + (view.window?.safeAreaInsets.bottom ?? 34)
+            /// Плавающий таб-бар с отступами по горизонтали и снизу — не приклеен к краям.
+            tabBarView.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor,
+                constant: Constants.tabBarHorizontalInset
             ),
+            tabBarView.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -Constants.tabBarHorizontalInset
+            ),
+            tabBarView.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                constant: -Constants.tabBarBottomInset
+            ),
+            tabBarView.heightAnchor.constraint(equalToConstant: Constants.tabBarHeight),
         ])
     }
 

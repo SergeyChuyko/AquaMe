@@ -29,6 +29,7 @@ final class MainTabBarView: UIView {
         case progress = 0
         case today = 1
         case settings = 2
+        case profile = 3
     }
 
     // MARK: - Private enums
@@ -73,6 +74,7 @@ final class MainTabBarView: UIView {
         TabModel(tab: .progress, icon: UIImage(systemName: "chart.bar.fill"), title: "Progress"),
         TabModel(tab: .today, icon: UIImage(systemName: "drop.fill"), title: "Today"),
         TabModel(tab: .settings, icon: UIImage(systemName: "gearshape.fill"), title: "Settings"),
+        TabModel(tab: .profile, icon: UIImage(systemName: "person.fill"), title: "Profile"),
     ]
 
     private let backgroundLayer: CAShapeLayer = {
@@ -295,6 +297,7 @@ private extension MainTabBarView {
     }
 
     /// Строит путь плашки с круговым вырезом сверху под активный таб.
+    /// Все четыре угла скруглены — бар плавающий, а не приклеен к низу экрана.
     func barPath(for tab: Tab) -> UIBezierPath {
         let rect = bounds
         let radius = Constants.cornerRadius
@@ -303,15 +306,9 @@ private extension MainTabBarView {
         let curveWidth = Constants.cutoutHorizontalCurve
 
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0, y: rect.height))
-        path.addLine(to: CGPoint(x: 0, y: radius))
-        path.addArc(
-            withCenter: CGPoint(x: radius, y: radius),
-            radius: radius,
-            startAngle: .pi,
-            endAngle: -.pi / 2,
-            clockwise: true
-        )
+
+        // top edge — стартуем после левого верхнего скругления, идём вправо до выреза
+        path.move(to: CGPoint(x: radius, y: 0))
         path.addLine(to: CGPoint(x: cutoutCenterX - cutoutRadius - curveWidth, y: 0))
         path.addQuadCurve(
             to: CGPoint(x: cutoutCenterX - cutoutRadius, y: cutoutRadius * 0.55),
@@ -329,6 +326,7 @@ private extension MainTabBarView {
             controlPoint: CGPoint(x: cutoutCenterX + cutoutRadius, y: 0)
         )
         path.addLine(to: CGPoint(x: rect.width - radius, y: 0))
+        // top-right corner
         path.addArc(
             withCenter: CGPoint(x: rect.width - radius, y: radius),
             radius: radius,
@@ -336,7 +334,33 @@ private extension MainTabBarView {
             endAngle: 0,
             clockwise: true
         )
-        path.addLine(to: CGPoint(x: rect.width, y: rect.height))
+        path.addLine(to: CGPoint(x: rect.width, y: rect.height - radius))
+        // bottom-right corner
+        path.addArc(
+            withCenter: CGPoint(x: rect.width - radius, y: rect.height - radius),
+            radius: radius,
+            startAngle: 0,
+            endAngle: .pi / 2,
+            clockwise: true
+        )
+        path.addLine(to: CGPoint(x: radius, y: rect.height))
+        // bottom-left corner
+        path.addArc(
+            withCenter: CGPoint(x: radius, y: rect.height - radius),
+            radius: radius,
+            startAngle: .pi / 2,
+            endAngle: .pi,
+            clockwise: true
+        )
+        path.addLine(to: CGPoint(x: 0, y: radius))
+        // top-left corner
+        path.addArc(
+            withCenter: CGPoint(x: radius, y: radius),
+            radius: radius,
+            startAngle: .pi,
+            endAngle: -.pi / 2,
+            clockwise: true
+        )
         path.close()
 
         return path

@@ -49,14 +49,18 @@ extension MainCoordinator {
 
 private extension MainCoordinator {
 
-    /// Собирает MainViewController с тремя дочерними VC.
+    /// Собирает MainViewController с четырьмя дочерними VC.
     /// Каждый VC получает свою ViewModel через протокол.
     func buildMainViewController() -> MainViewController {
         let progressVC = ProgressViewController(viewModel: ProgressViewModel())
         let todayVC = TodayViewController(viewModel: TodayViewModel())
         let settingsVC = SettingsViewController(viewModel: SettingsViewModel())
+        let profileVC = ProfileSheetViewController(viewModel: ProfileSheetViewModel())
+        profileVC.onEditProfile = { [weak self] in
+            self?.showEditProfile()
+        }
 
-        return MainViewController(viewControllers: [progressVC, todayVC, settingsVC])
+        return MainViewController(viewControllers: [progressVC, todayVC, settingsVC, profileVC])
     }
 
     func showEditProfile() {
