@@ -41,6 +41,7 @@ final class TodayQuickAmountButton: UIControl {
     // MARK: - Private properties
 
     private var isRemoveMode: Bool = false
+    private var isLocked: Bool = false
     private var fadeWorkItem: DispatchWorkItem?
     private var pressStartTime: CFTimeInterval = 0
     private var pressReleaseWorkItem: DispatchWorkItem?
@@ -103,8 +104,10 @@ final class TodayQuickAmountButton: UIControl {
 
 extension TodayQuickAmountButton {
 
-    func update(isRemoveMode: Bool, displayValue: String, unit: String) {
+    func update(isRemoveMode: Bool, displayValue: String, unit: String, isLocked: Bool) {
         self.isRemoveMode = isRemoveMode
+        self.isLocked = isLocked
+        isEnabled = !isLocked
         amountLabel.text = displayValue
         unitLabel.text = unit.uppercased()
         applyInactiveStyle()
@@ -132,10 +135,17 @@ private extension TodayQuickAmountButton {
     }
 
     func applyInactiveStyle() {
-        backgroundColor = .secondarySystemBackground
-        layer.borderColor = UIColor.separator.withAlphaComponent(0.4).cgColor
-        amountLabel.textColor = .label
-        unitLabel.textColor = .secondaryLabel
+        if isLocked {
+            backgroundColor = UIColor.separator.withAlphaComponent(0.10)
+            layer.borderColor = UIColor.separator.withAlphaComponent(0.18).cgColor
+            amountLabel.textColor = .tertiaryLabel
+            unitLabel.textColor = .tertiaryLabel
+        } else {
+            backgroundColor = .secondarySystemBackground
+            layer.borderColor = UIColor.separator.withAlphaComponent(0.4).cgColor
+            amountLabel.textColor = .label
+            unitLabel.textColor = .secondaryLabel
+        }
     }
 
     func applyActiveStyle() {

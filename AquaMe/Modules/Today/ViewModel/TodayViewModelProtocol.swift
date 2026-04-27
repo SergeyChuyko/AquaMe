@@ -29,6 +29,10 @@ struct TodayState: Equatable {
     }
 
     var progressPercent: Int { Int((progress * 100).rounded()) }
+
+    /// Если включён режим Remove и накопленный объём = 0 — вычитать дальше некуда.
+    /// View скрывает интерактив и красит плашки бледно.
+    var isSubtractionLocked: Bool { isRemoveMode && totalDrunk == 0 }
 }
 
 // MARK: - TodayViewModelProtocol

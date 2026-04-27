@@ -211,14 +211,16 @@ extension TodayView {
         for card in presetCards {
             card.update(
                 isRemoveMode: state.isRemoveMode,
-                title: "\(state.unit.format(ml: card.amount))\(state.unit.rawValue)"
+                title: "\(state.unit.format(ml: card.amount))\(state.unit.rawValue)",
+                isLocked: state.isSubtractionLocked
             )
         }
         for button in quickButtons {
             button.update(
                 isRemoveMode: state.isRemoveMode,
                 displayValue: state.unit.format(ml: button.amount),
-                unit: state.unit.rawValue
+                unit: state.unit.rawValue,
+                isLocked: state.isSubtractionLocked
             )
         }
 

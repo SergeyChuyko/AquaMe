@@ -52,6 +52,7 @@ final class TodayPresetCardView: UIView {
     // MARK: - Private properties
 
     private var isRemoveMode: Bool = false
+    private var isLocked: Bool = false
     private var fadeWorkItem: DispatchWorkItem?
     private var pressStartTime: CFTimeInterval = 0
     private var pressReleaseWorkItem: DispatchWorkItem?
@@ -125,8 +126,10 @@ final class TodayPresetCardView: UIView {
 
 extension TodayPresetCardView {
 
-    func update(isRemoveMode: Bool, title: String) {
+    func update(isRemoveMode: Bool, title: String, isLocked: Bool) {
         self.isRemoveMode = isRemoveMode
+        self.isLocked = isLocked
+        isUserInteractionEnabled = !isLocked
         titleLabel.text = title
         applyInactiveStyle()
     }
@@ -182,11 +185,19 @@ private extension TodayPresetCardView {
     }
 
     func applyInactiveStyle() {
-        backgroundColor = .secondarySystemBackground
-        layer.borderColor = UIColor.separator.withAlphaComponent(0.4).cgColor
-        iconBackground.backgroundColor = .systemBackground
-        iconImageView.tintColor = .secondaryLabel
-        titleLabel.textColor = .label
+        if isLocked {
+            backgroundColor = UIColor.separator.withAlphaComponent(0.10)
+            layer.borderColor = UIColor.separator.withAlphaComponent(0.18).cgColor
+            iconBackground.backgroundColor = UIColor.separator.withAlphaComponent(0.18)
+            iconImageView.tintColor = .tertiaryLabel
+            titleLabel.textColor = .tertiaryLabel
+        } else {
+            backgroundColor = .secondarySystemBackground
+            layer.borderColor = UIColor.separator.withAlphaComponent(0.4).cgColor
+            iconBackground.backgroundColor = .systemBackground
+            iconImageView.tintColor = .secondaryLabel
+            titleLabel.textColor = .label
+        }
     }
 
     func applyActiveStyle() {

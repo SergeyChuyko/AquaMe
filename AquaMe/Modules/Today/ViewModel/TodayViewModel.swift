@@ -72,6 +72,8 @@ final class TodayViewModel: TodayViewModelProtocol {
 
     func didTapAmount(_ amount: Int) {
         guard amount > 0 else { return }
+        guard !state.isSubtractionLocked else { return }
+
         let signed = state.isRemoveMode ? -amount : amount
         let record = WaterRecord(amount: signed)
 
