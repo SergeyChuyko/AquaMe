@@ -19,37 +19,18 @@ final class ProgressDayCell: UIView {
 
         static let cornerRadius: CGFloat = 10
         static let fontSize: CGFloat = 14
-        static let todayBarHeight: CGFloat = 3
-        static let todayBarInset: CGFloat = 6
+        static let todayBorderWidth: CGFloat = 2
     }
 
     // MARK: - Private properties
 
-    private lazy var bubble: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = Constants.cornerRadius
-
-        return view
-    }()
-
     private lazy var dayLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: Constants.fontSize, weight: .semibold)
+        label.font = .systemFont(ofSize: Constants.fontSize, weight: .bold)
         label.textAlignment = .center
 
         return label
-    }()
-
-    private lazy var todayBar: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemIndigo
-        view.layer.cornerRadius = Constants.todayBarHeight / 2
-        view.isHidden = true
-
-        return view
     }()
 
     // MARK: - Initialization
@@ -69,15 +50,22 @@ extension ProgressDayCell {
 
     func update(with day: ProgressDay) {
         guard let dayNumber = day.dayNumber else {
-            bubble.backgroundColor = .clear
+            backgroundColor = .clear
+            layer.borderWidth = 0
             dayLabel.text = ""
-            todayBar.isHidden = true
 
             return
         }
 
         dayLabel.text = "\(dayNumber)"
-        todayBar.isHidden = !day.isToday
+
+        if day.isToday {
+            layer.borderWidth = Constants.todayBorderWidth
+            layer.borderColor = UIColor.systemIndigo.cgColor
+        } else {
+            layer.borderWidth = 0
+        }
+
         applyStyle(for: day.status)
     }
 }
@@ -87,42 +75,27 @@ extension ProgressDayCell {
 private extension ProgressDayCell {
 
     func setup() {
-        addSubview(bubble)
-        bubble.addSubview(dayLabel)
-        addSubview(todayBar)
+        layer.cornerRadius = Constants.cornerRadius
+        addSubview(dayLabel)
 
         NSLayoutConstraint.activate([
-            bubble.topAnchor.constraint(equalTo: topAnchor),
-            bubble.leadingAnchor.constraint(equalTo: leadingAnchor),
-            bubble.trailingAnchor.constraint(equalTo: trailingAnchor),
-            bubble.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            dayLabel.centerXAnchor.constraint(equalTo: bubble.centerXAnchor),
-            dayLabel.centerYAnchor.constraint(equalTo: bubble.centerYAnchor),
-
-            todayBar.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
-            todayBar.heightAnchor.constraint(equalToConstant: Constants.todayBarHeight),
-            todayBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.todayBarInset),
-            todayBar.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.todayBarInset),
+            dayLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            dayLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
 
     func applyStyle(for status: WaterDayStatus) {
         switch status {
         case .goalMet:
-            bubble.backgroundColor = .systemIndigo
+            backgroundColor = .systemIndigo
             dayLabel.textColor = .white
 
-        case .partial:
-            bubble.backgroundColor = UIColor.systemPink.withAlphaComponent(0.35)
-            dayLabel.textColor = .systemPink
-
         case .missed:
-            bubble.backgroundColor = UIColor.separator.withAlphaComponent(0.15)
-            dayLabel.textColor = .secondaryLabel
+            backgroundColor = UIColor.separator.withAlphaComponent(0.18)
+            dayLabel.textColor = .label
 
         case .future:
-            bubble.backgroundColor = UIColor.separator.withAlphaComponent(0.08)
+            backgroundColor = UIColor.separator.withAlphaComponent(0.08)
             dayLabel.textColor = .tertiaryLabel
         }
     }
