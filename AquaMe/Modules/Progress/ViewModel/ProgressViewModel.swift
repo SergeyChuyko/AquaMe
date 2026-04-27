@@ -92,6 +92,11 @@ final class ProgressViewModel: ProgressViewModelProtocol {
     func didTapNextMonth() {
         guard let next = calendar.date(byAdding: .month, value: 1, to: visibleMonthAnchor) else { return }
 
+        // Не пускаем в будущие месяцы — статистика и trend всё равно про сегодня,
+        // а календарь там рисует одни future-дни. Бесполезно и сбивает юзера.
+        let currentMonthStart = calendar.startOfMonth(for: Date())
+        guard next <= currentMonthStart else { return }
+
         visibleMonthAnchor = next
         state.monthTitle = monthFormatter.string(from: visibleMonthAnchor).capitalized
         state.isLoading = true

@@ -112,7 +112,12 @@ final class WaterStorage: WaterStorageProtocol {
                 }
 
                 let records = snapshot?.documents.compactMap { doc -> WaterRecord? in
-                    try? doc.data(as: WaterRecord.self)
+                    do {
+                        return try doc.data(as: WaterRecord.self)
+                    } catch {
+                        print("[Water] Decode failed for \(doc.documentID): \(error.localizedDescription)")
+                        return nil
+                    }
                 } ?? []
                 completion(.success(records))
             }

@@ -85,6 +85,7 @@ final class ProfileSheetView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: Constants.nameFontSize)
         label.textAlignment = .center
+        label.numberOfLines = 0
 
         return label
     }()
@@ -95,6 +96,7 @@ final class ProfileSheetView: UIView {
         label.font = .systemFont(ofSize: Constants.subtitleFontSize)
         label.textColor = .systemGray
         label.textAlignment = .center
+        label.numberOfLines = 0
 
         return label
     }()
@@ -208,8 +210,11 @@ extension ProfileSheetView {
         let goalInLiters = Double(profile.dailyGoal) / 1000.0
         goalValueLabel?.text = String(format: "%.1f", goalInLiters)
 
+        // Реальные значения Goal Completion и Avg. Intake пока не заведены —
+        // показываем «—» вместо вводящих в заблуждение чисел из профиля.
+        // TODO: подтянуть из ProgressViewModel-стиля агрегатора.
         completionValueLabel?.text = "—"
-        intakeValueLabel?.text = "\(profile.dailyGoal)ml"
+        intakeValueLabel?.text = "—"
     }
 }
 
@@ -391,6 +396,8 @@ private extension ProfileSheetView {
         valueLabel.text = value
         valueLabel.font = .boldSystemFont(ofSize: Constants.statValueFontSize)
         valueLabel.textAlignment = .center
+        valueLabel.adjustsFontSizeToFitWidth = true
+        valueLabel.minimumScaleFactor = 0.6
 
         let unitLabel = UILabel()
         unitLabel.translatesAutoresizingMaskIntoConstraints = false
