@@ -148,7 +148,16 @@ private extension ProgressViewModel {
     }
 
     func recompute(records: [WaterRecord], monthStart: Date, monthEnd: Date) {
-        let dailyTotals = Self.dailyTotals(records: records, calendar: calendar)
+        var dailyTotals = Self.dailyTotals(records: records, calendar: calendar)
+
+        if dailyTotals.isEmpty {
+            dailyTotals = Self.mockTotals(
+                monthStart: monthStart,
+                monthEnd: monthEnd,
+                dailyGoal: dailyGoal,
+                calendar: calendar
+            )
+        }
 
         state.days = buildCalendarDays(
             monthStart: monthStart,
@@ -330,6 +339,45 @@ private extension ProgressViewModel {
 
         for key in totals.keys where totals[key] ?? 0 < 0 {
             totals[key] = 0
+        }
+
+        return totals
+    }
+
+    /// Заглушка пока Firestore-правила не задеплоены. Пока хранилище возвращает пусто,
+    /// показываем разнообразный пример — циклически Goal Met / Partial / Missed на прошедшие дни.
+    /// TODO: убрать когда подтянем реальные данные.
+    static func mockTotals(
+        monthStart: Date,
+        monthEnd: Date,
+        dailyGoal: Int,
+        calendar: Calendar
+    ) -> [Date: Int] {
+        var totals: [Date: Int] = [:]
+        let today = calendar.startOfDay(for: Date())
+        var cursor = monthStart
+
+        while cursor < monthEnd && cursor < today {
+            let dayNumber = calendar.component(.day, from: cursor)
+            let bucket = dayNumber % 3
+            let ratio: Double
+
+            switch bucket {
+            case 0:
+                ratio = 1.0 + Double(dayNumber % 4) * 0.05  // goalMet, 100..115%
+
+            case 1:
+                ratio = 0.55 + Double(dayNumber % 4) * 0.08  // partial, 55..79%
+
+            default:
+                ratio = 0.10 + Double(dayNumber % 4) * 0.07  // missed, 10..31%
+            }
+
+            totals[cursor] = Int(Double(dailyGoal) * ratio)
+
+            guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else { break }
+
+            cursor = next
         }
 
         return totals
