@@ -13,6 +13,7 @@ import UIKit
 protocol MainTabBarViewDelegate: AnyObject {
 
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab)
+    func mainTabBarViewDidTapProfile(_ view: MainTabBarView)
 }
 
 // MARK: - MainTabBarView
@@ -236,6 +237,12 @@ private extension MainTabBarView {
     @objc
     func handleTabTap(_ sender: UIControl) {
         guard let tab = Tab(rawValue: sender.tag) else { return }
+
+        if tab == .profile {
+            // Profile открывается боттом-шитом — не меняем активный таб.
+            delegate?.mainTabBarViewDidTapProfile(self)
+            return
+        }
 
         selectTab(tab)
         delegate?.mainTabBarView(self, didSelectTab: tab)

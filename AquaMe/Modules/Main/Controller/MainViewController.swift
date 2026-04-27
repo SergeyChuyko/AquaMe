@@ -96,6 +96,10 @@ extension MainViewController: MainTabBarViewDelegate {
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab) {
         showPage(at: tab.rawValue)
     }
+
+    func mainTabBarViewDidTapProfile(_ view: MainTabBarView) {
+        handleProfileTap()
+    }
 }
 
 // MARK: - MainViewController + Setup
