@@ -30,6 +30,8 @@ final class TodayPresetCardView: UIView {
         static let flashFadeDuration: TimeInterval = 0.6
         static let pressedScale: CGFloat = 0.94
         static let pressDuration: TimeInterval = 0.12
+        /// Минимум, который зажатое состояние должно держаться видимо, даже на быстрый тап.
+        static let minPressVisibleDuration: TimeInterval = 0.12
     }
 
     private enum Images {
@@ -51,6 +53,8 @@ final class TodayPresetCardView: UIView {
 
     private var isRemoveMode: Bool = false
     private var fadeWorkItem: DispatchWorkItem?
+    private var pressStartTime: CFTimeInterval = 0
+    private var pressReleaseWorkItem: DispatchWorkItem?
 
     private lazy var iconBackground: UIView = {
         let view = UIView()
@@ -103,21 +107,17 @@ final class TodayPresetCardView: UIView {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        animatePress(down: true)
-        applyActiveStyle()
-        fadeWorkItem?.cancel()
+        beginPress()
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        animatePress(down: false)
-        scheduleFadeBack()
+        endPressDeferred()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        animatePress(down: false)
-        scheduleFadeBack()
+        endPressDeferred()
     }
 }
 
@@ -212,6 +212,35 @@ private extension TodayPresetCardView {
             options: [.allowUserInteraction, .curveEaseOut]
         ) {
             self.transform = CGAffineTransform(scaleX: scale, y: scale)
+        }
+    }
+
+    func beginPress() {
+        pressStartTime = CACurrentMediaTime()
+        pressReleaseWorkItem?.cancel()
+        animatePress(down: true)
+        applyActiveStyle()
+        fadeWorkItem?.cancel()
+    }
+
+    /// Гарантирует, что зажатое состояние видно как минимум `minPressVisibleDuration` —
+    /// иначе быстрый тап успевает «закрыть» зажатое состояние до того, как глаз его поймает.
+    func endPressDeferred() {
+        let elapsed = CACurrentMediaTime() - pressStartTime
+        let remaining = Constants.minPressVisibleDuration - elapsed
+
+        let release = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+
+            self.animatePress(down: false)
+            self.scheduleFadeBack()
+        }
+        pressReleaseWorkItem = release
+
+        if remaining > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + remaining, execute: release)
+        } else {
+            release.perform()
         }
     }
 }

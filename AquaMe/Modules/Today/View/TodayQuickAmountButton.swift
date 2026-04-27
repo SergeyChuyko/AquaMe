@@ -29,6 +29,8 @@ final class TodayQuickAmountButton: UIControl {
         static let pressDuration: TimeInterval = 0.12
         static let flashHoldDuration: TimeInterval = 0.85
         static let flashFadeDuration: TimeInterval = 0.6
+        /// Минимум, на который зажатое состояние видно — даже на быстрый тап.
+        static let minPressVisibleDuration: TimeInterval = 0.12
     }
 
     // MARK: - Public properties
@@ -40,6 +42,8 @@ final class TodayQuickAmountButton: UIControl {
 
     private var isRemoveMode: Bool = false
     private var fadeWorkItem: DispatchWorkItem?
+    private var pressStartTime: CFTimeInterval = 0
+    private var pressReleaseWorkItem: DispatchWorkItem?
 
     private lazy var amountLabel: UILabel = {
         let label = UILabel()
@@ -86,13 +90,10 @@ final class TodayQuickAmountButton: UIControl {
 
     override var isHighlighted: Bool {
         didSet {
-            animatePress(down: isHighlighted)
-
             if isHighlighted {
-                applyActiveStyle()
-                fadeWorkItem?.cancel()
+                beginPress()
             } else {
-                scheduleFadeBack()
+                endPressDeferred()
             }
         }
     }
@@ -175,9 +176,36 @@ private extension TodayQuickAmountButton {
         }
     }
 
+    func beginPress() {
+        pressStartTime = CACurrentMediaTime()
+        pressReleaseWorkItem?.cancel()
+        animatePress(down: true)
+        applyActiveStyle()
+        fadeWorkItem?.cancel()
+    }
+
+    /// Гарантирует, что зажатое состояние видно как минимум `minPressVisibleDuration`.
+    func endPressDeferred() {
+        let elapsed = CACurrentMediaTime() - pressStartTime
+        let remaining = Constants.minPressVisibleDuration - elapsed
+
+        let release = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+
+            self.animatePress(down: false)
+            self.scheduleFadeBack()
+        }
+        pressReleaseWorkItem = release
+
+        if remaining > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + remaining, execute: release)
+        } else {
+            release.perform()
+        }
+    }
+
     @objc
     func handleTap() {
-        flashSelection()
         onTap?()
     }
 }
