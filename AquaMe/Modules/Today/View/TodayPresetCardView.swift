@@ -30,8 +30,10 @@ final class TodayPresetCardView: UIView {
         static let flashFadeDuration: TimeInterval = 0.6
         static let pressedScale: CGFloat = 0.94
         static let pressDuration: TimeInterval = 0.12
-        /// Минимум, который зажатое состояние должно держаться видимо, даже на быстрый тап.
-        static let minPressVisibleDuration: TimeInterval = 0.12
+        /// Длительность одного «pulse» при быстром тапе — масштаб и цвет плавно играют 1 сек.
+        static let tapPulseDuration: TimeInterval = 1.0
+        /// Если прошло меньше этого, считаем тап быстрым и играем pulse, иначе — обычный release.
+        static let longPressThreshold: TimeInterval = 0.20
     }
 
     private enum Images {
@@ -113,12 +115,12 @@ final class TodayPresetCardView: UIView {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        endPressDeferred()
+        finishPress()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        endPressDeferred()
+        finishPress()
     }
 }
 
@@ -229,29 +231,57 @@ private extension TodayPresetCardView {
     func beginPress() {
         pressStartTime = CACurrentMediaTime()
         pressReleaseWorkItem?.cancel()
+        fadeWorkItem?.cancel()
         animatePress(down: true)
         applyActiveStyle()
-        fadeWorkItem?.cancel()
     }
 
-    /// Гарантирует, что зажатое состояние видно как минимум `minPressVisibleDuration` —
-    /// иначе быстрый тап успевает «закрыть» зажатое состояние до того, как глаз его поймает.
-    func endPressDeferred() {
+    /// Долгое зажатие → плавный release как был.
+    /// Быстрый тап → играем `playShrinkPulse()` + `playHighlightPulse()` 1с каждая.
+    func finishPress() {
         let elapsed = CACurrentMediaTime() - pressStartTime
-        let remaining = Constants.minPressVisibleDuration - elapsed
 
-        let release = DispatchWorkItem { [weak self] in
-            guard let self else { return }
+        if elapsed >= Constants.longPressThreshold {
+            animatePress(down: false)
+            scheduleFadeBack()
 
-            self.animatePress(down: false)
-            self.scheduleFadeBack()
+            return
         }
-        pressReleaseWorkItem = release
 
-        if remaining > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + remaining, execute: release)
-        } else {
-            release.perform()
+        playShrinkPulse()
+        playHighlightPulse()
+    }
+
+    /// Анимация уменьшения и возврата к 1.0 за 1 секунду — играется на быстрый тап.
+    func playShrinkPulse() {
+        UIView.animateKeyframes(
+            withDuration: Constants.tapPulseDuration,
+            delay: 0,
+            options: [.allowUserInteraction]
+        ) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.18) {
+                self.transform = CGAffineTransform(
+                    scaleX: Constants.pressedScale,
+                    y: Constants.pressedScale
+                )
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.18, relativeDuration: 0.82) {
+                self.transform = .identity
+            }
+        }
+    }
+
+    /// Подсветка индиго и плавный возврат к серому за 1 секунду — играется на быстрый тап.
+    func playHighlightPulse() {
+        applyActiveStyle()
+        fadeWorkItem?.cancel()
+
+        UIView.animate(
+            withDuration: Constants.tapPulseDuration,
+            delay: 0,
+            options: [.allowUserInteraction, .curveEaseOut]
+        ) {
+            self.applyInactiveStyle()
         }
     }
 }

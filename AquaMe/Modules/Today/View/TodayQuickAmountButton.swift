@@ -29,8 +29,9 @@ final class TodayQuickAmountButton: UIControl {
         static let pressDuration: TimeInterval = 0.12
         static let flashHoldDuration: TimeInterval = 0.85
         static let flashFadeDuration: TimeInterval = 0.6
-        /// Минимум, на который зажатое состояние видно — даже на быстрый тап.
-        static let minPressVisibleDuration: TimeInterval = 0.12
+        /// Длительность одного «pulse» при быстром тапе — масштаб и цвет плавно играют 1 сек.
+        static let tapPulseDuration: TimeInterval = 1.0
+        static let longPressThreshold: TimeInterval = 0.20
     }
 
     // MARK: - Public properties
@@ -96,12 +97,12 @@ final class TodayQuickAmountButton: UIControl {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        endPressDeferred()
+        finishPress()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        endPressDeferred()
+        finishPress()
     }
 }
 
@@ -194,28 +195,55 @@ private extension TodayQuickAmountButton {
     func beginPress() {
         pressStartTime = CACurrentMediaTime()
         pressReleaseWorkItem?.cancel()
+        fadeWorkItem?.cancel()
         animatePress(down: true)
         applyActiveStyle()
-        fadeWorkItem?.cancel()
     }
 
-    /// Гарантирует, что зажатое состояние видно как минимум `minPressVisibleDuration`.
-    func endPressDeferred() {
+    /// Долгое зажатие → плавный release как был.
+    /// Быстрый тап → играем pulse-методы 1 сек.
+    func finishPress() {
         let elapsed = CACurrentMediaTime() - pressStartTime
-        let remaining = Constants.minPressVisibleDuration - elapsed
 
-        let release = DispatchWorkItem { [weak self] in
-            guard let self else { return }
+        if elapsed >= Constants.longPressThreshold {
+            animatePress(down: false)
+            scheduleFadeBack()
 
-            self.animatePress(down: false)
-            self.scheduleFadeBack()
+            return
         }
-        pressReleaseWorkItem = release
 
-        if remaining > 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + remaining, execute: release)
-        } else {
-            release.perform()
+        playShrinkPulse()
+        playHighlightPulse()
+    }
+
+    func playShrinkPulse() {
+        UIView.animateKeyframes(
+            withDuration: Constants.tapPulseDuration,
+            delay: 0,
+            options: [.allowUserInteraction]
+        ) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.18) {
+                self.transform = CGAffineTransform(
+                    scaleX: Constants.pressedScale,
+                    y: Constants.pressedScale
+                )
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.18, relativeDuration: 0.82) {
+                self.transform = .identity
+            }
+        }
+    }
+
+    func playHighlightPulse() {
+        applyActiveStyle()
+        fadeWorkItem?.cancel()
+
+        UIView.animate(
+            withDuration: Constants.tapPulseDuration,
+            delay: 0,
+            options: [.allowUserInteraction, .curveEaseOut]
+        ) {
+            self.applyInactiveStyle()
         }
     }
 
