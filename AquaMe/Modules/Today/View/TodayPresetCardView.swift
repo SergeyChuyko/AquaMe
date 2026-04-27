@@ -30,8 +30,10 @@ final class TodayPresetCardView: UIView {
         static let flashFadeDuration: TimeInterval = 0.6
         static let pressedScale: CGFloat = 0.94
         static let pressDuration: TimeInterval = 0.12
-        /// Длительность одного «pulse» при быстром тапе — масштаб и цвет плавно играют 1 сек.
+        /// Длительность highlight-pulse: 1 сек indigo → серый.
         static let tapPulseDuration: TimeInterval = 1.0
+        /// Длительность shrink-pulse: 180мс вниз + 180мс обратно. Симметрично, чтобы возврат был такой же быстрый.
+        static let shrinkPulseDuration: TimeInterval = 0.36
         /// Если прошло меньше этого, считаем тап быстрым и играем pulse, иначе — обычный release.
         static let longPressThreshold: TimeInterval = 0.20
     }
@@ -252,20 +254,20 @@ private extension TodayPresetCardView {
         playHighlightPulse()
     }
 
-    /// Анимация уменьшения и возврата к 1.0 за 1 секунду — играется на быстрый тап.
+    /// Симметричная анимация: уменьшение и возврат с одинаковой длительностью на быстрый тап.
     func playShrinkPulse() {
         UIView.animateKeyframes(
-            withDuration: Constants.tapPulseDuration,
+            withDuration: Constants.shrinkPulseDuration,
             delay: 0,
             options: [.allowUserInteraction]
         ) {
-            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.18) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
                 self.transform = CGAffineTransform(
                     scaleX: Constants.pressedScale,
                     y: Constants.pressedScale
                 )
             }
-            UIView.addKeyframe(withRelativeStartTime: 0.18, relativeDuration: 0.82) {
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
                 self.transform = .identity
             }
         }

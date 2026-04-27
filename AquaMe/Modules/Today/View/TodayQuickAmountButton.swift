@@ -29,8 +29,10 @@ final class TodayQuickAmountButton: UIControl {
         static let pressDuration: TimeInterval = 0.12
         static let flashHoldDuration: TimeInterval = 0.85
         static let flashFadeDuration: TimeInterval = 0.6
-        /// Длительность одного «pulse» при быстром тапе — масштаб и цвет плавно играют 1 сек.
+        /// Длительность highlight-pulse: 1 сек indigo → серый.
         static let tapPulseDuration: TimeInterval = 1.0
+        /// Длительность shrink-pulse: симметрично 180мс вниз + 180мс обратно.
+        static let shrinkPulseDuration: TimeInterval = 0.36
         static let longPressThreshold: TimeInterval = 0.20
     }
 
@@ -218,17 +220,17 @@ private extension TodayQuickAmountButton {
 
     func playShrinkPulse() {
         UIView.animateKeyframes(
-            withDuration: Constants.tapPulseDuration,
+            withDuration: Constants.shrinkPulseDuration,
             delay: 0,
             options: [.allowUserInteraction]
         ) {
-            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.18) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
                 self.transform = CGAffineTransform(
                     scaleX: Constants.pressedScale,
                     y: Constants.pressedScale
                 )
             }
-            UIView.addKeyframe(withRelativeStartTime: 0.18, relativeDuration: 0.82) {
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
                 self.transform = .identity
             }
         }
