@@ -49,6 +49,12 @@ final class WaterStorage: WaterStorageProtocol {
         static let water = "water"
     }
 
+    private enum Limits {
+
+        /// Жёсткий потолок на размер выборки: 30 записей в день × 90 дней с запасом.
+        static let maxRecordsPerQuery = 3000
+    }
+
     private enum StorageError: LocalizedError {
 
         case notAuthenticated
@@ -98,6 +104,7 @@ final class WaterStorage: WaterStorageProtocol {
         collection
             .whereField("date", isGreaterThanOrEqualTo: Timestamp(date: start))
             .whereField("date", isLessThan: Timestamp(date: end))
+            .limit(to: Limits.maxRecordsPerQuery)
             .getDocuments { snapshot, error in
                 if let error {
                     completion(.failure(error))

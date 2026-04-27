@@ -78,7 +78,7 @@ final class ProgressCalendarView: UIView {
         stack.distribution = .fillEqually
         stack.spacing = Constants.cellSpacing
 
-        for symbol in ["M", "T", "W", "T", "F", "S", "S"] {
+        for symbol in Self.weekdaySymbols() {
             let label = UILabel()
             label.text = symbol
             label.font = .systemFont(ofSize: Constants.weekdayFontSize, weight: .medium)
@@ -89,6 +89,17 @@ final class ProgressCalendarView: UIView {
 
         return stack
     }()
+
+    /// Берём короткие подписи дней недели из календаря и поворачиваем по `firstWeekday`,
+    /// чтобы первая колонка совпадала с тем, с чего начинается неделя у юзера.
+    private static func weekdaySymbols() -> [String] {
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
+        let firstIndex = calendar.firstWeekday - 1
+
+        return Array(symbols[firstIndex...] + symbols[..<firstIndex])
+    }
 
     private lazy var grid: UIStackView = {
         let stack = UIStackView()
@@ -224,7 +235,7 @@ private extension ProgressCalendarView {
 
 // MARK: - ProgressCalendarLegendView
 
-final class ProgressCalendarLegendView: UIView {
+private final class ProgressCalendarLegendView: UIView {
 
     init() {
         super.init(frame: .zero)

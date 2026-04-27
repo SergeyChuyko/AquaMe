@@ -45,13 +45,13 @@ final class ProgressViewModel: ProgressViewModelProtocol {
         self.visibleMonthAnchor = calendar.startOfMonth(for: Date())
 
         let monthFormatter = DateFormatter()
-        monthFormatter.dateFormat = "LLLL yyyy"
-        monthFormatter.locale = Locale(identifier: "en_US_POSIX")
+        monthFormatter.locale = Locale.current
+        monthFormatter.setLocalizedDateFormatFromTemplate("LLLLyyyy")
         self.monthFormatter = monthFormatter
 
         let weekdayFormatter = DateFormatter()
-        weekdayFormatter.dateFormat = "EEE"
-        weekdayFormatter.locale = Locale(identifier: "en_US_POSIX")
+        weekdayFormatter.locale = Locale.current
+        weekdayFormatter.setLocalizedDateFormatFromTemplate("EEE")
         self.weekdayFormatter = weekdayFormatter
 
         self.state = ProgressState(
@@ -62,7 +62,7 @@ final class ProgressViewModel: ProgressViewModelProtocol {
                 avgIntakeMl: 0,
                 avgChangePercent: 0,
                 bestDayMl: 0,
-                bestWeekLiters: 0,
+                bestWeekMl: 0,
                 isCurrentWeekBest: false,
                 streakDays: 0,
                 streakDelta: 0
@@ -118,14 +118,17 @@ private extension ProgressViewModel {
         }
     }
 
-    /// Грузит записи за окно: от начала отображаемого месяца минус 90 дней до конца месяца.
-    /// Этого достаточно для текущего месяца + recent stats (среднее, лучшая неделя, streak).
+    /// Грузит записи за окно: 14 дней до начала отображаемого месяца — этого хватает на
+    /// `prev avg` для текущего месяца. Если visible month в прошлом, окно расширяется до
+    /// сегодня, чтобы trend/stats оставались актуальными.
     func loadData() {
         let monthStart = calendar.startOfMonth(for: visibleMonthAnchor)
         guard let monthEnd = calendar.date(byAdding: .month, value: 1, to: monthStart) else { return }
 
-        let windowStart = calendar.date(byAdding: .day, value: -90, to: monthStart) ?? monthStart
-        let windowEnd = max(monthEnd, calendar.startOfDay(for: Date()).addingTimeInterval(86400))
+        let today = calendar.startOfDay(for: Date())
+        let windowStart = calendar.date(byAdding: .day, value: -14, to: monthStart) ?? monthStart
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) ?? today
+        let windowEnd = max(monthEnd, tomorrow)
 
         storage.loadRecords(from: windowStart, to: windowEnd) { [weak self] result in
             DispatchQueue.main.async {
@@ -150,6 +153,7 @@ private extension ProgressViewModel {
     func recompute(records: [WaterRecord], monthStart: Date, monthEnd: Date) {
         var dailyTotals = Self.dailyTotals(records: records, calendar: calendar)
 
+        #if DEBUG
         if dailyTotals.isEmpty {
             dailyTotals = Self.mockTotals(
                 monthStart: monthStart,
@@ -158,6 +162,7 @@ private extension ProgressViewModel {
                 calendar: calendar
             )
         }
+        #endif
 
         state.days = buildCalendarDays(
             monthStart: monthStart,
@@ -175,10 +180,9 @@ private extension ProgressViewModel {
         monthEnd: Date,
         dailyTotals: [Date: Int]
     ) -> [ProgressDay] {
-        // Лидирующее дополнение до понедельника
-        let leadingWeekday = calendar.component(.weekday, from: monthStart)
-        let mondayBased = (leadingWeekday + 5) % 7  // Mon=0, Tue=1, ..., Sun=6
-        let leadingPad = mondayBased
+        // Дополнение до начала недели — независимо от того, какой firstWeekday у календаря.
+        let weekday = calendar.component(.weekday, from: monthStart)
+        let leadingPad = (weekday - calendar.firstWeekday + 7) % 7
         let today = calendar.startOfDay(for: Date())
 
         var days: [ProgressDay] = []
@@ -191,7 +195,6 @@ private extension ProgressViewModel {
                 days.append(ProgressDay(
                     date: date,
                     dayNumber: nil,
-                    total: 0,
                     status: .pending,
                     isToday: false
                 ))
@@ -212,7 +215,6 @@ private extension ProgressViewModel {
             days.append(ProgressDay(
                 date: cursor,
                 dayNumber: dayNumber,
-                total: total,
                 status: status,
                 isToday: calendar.isDate(cursor, inSameDayAs: today)
             ))
@@ -231,7 +233,6 @@ private extension ProgressViewModel {
             days.append(ProgressDay(
                 date: date,
                 dayNumber: nil,
-                total: 0,
                 status: .pending,
                 isToday: false
             ))
@@ -280,19 +281,15 @@ private extension ProgressViewModel {
 
         let bestDay = dailyTotals.values.max() ?? 0
 
-        // Best week: последние 4 недели, считаем сумму выпитого, выбираем максимум.
-        let weeks: [Int] = (0..<4).compactMap { weekOffset in
-            (0..<7).compactMap { dayOffset -> Int? in
-                let totalOffset = weekOffset * 7 + dayOffset
-                guard let day = calendar.date(byAdding: .day, value: -totalOffset, to: today) else { return nil }
-
-                return dailyTotals[day]
-            }.reduce(0, +)
+        // Текущая неделя — недо-неделя, оценивается отдельно: считаем уже накопленную сумму
+        // и сравниваем с лучшей из ПОЛНЫХ недель.
+        let currentWeekMl = sumOfWeek(dailyTotals: dailyTotals, weekOffset: 0, today: today)
+        let completedWeeksMl = (1..<4).map { offset in
+            sumOfWeek(dailyTotals: dailyTotals, weekOffset: offset, today: today)
         }
-
-        let bestWeekMl = weeks.max() ?? 0
-        let bestWeekLiters = Double(bestWeekMl) / 1000
-        let isCurrentWeekBest = (weeks.first ?? 0) == bestWeekMl && bestWeekMl > 0
+        let bestCompletedWeek = completedWeeksMl.max() ?? 0
+        let bestWeekMl = max(currentWeekMl, bestCompletedWeek)
+        let isCurrentWeekBest = currentWeekMl > 0 && currentWeekMl >= bestCompletedWeek
 
         let streak = currentStreak(dailyTotals: dailyTotals, from: today)
         let prevStreak = currentStreak(
@@ -304,17 +301,35 @@ private extension ProgressViewModel {
             avgIntakeMl: avg,
             avgChangePercent: avgChange,
             bestDayMl: bestDay,
-            bestWeekLiters: bestWeekLiters,
+            bestWeekMl: bestWeekMl,
             isCurrentWeekBest: isCurrentWeekBest,
             streakDays: streak,
             streakDelta: streak - prevStreak
         )
     }
 
+    func sumOfWeek(dailyTotals: [Date: Int], weekOffset: Int, today: Date) -> Int {
+        (0..<7).compactMap { dayOffset -> Int? in
+            let totalOffset = weekOffset * 7 + dayOffset
+            guard let day = calendar.date(byAdding: .day, value: -totalOffset, to: today) else { return nil }
+
+            return dailyTotals[day]
+        }.reduce(0, +)
+    }
+
     /// Сколько подряд идущих дней до `from` включительно достигнута цель.
+    /// Если `from == today` и норма ещё не выполнена — день пропускается, чтобы streak
+    /// не обнулялся пока день не закончился.
     func currentStreak(dailyTotals: [Date: Int], from start: Date) -> Int {
         var count = 0
         var cursor = start
+        let today = calendar.startOfDay(for: Date())
+
+        if cursor == today, (dailyTotals[cursor] ?? 0) < dailyGoal {
+            guard let yesterday = calendar.date(byAdding: .day, value: -1, to: cursor) else { return 0 }
+
+            cursor = yesterday
+        }
 
         while true {
             let total = dailyTotals[cursor] ?? 0
@@ -348,57 +363,7 @@ private extension ProgressViewModel {
         return totals
     }
 
-    /// Заглушка пока Firestore-правила не задеплоены. Пока хранилище возвращает пусто,
-    /// показываем разнообразный пример — циклически Goal Met / Partial / Missed на прошедшие дни.
-    /// TODO: убрать когда подтянем реальные данные.
-    static func mockTotals(
-        monthStart: Date,
-        monthEnd: Date,
-        dailyGoal: Int,
-        calendar: Calendar
-    ) -> [Date: Int] {
-        var totals: [Date: Int] = [:]
-        let today = calendar.startOfDay(for: Date())
-        var cursor = monthStart
-
-        while cursor < monthEnd && cursor < today {
-            let dayNumber = calendar.component(.day, from: cursor)
-            let bucket = dayNumber % 3
-            let ratio: Double
-
-            switch bucket {
-            case 0:
-                ratio = 1.0 + Double(dayNumber % 4) * 0.05  // goalMet, 100..115%
-
-            case 1:
-                ratio = 0.55 + Double(dayNumber % 4) * 0.08  // partial, 55..79%
-
-            default:
-                ratio = 0.10 + Double(dayNumber % 4) * 0.07  // missed, 10..31%
-            }
-
-            totals[cursor] = Int(Double(dailyGoal) * ratio)
-
-            guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else { break }
-
-            cursor = next
-        }
-
-        return totals
-    }
-
     func emit() {
         onStateChange?(state)
-    }
-}
-
-// MARK: - Calendar + StartOfMonth
-
-extension Calendar {
-
-    func startOfMonth(for date: Date) -> Date {
-        let components = dateComponents([.year, .month], from: date)
-
-        return self.date(from: components) ?? startOfDay(for: date)
     }
 }

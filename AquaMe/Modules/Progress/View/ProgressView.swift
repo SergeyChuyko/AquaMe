@@ -117,11 +117,12 @@ extension ProgressView {
             badgeTone: .neutral
         ))
 
+        let bestWeek = formatBestWeek(ml: stats.bestWeekMl, unit: unit)
         bestWeekCard.update(with: ProgressStatCardModel(
             icon: Images.calendar,
             title: "Best Week",
-            value: String(format: "%.1f", stats.bestWeekLiters),
-            unit: "L",
+            value: bestWeek.value,
+            unit: bestWeek.unit,
             badge: stats.isCurrentWeekBest ? "Current" : nil,
             badgeTone: .neutral
         ))
@@ -135,7 +136,10 @@ extension ProgressView {
             badgeTone: .neutral
         ))
 
-        trendChart.update(points: state.trend, isCurrentWeekActive: true)
+        trendChart.update(
+            points: state.trend,
+            showsActiveWeekBadge: stats.isCurrentWeekBest
+        )
     }
 }
 
@@ -172,9 +176,11 @@ private extension ProgressView {
         contentStack.addArrangedSubview(perfHeader)
         contentStack.setCustomSpacing(Constants.groupSpacing, after: perfHeader)
 
-        contentStack.addArrangedSubview(makeRow(views: [avgIntakeCard, bestDayCard]))
-        contentStack.addArrangedSubview(makeRow(views: [bestWeekCard, streakCard]))
-        contentStack.setCustomSpacing(Constants.groupSpacing, after: contentStack.arrangedSubviews[2])
+        let topStatsRow = makeRow(views: [avgIntakeCard, bestDayCard])
+        let bottomStatsRow = makeRow(views: [bestWeekCard, streakCard])
+        contentStack.addArrangedSubview(topStatsRow)
+        contentStack.addArrangedSubview(bottomStatsRow)
+        contentStack.setCustomSpacing(Constants.groupSpacing, after: topStatsRow)
 
         contentStack.addArrangedSubview(trendChart)
     }
@@ -216,14 +222,18 @@ private extension ProgressView {
         ])
     }
 
-    func formatNumber(_ value: String) -> String {
-        guard let intValue = Int(value) else { return value }
-
+    static let groupedFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.groupingSeparator = ","
 
-        return formatter.string(from: NSNumber(value: intValue)) ?? value
+        return formatter
+    }()
+
+    func formatNumber(_ value: String) -> String {
+        guard let intValue = Int(value) else { return value }
+
+        return Self.groupedFormatter.string(from: NSNumber(value: intValue)) ?? value
     }
 
     func formatPercentBadge(_ percent: Int) -> String? {
@@ -232,5 +242,19 @@ private extension ProgressView {
         let sign = percent > 0 ? "+" : ""
 
         return "\(sign)\(percent)%"
+    }
+
+    /// Best Week выводим в крупных единицах: литры в метрической, oz в имперской.
+    /// Хранится канонически в мл — конвертируется только тут на дисплее.
+    func formatBestWeek(ml: Int, unit: UserProfile.MeasureUnit) -> (value: String, unit: String) {
+        switch unit {
+        case .ml:
+            return (String(format: "%.1f", Double(ml) / 1000), "L")
+
+        case .oz:
+            let totalOz = Int((Double(ml) / UserProfile.MeasureUnit.mlPerOunce).rounded())
+
+            return ("\(totalOz)", "oz")
+        }
     }
 }

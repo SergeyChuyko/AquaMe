@@ -16,7 +16,6 @@ struct ProgressDay: Equatable {
     let date: Date
     /// Число месяца (1...31). Если день не из текущего месяца — `nil`.
     let dayNumber: Int?
-    let total: Int
     let status: WaterDayStatus
     let isToday: Bool
 }
@@ -38,7 +37,7 @@ struct ProgressStats: Equatable {
     let avgIntakeMl: Int
     let avgChangePercent: Int
     let bestDayMl: Int
-    let bestWeekLiters: Double
+    let bestWeekMl: Int
     let isCurrentWeekBest: Bool
     let streakDays: Int
     let streakDelta: Int

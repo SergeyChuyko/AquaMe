@@ -32,6 +32,10 @@ final class ProgressTrendChartView: UIView {
         static let barCornerRadius: CGFloat = 5
         static let barSpacing: CGFloat = 8
         static let barHorizontalInset: CGFloat = 6
+        /// На сколько раздуваем верх оси относительно реального максимума.
+        static let yAxisHeadroom: Double = 1.1
+        /// Если данных нет, ось всё равно рисуется — берём такой потолок.
+        static let fallbackMaxValue: Int = 2600
     }
 
     // MARK: - Private properties
@@ -118,8 +122,8 @@ final class ProgressTrendChartView: UIView {
 
 extension ProgressTrendChartView {
 
-    func update(points: [ProgressTrendPoint], isCurrentWeekActive: Bool) {
-        badge.isHidden = !isCurrentWeekActive
+    func update(points: [ProgressTrendPoint], showsActiveWeekBadge: Bool) {
+        badge.isHidden = !showsActiveWeekBadge
         rebuild(points: points)
     }
 }
@@ -173,8 +177,10 @@ private extension ProgressTrendChartView {
     }
 
     func rebuild(points: [ProgressTrendPoint]) {
-        let max = points.map(\.totalMl).max() ?? 0
-        maxValue = max < 100 ? 2600 : Int((Double(max) * 1.1 / 100).rounded()) * 100
+        let peak = points.map(\.totalMl).max() ?? 0
+        maxValue = peak < 100
+            ? Constants.fallbackMaxValue
+            : Int((Double(peak) * Constants.yAxisHeadroom / 100).rounded()) * 100
         rebuildYAxis()
         rebuildBars(points: points)
         rebuildXAxis(points: points)
@@ -184,7 +190,7 @@ private extension ProgressTrendChartView {
         yAxisStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         yAxisLabels = []
 
-        for step in 0...Constants.yAxisSteps - 1 {
+        for step in 0..<Constants.yAxisSteps {
             let value = maxValue * (Constants.yAxisSteps - 1 - step) / (Constants.yAxisSteps - 1)
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
