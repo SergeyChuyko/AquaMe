@@ -348,7 +348,7 @@ private extension ProfileSheetView {
     func setupConstraintsForEditButton() {
         NSLayoutConstraint.activate([
             editButton.topAnchor.constraint(
-                greaterThanOrEqualTo: bottomStatsStack.bottomAnchor,
+                equalTo: bottomStatsStack.bottomAnchor,
                 constant: Constants.buttonTopSpacing
             ),
             editButton.leadingAnchor.constraint(
@@ -358,10 +358,6 @@ private extension ProfileSheetView {
             editButton.trailingAnchor.constraint(
                 equalTo: trailingAnchor,
                 constant: -Constants.sidePadding
-            ),
-            editButton.bottomAnchor.constraint(
-                equalTo: bottomAnchor,
-                constant: -Constants.buttonBottomSpacing
             ),
         ])
     }

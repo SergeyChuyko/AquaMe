@@ -79,16 +79,11 @@ final class TodayViewModel: TodayViewModelProtocol {
         recomputeTotal()
         emit()
 
-        storage.add(record) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self else { return }
-                if case .failure = result {
-                    self.records.removeAll { $0.id == record.id }
-                    self.recomputeTotal()
-                    self.emit()
-                }
-            }
-        }
+        // Шлём в Firestore fire-and-forget. Если запись упадёт (например, не задеплоены
+        // rules) — для текущей сессии оставляем локальный optimistic-стейт, чтобы юзер
+        // не видел «вычитание» сразу после тапа. На следующей загрузке reconcile подтянет
+        // реальные записи с сервера.
+        storage.add(record, completion: nil)
     }
 }
 

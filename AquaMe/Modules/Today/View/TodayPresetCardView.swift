@@ -11,7 +11,8 @@ import UIKit
 // MARK: - TodayPresetCardView
 
 /// Карточка пресета объёма (250 мл / 500 мл).
-/// Имеет состояние выбран/не выбран и режим remove (красный).
+/// По умолчанию серая. На тапе кратко вспыхивает акцентным цветом и плавно
+/// возвращается к серому через `flashFadeDuration`.
 final class TodayPresetCardView: UIView {
 
     // MARK: - Private enums
@@ -25,6 +26,8 @@ final class TodayPresetCardView: UIView {
         static let iconBackgroundSize: CGFloat = 44
         static let titleFontSize: CGFloat = 17
         static let stackSpacing: CGFloat = 8
+        static let flashHoldDuration: TimeInterval = 0.15
+        static let flashFadeDuration: TimeInterval = 1.6
     }
 
     private enum Images {
@@ -45,6 +48,7 @@ final class TodayPresetCardView: UIView {
     // MARK: - Private properties
 
     private var isRemoveMode: Bool = false
+    private var fadeWorkItem: DispatchWorkItem?
 
     private lazy var iconBackground: UIView = {
         let view = UIView()
@@ -101,7 +105,22 @@ extension TodayPresetCardView {
     func update(isRemoveMode: Bool, title: String) {
         self.isRemoveMode = isRemoveMode
         titleLabel.text = title
-        applyStyle()
+        applyInactiveStyle()
+    }
+
+    func flashSelection() {
+        applyActiveStyle()
+        fadeWorkItem?.cancel()
+
+        let item = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+
+            UIView.animate(withDuration: Constants.flashFadeDuration) {
+                self.applyInactiveStyle()
+            }
+        }
+        fadeWorkItem = item
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.flashHoldDuration, execute: item)
     }
 }
 
@@ -132,13 +151,21 @@ private extension TodayPresetCardView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         addGestureRecognizer(tap)
         isUserInteractionEnabled = true
-        applyStyle()
+        applyInactiveStyle()
     }
 
-    func applyStyle() {
+    func applyInactiveStyle() {
+        backgroundColor = .secondarySystemBackground
+        layer.borderColor = UIColor.separator.withAlphaComponent(0.4).cgColor
+        iconBackground.backgroundColor = .systemBackground
+        iconImageView.tintColor = .secondaryLabel
+        titleLabel.textColor = .label
+    }
+
+    func applyActiveStyle() {
         let accent: UIColor = isRemoveMode ? .systemRed : .systemIndigo
-        backgroundColor = accent.withAlphaComponent(0.07)
-        layer.borderColor = accent.withAlphaComponent(0.5).cgColor
+        backgroundColor = accent.withAlphaComponent(0.10)
+        layer.borderColor = accent.cgColor
         iconBackground.backgroundColor = accent
         iconImageView.tintColor = .white
         titleLabel.textColor = accent
@@ -146,6 +173,7 @@ private extension TodayPresetCardView {
 
     @objc
     func handleTap() {
+        flashSelection()
         onTap?()
     }
 }
