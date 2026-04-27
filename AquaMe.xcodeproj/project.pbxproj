@@ -24,6 +24,12 @@
 		FB000000000000000000022 /* TodayProgressRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000022 /* TodayProgressRingView.swift */; };
 		FB000000000000000000023 /* TodayPresetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000023 /* TodayPresetCardView.swift */; };
 		FB000000000000000000024 /* TodayQuickAmountButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000024 /* TodayQuickAmountButton.swift */; };
+		FB000000000000000000030 /* SettingsSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000030 /* SettingsSectionHeader.swift */; };
+		FB000000000000000000031 /* SettingsValueCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000031 /* SettingsValueCard.swift */; };
+		FB000000000000000000032 /* SettingsRemindersCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000032 /* SettingsRemindersCard.swift */; };
+		FB000000000000000000033 /* SettingsUnitToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000033 /* SettingsUnitToggle.swift */; };
+		FB000000000000000000040 /* HydrationReminderMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000040 /* HydrationReminderMessage.swift */; };
+		FB000000000000000000041 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000041 /* RemindersService.swift */; };
 		EA5B6A4C2F816128005357F6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A482F816128005357F6 /* AuthViewModel.swift */; };
 		EA5B6A4D2F816128005357F6 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A442F816128005357F6 /* AuthViewController.swift */; };
 		EA5B6A4E2F816128005357F6 /* AuthViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */; };
@@ -92,6 +98,12 @@
 		FB100000000000000000022 /* TodayProgressRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayProgressRingView.swift; sourceTree = "<group>"; };
 		FB100000000000000000023 /* TodayPresetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayPresetCardView.swift; sourceTree = "<group>"; };
 		FB100000000000000000024 /* TodayQuickAmountButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayQuickAmountButton.swift; sourceTree = "<group>"; };
+		FB100000000000000000030 /* SettingsSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSectionHeader.swift; sourceTree = "<group>"; };
+		FB100000000000000000031 /* SettingsValueCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsValueCard.swift; sourceTree = "<group>"; };
+		FB100000000000000000032 /* SettingsRemindersCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRemindersCard.swift; sourceTree = "<group>"; };
+		FB100000000000000000033 /* SettingsUnitToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUnitToggle.swift; sourceTree = "<group>"; };
+		FB100000000000000000040 /* HydrationReminderMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationReminderMessage.swift; sourceTree = "<group>"; };
+		FB100000000000000000041 /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
 		FB100000000000000000003 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		FB100000000000000000002 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA100000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -579,6 +591,10 @@
 			isa = PBXGroup;
 			children = (
 				FA100000000000000000042 /* SettingsView.swift */,
+				FB100000000000000000030 /* SettingsSectionHeader.swift */,
+				FB100000000000000000031 /* SettingsValueCard.swift */,
+				FB100000000000000000032 /* SettingsRemindersCard.swift */,
+				FB100000000000000000033 /* SettingsUnitToggle.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -683,6 +699,7 @@
 			children = (
 				FB100000000000000000004 /* UserProfile.swift */,
 				FB100000000000000000020 /* WaterRecord.swift */,
+				FB100000000000000000040 /* HydrationReminderMessage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -736,6 +753,7 @@
 				FB100000000000000000001 /* AuthService.swift */,
 				FB100000000000000000005 /* ProfileService.swift */,
 				FB100000000000000000021 /* WaterStorage.swift */,
+				FB100000000000000000041 /* RemindersService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -876,6 +894,12 @@
 				FB000000000000000000022 /* TodayProgressRingView.swift in Sources */,
 				FB000000000000000000023 /* TodayPresetCardView.swift in Sources */,
 				FB000000000000000000024 /* TodayQuickAmountButton.swift in Sources */,
+				FB000000000000000000030 /* SettingsSectionHeader.swift in Sources */,
+				FB000000000000000000031 /* SettingsValueCard.swift in Sources */,
+				FB000000000000000000032 /* SettingsRemindersCard.swift in Sources */,
+				FB000000000000000000033 /* SettingsUnitToggle.swift in Sources */,
+				FB000000000000000000040 /* HydrationReminderMessage.swift in Sources */,
+				FB000000000000000000041 /* RemindersService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
