@@ -92,7 +92,7 @@ private extension ProgressDayCell {
 
         case .partial:
             backgroundColor = UIColor.systemPink.withAlphaComponent(0.45)
-            dayLabel.textColor = .systemPink
+            dayLabel.textColor = .label
 
         case .missed:
             backgroundColor = UIColor.separator.withAlphaComponent(0.20)
