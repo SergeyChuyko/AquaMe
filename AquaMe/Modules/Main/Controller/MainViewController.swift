@@ -19,8 +19,9 @@ final class MainViewController: UIViewController {
 
     private enum Constants {
 
-        /// Высота таб бара без учёта safe area снизу.
-        static let tabBarHeight: CGFloat = 49
+        /// Высота таб бара без учёта safe area снизу. Без учёта плавающего круга,
+        /// который у MainTabBarView выходит за верхнюю границу — это рисуется вне `bounds`.
+        static let tabBarHeight: CGFloat = 64
         static let profileSheetHeight: CGFloat = 480
     }
 
@@ -92,10 +93,6 @@ extension MainViewController: MainTabBarViewDelegate {
     /// Переключает на выбранную вкладку.
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab) {
         showPage(at: tab.rawValue)
-    }
-
-    func mainTabBarViewDidTapProfile(_ view: MainTabBarView) {
-        handleProfileTap()
     }
 }
 

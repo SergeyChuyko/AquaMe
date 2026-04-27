@@ -10,25 +10,21 @@ import UIKit
 
 // MARK: - MainTabBarViewDelegate
 
-/// Уведомляет контейнер о смене вкладки пользователем.
 protocol MainTabBarViewDelegate: AnyObject {
 
-    /// Вызывается когда пользователь нажал на одну из вкладок таб бара.
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab)
-    func mainTabBarViewDidTapProfile(_ view: MainTabBarView)
 }
 
 // MARK: - MainTabBarView
 
-/// Кастомный таб бар с тремя вкладками: Progress, Today (центральная), Settings.
-/// Центральная вкладка Today чуть больше остальных по иконке.
+/// Кастомный таб-бар: белая плашка с круговым вырезом под активным табом и
+/// плавающим индиго-кругом, в котором сидит иконка активного таба.
+/// При смене таба круг и вырез скользят с пружинной анимацией.
 final class MainTabBarView: UIView {
 
     // MARK: - Tab
 
-    /// Перечисление вкладок таб бара.
-    /// Используется чтобы не оперировать голыми индексами (0, 1, 2) — только .progress, .today, .settings.
-    enum Tab: Int {
+    enum Tab: Int, CaseIterable {
 
         case progress = 0
         case today = 1
@@ -39,10 +35,30 @@ final class MainTabBarView: UIView {
 
     private enum Constants {
 
-        static let iconSize: CGFloat = 24
-        static let centerIconSize: CGFloat = 30
-        static let barHeight: CGFloat = 49
-        static let separatorHeight: CGFloat = 0.5
+        static let barHeight: CGFloat = 64
+        static let cornerRadius: CGFloat = 24
+        static let activeRadius: CGFloat = 30
+        /// Сколько круг выглядывает над верхней кромкой бара.
+        static let activeBumpHeight: CGFloat = 26
+        static let cutoutHorizontalCurve: CGFloat = 18
+        static let iconSize: CGFloat = 22
+        static let activeIconSize: CGFloat = 22
+        static let labelFontSize: CGFloat = 11
+        static let animationDuration: TimeInterval = 0.32
+    }
+
+    private enum Style {
+
+        static let activeColor = UIColor.systemIndigo
+        static let inactiveColor = UIColor.secondaryLabel
+        static let barColor = UIColor.systemBackground
+    }
+
+    private struct TabModel {
+
+        let tab: Tab
+        let icon: UIImage?
+        let title: String
     }
 
     // MARK: - Public properties
@@ -51,80 +67,57 @@ final class MainTabBarView: UIView {
 
     // MARK: - Private properties
 
-    private lazy var progressButton: UIButton = {
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            didTapTab(.progress)
-        }
-        let button = UIButton(primaryAction: action)
-        let config = UIImage.SymbolConfiguration(pointSize: Constants.iconSize, weight: .medium)
-        button.setImage(UIImage(systemName: "chart.bar.fill", withConfiguration: config), for: .normal)
-        button.tintColor = .systemGray
+    private var selectedTab: Tab = .today
 
-        return button
+    private let tabs: [TabModel] = [
+        TabModel(tab: .progress, icon: UIImage(systemName: "chart.bar.fill"), title: "Progress"),
+        TabModel(tab: .today, icon: UIImage(systemName: "drop.fill"), title: "Today"),
+        TabModel(tab: .settings, icon: UIImage(systemName: "gearshape.fill"), title: "Settings"),
+    ]
+
+    private let backgroundLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.fillColor = Style.barColor.cgColor
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.06
+        layer.shadowRadius = 10
+        layer.shadowOffset = CGSize(width: 0, height: -2)
+
+        return layer
     }()
 
-    private lazy var todayButton: UIButton = {
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            didTapTab(.today)
-        }
-        let button = UIButton(primaryAction: action)
-        let config = UIImage.SymbolConfiguration(pointSize: Constants.centerIconSize, weight: .medium)
-        button.setImage(UIImage(systemName: "drop.fill", withConfiguration: config), for: .normal)
-        button.tintColor = .systemGray
-
-        return button
-    }()
-
-    private lazy var settingsButton: UIButton = {
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            didTapTab(.settings)
-        }
-        let button = UIButton(primaryAction: action)
-        let config = UIImage.SymbolConfiguration(pointSize: Constants.iconSize, weight: .medium)
-        button.setImage(UIImage(systemName: "gearshape.fill", withConfiguration: config), for: .normal)
-        button.tintColor = .systemGray
-
-        return button
-    }()
-
-    private lazy var profileButton: UIButton = {
-        let action = UIAction { [weak self] _ in
-            guard let self else { return }
-            didTapProfile()
-        }
-        let button = UIButton(primaryAction: action)
-        let config = UIImage.SymbolConfiguration(pointSize: Constants.iconSize, weight: .medium)
-        button.setImage(
-            UIImage(systemName: "person.crop.circle.fill", withConfiguration: config),
-            for: .normal
-        )
-        button.tintColor = .systemGray
-
-        return button
-    }()
-
-    /// Горизонтальный стек для кнопок.
-    private lazy var stackView: UIStackView = {
-        let stack = UIStackView(
-            arrangedSubviews: [progressButton, todayButton, settingsButton, profileButton]
-        )
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.translatesAutoresizingMaskIntoConstraints = false
-
-        return stack
-    }()
-
-    /// Тонкая линия-разделитель сверху таб бара.
-    private lazy var separatorView: UIView = {
+    private lazy var activeCircle: UIView = {
         let view = UIView()
-        view.backgroundColor = .separator
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = Style.activeColor
+        view.layer.cornerRadius = Constants.activeRadius
+        view.isUserInteractionEnabled = false
 
         return view
+    }()
+
+    private lazy var activeIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.tintColor = .white
+        imageView.contentMode = .scaleAspectFit
+
+        return imageView
+    }()
+
+    private var activeCircleCenterX: NSLayoutConstraint?
+
+    private var tabContainers: [UIControl] = []
+    private var inactiveIconViews: [UIImageView] = []
+    private var inactiveLabels: [UILabel] = []
+
+    private lazy var tabsStack: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+
+        return stack
     }()
 
     // MARK: - Initialization
@@ -136,34 +129,28 @@ final class MainTabBarView: UIView {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
+
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateBarPath(animated: false)
+        updateCirclePosition(animated: false)
+        applySelection(to: selectedTab, animated: false)
+    }
 }
 
-// MARK: - MainTabBarView + Public methods
+// MARK: - MainTabBarView + Public
 
 extension MainTabBarView {
 
-    /// Обновляет визуальное состояние кнопок — выделяет активную вкладку.
     func selectTab(_ tab: Tab) {
-        let buttons = [progressButton, todayButton, settingsButton]
-        buttons.enumerated().forEach { index, button in
-            let isSelected = index == tab.rawValue
-            button.tintColor = isSelected ? .systemBlue : .systemGray
-        }
-        profileButton.tintColor = .systemGray
-    }
-}
+        guard tab != selectedTab else { return }
 
-// MARK: - MainTabBarView + Actions
-
-private extension MainTabBarView {
-
-    func didTapTab(_ tab: Tab) {
-        selectTab(tab)
-        delegate?.mainTabBarView(self, didSelectTab: tab)
-    }
-
-    func didTapProfile() {
-        delegate?.mainTabBarViewDidTapProfile(self)
+        selectedTab = tab
+        updateBarPath(animated: true)
+        updateCirclePosition(animated: true)
+        applySelection(to: tab, animated: true)
     }
 }
 
@@ -172,36 +159,187 @@ private extension MainTabBarView {
 private extension MainTabBarView {
 
     func setup() {
-        setupViews()
-        setupConstraints()
-    }
+        backgroundColor = .clear
+        layer.addSublayer(backgroundLayer)
+        addSubview(activeCircle)
+        activeCircle.addSubview(activeIcon)
 
-    func setupViews() {
-        backgroundColor = .systemBackground
-        addSubview(separatorView)
-        addSubview(stackView)
-    }
-
-    func setupConstraints() {
-        setupConstraintsForSeparatorView()
-        setupConstraintsForStackView()
-    }
-
-    func setupConstraintsForSeparatorView() {
         NSLayoutConstraint.activate([
-            separatorView.topAnchor.constraint(equalTo: topAnchor),
-            separatorView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            separatorView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            separatorView.heightAnchor.constraint(equalToConstant: Constants.separatorHeight),
+            activeCircle.widthAnchor.constraint(equalToConstant: Constants.activeRadius * 2),
+            activeCircle.heightAnchor.constraint(equalToConstant: Constants.activeRadius * 2),
+            activeCircle.centerYAnchor.constraint(
+                equalTo: topAnchor,
+                constant: Constants.barHeight / 2 - Constants.activeBumpHeight
+            ),
+
+            activeIcon.centerXAnchor.constraint(equalTo: activeCircle.centerXAnchor),
+            activeIcon.centerYAnchor.constraint(equalTo: activeCircle.centerYAnchor),
+            activeIcon.widthAnchor.constraint(equalToConstant: Constants.activeIconSize),
+            activeIcon.heightAnchor.constraint(equalToConstant: Constants.activeIconSize),
         ])
+
+        let centerX = activeCircle.centerXAnchor.constraint(equalTo: leadingAnchor)
+        centerX.isActive = true
+        activeCircleCenterX = centerX
+
+        setupTabContainers()
     }
 
-    func setupConstraintsForStackView() {
+    func setupTabContainers() {
+        addSubview(tabsStack)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stackView.heightAnchor.constraint(equalToConstant: Constants.barHeight),
+            tabsStack.topAnchor.constraint(equalTo: topAnchor),
+            tabsStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tabsStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tabsStack.heightAnchor.constraint(equalToConstant: Constants.barHeight),
         ])
+
+        for (index, model) in tabs.enumerated() {
+            let container = UIControl()
+            container.translatesAutoresizingMaskIntoConstraints = false
+            container.tag = index
+            container.addTarget(self, action: #selector(handleTabTap(_:)), for: .touchUpInside)
+            tabsStack.addArrangedSubview(container)
+            tabContainers.append(container)
+
+            let iconView = UIImageView(image: model.icon)
+            iconView.translatesAutoresizingMaskIntoConstraints = false
+            iconView.tintColor = Style.inactiveColor
+            iconView.contentMode = .scaleAspectFit
+            container.addSubview(iconView)
+            inactiveIconViews.append(iconView)
+
+            let label = UILabel()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.text = model.title
+            label.font = .systemFont(ofSize: Constants.labelFontSize, weight: .medium)
+            label.textColor = Style.inactiveColor
+            label.textAlignment = .center
+            container.addSubview(label)
+            inactiveLabels.append(label)
+
+            NSLayoutConstraint.activate([
+                iconView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
+                iconView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
+                iconView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                iconView.topAnchor.constraint(equalTo: container.topAnchor, constant: 12),
+
+                label.topAnchor.constraint(equalTo: iconView.bottomAnchor, constant: 4),
+                label.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                label.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            ])
+        }
+    }
+
+    @objc
+    func handleTabTap(_ sender: UIControl) {
+        guard let tab = Tab(rawValue: sender.tag) else { return }
+
+        selectTab(tab)
+        delegate?.mainTabBarView(self, didSelectTab: tab)
     }
 }
+
+// MARK: - MainTabBarView + Path & Animation
+
+private extension MainTabBarView {
+
+    func tabCenterX(for tab: Tab) -> CGFloat {
+        let segmentWidth = bounds.width / CGFloat(tabs.count)
+
+        return segmentWidth * (CGFloat(tab.rawValue) + 0.5)
+    }
+
+    func updateCirclePosition(animated: Bool) {
+        let center = tabCenterX(for: selectedTab)
+        activeCircleCenterX?.constant = center
+
+        if animated {
+            UIView.animate(
+                withDuration: Constants.animationDuration,
+                delay: 0,
+                usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 0.4
+            ) {
+                self.layoutIfNeeded()
+            }
+        } else {
+            layoutIfNeeded()
+        }
+    }
+
+    func applySelection(to tab: Tab, animated: Bool) {
+        activeIcon.image = tabs[tab.rawValue].icon
+
+        for (index, iconView) in inactiveIconViews.enumerated() {
+            let isSelected = index == tab.rawValue
+            iconView.alpha = isSelected ? 0 : 1
+            inactiveLabels[index].alpha = isSelected ? 0 : 1
+        }
+    }
+
+    func updateBarPath(animated: Bool) {
+        let path = barPath(for: selectedTab).cgPath
+
+        if animated {
+            let animation = CABasicAnimation(keyPath: "path")
+            animation.fromValue = backgroundLayer.path
+            animation.toValue = path
+            animation.duration = Constants.animationDuration
+            animation.timingFunction = CAMediaTimingFunction(controlPoints: 0.4, 0.0, 0.2, 1.0)
+            backgroundLayer.add(animation, forKey: "path")
+        }
+
+        backgroundLayer.path = path
+        backgroundLayer.frame = bounds
+    }
+
+    /// Строит путь плашки с круговым вырезом сверху под активный таб.
+    func barPath(for tab: Tab) -> UIBezierPath {
+        let rect = bounds
+        let radius = Constants.cornerRadius
+        let cutoutCenterX = tabCenterX(for: tab)
+        let cutoutRadius = Constants.activeRadius + 6
+        let curveWidth = Constants.cutoutHorizontalCurve
+
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: 0, y: rect.height))
+        path.addLine(to: CGPoint(x: 0, y: radius))
+        path.addArc(
+            withCenter: CGPoint(x: radius, y: radius),
+            radius: radius,
+            startAngle: .pi,
+            endAngle: -.pi / 2,
+            clockwise: true
+        )
+        path.addLine(to: CGPoint(x: cutoutCenterX - cutoutRadius - curveWidth, y: 0))
+        path.addQuadCurve(
+            to: CGPoint(x: cutoutCenterX - cutoutRadius, y: cutoutRadius * 0.55),
+            controlPoint: CGPoint(x: cutoutCenterX - cutoutRadius, y: 0)
+        )
+        path.addArc(
+            withCenter: CGPoint(x: cutoutCenterX, y: cutoutRadius * 0.55),
+            radius: cutoutRadius,
+            startAngle: .pi,
+            endAngle: 0,
+            clockwise: false
+        )
+        path.addQuadCurve(
+            to: CGPoint(x: cutoutCenterX + cutoutRadius + curveWidth, y: 0),
+            controlPoint: CGPoint(x: cutoutCenterX + cutoutRadius, y: 0)
+        )
+        path.addLine(to: CGPoint(x: rect.width - radius, y: 0))
+        path.addArc(
+            withCenter: CGPoint(x: rect.width - radius, y: radius),
+            radius: radius,
+            startAngle: -.pi / 2,
+            endAngle: 0,
+            clockwise: true
+        )
+        path.addLine(to: CGPoint(x: rect.width, y: rect.height))
+        path.close()
+
+        return path
+    }
+}
+
