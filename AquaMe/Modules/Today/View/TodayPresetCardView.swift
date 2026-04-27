@@ -26,8 +26,10 @@ final class TodayPresetCardView: UIView {
         static let iconBackgroundSize: CGFloat = 44
         static let titleFontSize: CGFloat = 17
         static let stackSpacing: CGFloat = 8
-        static let flashHoldDuration: TimeInterval = 0.15
-        static let flashFadeDuration: TimeInterval = 1.6
+        static let flashHoldDuration: TimeInterval = 0.85
+        static let flashFadeDuration: TimeInterval = 0.6
+        static let pressedScale: CGFloat = 0.94
+        static let pressDuration: TimeInterval = 0.12
     }
 
     private enum Images {
@@ -96,6 +98,23 @@ final class TodayPresetCardView: UIView {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
+
+    // MARK: - Press feedback
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        animatePress(down: true)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        animatePress(down: false)
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        animatePress(down: false)
+    }
 }
 
 // MARK: - TodayPresetCardView + Public
@@ -175,5 +194,16 @@ private extension TodayPresetCardView {
     func handleTap() {
         flashSelection()
         onTap?()
+    }
+
+    func animatePress(down: Bool) {
+        let scale: CGFloat = down ? Constants.pressedScale : 1
+        UIView.animate(
+            withDuration: Constants.pressDuration,
+            delay: 0,
+            options: [.allowUserInteraction, .curveEaseOut]
+        ) {
+            self.transform = CGAffineTransform(scaleX: scale, y: scale)
+        }
     }
 }

@@ -10,8 +10,9 @@ import UIKit
 
 // MARK: - TodayQuickAmountButton
 
-/// Маленькая кнопка-чип для быстрого добавления (или удаления в режиме remove)
-/// объёма воды: 100/200/300/400 мл.
+/// Чип быстрого добавления объёма воды.
+/// По умолчанию серый. На тапе вспыхивает индиго (или красным в режиме remove)
+/// и плавно возвращается к серому. Плюс press-эффект уменьшения чипа.
 final class TodayQuickAmountButton: UIControl {
 
     // MARK: - Private enums
@@ -24,7 +25,10 @@ final class TodayQuickAmountButton: UIControl {
         static let amountFontSize: CGFloat = 18
         static let unitFontSize: CGFloat = 11
         static let stackSpacing: CGFloat = 2
-        static let pressedAlpha: CGFloat = 0.6
+        static let pressedScale: CGFloat = 0.94
+        static let pressDuration: TimeInterval = 0.12
+        static let flashHoldDuration: TimeInterval = 0.85
+        static let flashFadeDuration: TimeInterval = 0.6
     }
 
     // MARK: - Public properties
@@ -35,6 +39,7 @@ final class TodayQuickAmountButton: UIControl {
     // MARK: - Private properties
 
     private var isRemoveMode: Bool = false
+    private var fadeWorkItem: DispatchWorkItem?
 
     private lazy var amountLabel: UILabel = {
         let label = UILabel()
@@ -77,13 +82,11 @@ final class TodayQuickAmountButton: UIControl {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
-    // MARK: - Touch tracking
+    // MARK: - Press feedback
 
     override var isHighlighted: Bool {
         didSet {
-            UIView.animate(withDuration: 0.1) {
-                self.alpha = self.isHighlighted ? Constants.pressedAlpha : 1
-            }
+            animatePress(down: isHighlighted)
         }
     }
 }
@@ -96,7 +99,7 @@ extension TodayQuickAmountButton {
         self.isRemoveMode = isRemoveMode
         amountLabel.text = displayValue
         unitLabel.text = unit.uppercased()
-        applyStyle()
+        applyInactiveStyle()
     }
 }
 
@@ -117,20 +120,53 @@ private extension TodayQuickAmountButton {
         ])
 
         addTarget(self, action: #selector(handleTap), for: .touchUpInside)
-        applyStyle()
+        applyInactiveStyle()
     }
 
-    func applyStyle() {
-        let accent: UIColor = isRemoveMode ? .systemRed : .label
-        amountLabel.textColor = accent
+    func applyInactiveStyle() {
         backgroundColor = .secondarySystemBackground
-        layer.borderColor = isRemoveMode
-            ? UIColor.systemRed.withAlphaComponent(0.4).cgColor
-            : UIColor.separator.withAlphaComponent(0.4).cgColor
+        layer.borderColor = UIColor.separator.withAlphaComponent(0.4).cgColor
+        amountLabel.textColor = .label
+        unitLabel.textColor = .secondaryLabel
+    }
+
+    func applyActiveStyle() {
+        let accent: UIColor = isRemoveMode ? .systemRed : .systemIndigo
+        backgroundColor = accent
+        layer.borderColor = accent.cgColor
+        amountLabel.textColor = .white
+        unitLabel.textColor = UIColor.white.withAlphaComponent(0.85)
+    }
+
+    func flashSelection() {
+        applyActiveStyle()
+        fadeWorkItem?.cancel()
+
+        let item = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+
+            UIView.animate(withDuration: Constants.flashFadeDuration) {
+                self.applyInactiveStyle()
+            }
+        }
+        fadeWorkItem = item
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.flashHoldDuration, execute: item)
+    }
+
+    func animatePress(down: Bool) {
+        let scale: CGFloat = down ? Constants.pressedScale : 1
+        UIView.animate(
+            withDuration: Constants.pressDuration,
+            delay: 0,
+            options: [.allowUserInteraction, .curveEaseOut]
+        ) {
+            self.transform = CGAffineTransform(scaleX: scale, y: scale)
+        }
     }
 
     @objc
     func handleTap() {
+        flashSelection()
         onTap?()
     }
 }

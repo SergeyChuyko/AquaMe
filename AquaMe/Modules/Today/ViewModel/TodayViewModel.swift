@@ -21,7 +21,7 @@ final class TodayViewModel: TodayViewModelProtocol {
 
         static let dailyGoal = 2400
         static let presets = [250, 500]
-        static let quick = [100, 200, 300, 400]
+        static let quick = [10, 25, 50, 100]
     }
 
     // MARK: - Public properties
