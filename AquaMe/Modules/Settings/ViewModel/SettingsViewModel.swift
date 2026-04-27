@@ -32,12 +32,17 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     // MARK: - Private properties
 
     private let profileService: ProfileServiceProtocol
+    private let reminders: RemindersServiceProtocol
     private var profile: UserProfile?
 
     // MARK: - Initialization
 
-    init(profileService: ProfileServiceProtocol = ProfileService.shared) {
+    init(
+        profileService: ProfileServiceProtocol = ProfileService.shared,
+        reminders: RemindersServiceProtocol = RemindersService.shared
+    ) {
         self.profileService = profileService
+        self.reminders = reminders
         self.state = SettingsState(
             dailyGoal: Defaults.dailyGoal,
             recommendedDailyGoal: Defaults.dailyGoal,
@@ -102,6 +107,21 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         state.remindersEnabled = isOn
         emit()
         update { $0.remindersEnabled = isOn }
+
+        if isOn {
+            reminders.requestAuthorization { [weak self] granted in
+                guard let self else { return }
+                if granted {
+                    self.reminders.reschedule(enabled: true, startTime: self.state.reminderStartTime)
+                } else {
+                    self.state.remindersEnabled = false
+                    self.emit()
+                    self.update { $0.remindersEnabled = false }
+                }
+            }
+        } else {
+            reminders.reschedule(enabled: false, startTime: state.reminderStartTime)
+        }
     }
 
     func didChangeReminderTime(_ value: String) {
@@ -109,6 +129,10 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         state.reminderStartTime = value
         emit()
         update { $0.reminderStartTime = value }
+
+        if state.remindersEnabled {
+            reminders.reschedule(enabled: true, startTime: value)
+        }
     }
 }
 
@@ -133,6 +157,13 @@ private extension SettingsViewModel {
                 self.state.remindersEnabled = profile.remindersEnabled ?? false
                 self.state.reminderStartTime = profile.reminderStartTime ?? Defaults.reminderStartTime
                 self.emit()
+
+                if self.state.remindersEnabled {
+                    self.reminders.reschedule(
+                        enabled: true,
+                        startTime: self.state.reminderStartTime
+                    )
+                }
             }
         }
     }
