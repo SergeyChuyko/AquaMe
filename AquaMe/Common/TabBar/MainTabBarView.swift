@@ -18,9 +18,9 @@ protocol MainTabBarViewDelegate: AnyObject {
 
 // MARK: - MainTabBarView
 
-/// Кастомный таб-бар: белая плашка с круговым вырезом под активным табом и
-/// плавающим индиго-кругом, в котором сидит иконка активного таба.
-/// При смене таба круг и вырез скользят с пружинной анимацией.
+/// Плоский плавающий таб-бар: белая плашка со светло-серым бордером, скруглённые углы.
+/// Активный таб подсвечен крупным индиго-овалом внутри бара. Без анимации, без выреза —
+/// овал просто перепрыгивает к выбранному табу.
 final class MainTabBarView: UIView {
 
     // MARK: - Tab
@@ -39,16 +39,11 @@ final class MainTabBarView: UIView {
 
         static let barHeight: CGFloat = 64
         static let cornerRadius: CGFloat = 32
-        static let activeRadius: CGFloat = 28
-        /// Сколько круг выглядывает над верхней кромкой бара.
-        static let activeBumpHeight: CGFloat = 14
-        static let cutoutHorizontalCurve: CGFloat = 18
-        /// Запас, на который cutout не должен заходить в скруглённый угол.
-        static let cutoutCornerPadding: CGFloat = 4
+        static let borderWidth: CGFloat = 1
+        static let indicatorInset: CGFloat = 8
+        static let indicatorCornerRadius: CGFloat = 24
         static let iconSize: CGFloat = 22
-        static let activeIconSize: CGFloat = 22
         static let labelFontSize: CGFloat = 11
-        static let animationDuration: TimeInterval = 0.32
     }
 
     private enum Style {
@@ -56,7 +51,7 @@ final class MainTabBarView: UIView {
         static let activeColor = UIColor.systemIndigo
         static let inactiveColor = UIColor.secondaryLabel
         static let barColor = UIColor.systemBackground
-        static let shadowColor = UIColor.black
+        static let borderColor = UIColor.separator.withAlphaComponent(0.4)
     }
 
     fileprivate struct TabModel {
@@ -65,7 +60,7 @@ final class MainTabBarView: UIView {
         let title: String
     }
 
-    /// Один таб = его контейнер + иконка + лейбл. Один массив `slots` вместо трёх параллельных.
+    /// Один таб = его контейнер + иконка + лейбл.
     fileprivate struct TabSlot {
 
         let container: UIControl
@@ -88,35 +83,18 @@ final class MainTabBarView: UIView {
         .profile: TabModel(icon: UIImage(systemName: "person.fill"), title: "Profile"),
     ]
 
-    private let backgroundLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.shadowOpacity = 0.06
-        layer.shadowRadius = 10
-        layer.shadowOffset = CGSize(width: 0, height: -2)
-
-        return layer
-    }()
-
-    private lazy var activeCircle: UIView = {
+    private lazy var indicatorView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = Style.activeColor
-        view.layer.cornerRadius = Constants.activeRadius
+        view.layer.cornerRadius = Constants.indicatorCornerRadius
         view.isUserInteractionEnabled = false
 
         return view
     }()
 
-    private lazy var activeIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.tintColor = .white
-        imageView.contentMode = .scaleAspectFit
-
-        return imageView
-    }()
-
-    private var activeCircleCenterX: NSLayoutConstraint?
+    private var indicatorLeading: NSLayoutConstraint?
+    private var indicatorTrailing: NSLayoutConstraint?
     private var slots: [Tab: TabSlot] = [:]
 
     private lazy var tabsStack: UIStackView = {
@@ -140,17 +118,6 @@ final class MainTabBarView: UIView {
 
     // MARK: - Layout
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        backgroundLayer.frame = bounds
-        // Constant обновляется без layoutIfNeeded — мы уже внутри layout-pass.
-        activeCircleCenterX?.constant = tabCenterX(for: selectedTab)
-        let path = barPath(for: selectedTab).cgPath
-        backgroundLayer.path = path
-        backgroundLayer.shadowPath = path
-    }
-
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         applyDynamicColors()
@@ -165,9 +132,8 @@ extension MainTabBarView {
         guard tab != selectedTab else { return }
 
         selectedTab = tab
-        updateBarPath(animated: true)
-        updateCirclePosition(animated: true)
-        applySelection(to: tab, animated: true)
+        moveIndicator(to: tab)
+        applySelection(to: tab)
     }
 }
 
@@ -176,35 +142,15 @@ extension MainTabBarView {
 private extension MainTabBarView {
 
     func setup() {
-        backgroundColor = .clear
-        layer.addSublayer(backgroundLayer)
-        applyDynamicColors()
+        backgroundColor = Style.barColor
+        layer.cornerRadius = Constants.cornerRadius
+        layer.borderWidth = Constants.borderWidth
+        layer.borderColor = Style.borderColor.cgColor
 
-        addSubview(activeCircle)
-        activeCircle.addSubview(activeIcon)
-
-        NSLayoutConstraint.activate([
-            activeCircle.widthAnchor.constraint(equalToConstant: Constants.activeRadius * 2),
-            activeCircle.heightAnchor.constraint(equalToConstant: Constants.activeRadius * 2),
-            activeCircle.centerYAnchor.constraint(
-                equalTo: topAnchor,
-                constant: Constants.barHeight / 2 - Constants.activeBumpHeight
-            ),
-
-            activeIcon.centerXAnchor.constraint(equalTo: activeCircle.centerXAnchor),
-            activeIcon.centerYAnchor.constraint(equalTo: activeCircle.centerYAnchor),
-            activeIcon.widthAnchor.constraint(equalToConstant: Constants.activeIconSize),
-            activeIcon.heightAnchor.constraint(equalToConstant: Constants.activeIconSize),
-        ])
-
-        // Стартовая позиция круга — у активного таба по центру (а не у leading).
-        activeIcon.image = tabsByCase[selectedTab]?.icon
-        let centerX = activeCircle.centerXAnchor.constraint(equalTo: leadingAnchor)
-        centerX.isActive = true
-        activeCircleCenterX = centerX
-
+        addSubview(indicatorView)
         setupTabContainers()
-        applySelection(to: selectedTab, animated: false)
+        setupIndicatorConstraints()
+        applySelection(to: selectedTab)
     }
 
     func setupTabContainers() {
@@ -213,7 +159,7 @@ private extension MainTabBarView {
             tabsStack.topAnchor.constraint(equalTo: topAnchor),
             tabsStack.leadingAnchor.constraint(equalTo: leadingAnchor),
             tabsStack.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tabsStack.heightAnchor.constraint(equalToConstant: Constants.barHeight),
+            tabsStack.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
 
         for tab in Tab.allCases {
@@ -223,6 +169,28 @@ private extension MainTabBarView {
             slots[tab] = slot
             tabsStack.addArrangedSubview(slot.container)
         }
+    }
+
+    func setupIndicatorConstraints() {
+        guard let initialSlot = slots[selectedTab] else { return }
+
+        let leading = indicatorView.leadingAnchor.constraint(
+            equalTo: initialSlot.container.leadingAnchor,
+            constant: Constants.indicatorInset
+        )
+        let trailing = indicatorView.trailingAnchor.constraint(
+            equalTo: initialSlot.container.trailingAnchor,
+            constant: -Constants.indicatorInset
+        )
+        indicatorLeading = leading
+        indicatorTrailing = trailing
+
+        NSLayoutConstraint.activate([
+            leading,
+            trailing,
+            indicatorView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.indicatorInset),
+            indicatorView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.indicatorInset),
+        ])
     }
 
     func makeSlot(for tab: Tab, model: TabModel) -> TabSlot {
@@ -273,157 +241,43 @@ private extension MainTabBarView {
     }
 
     func applyDynamicColors() {
-        backgroundLayer.fillColor = Style.barColor.resolvedColor(with: traitCollection).cgColor
-        backgroundLayer.shadowColor = Style.shadowColor.resolvedColor(with: traitCollection).cgColor
+        layer.borderColor = Style.borderColor.resolvedColor(with: traitCollection).cgColor
     }
 }
 
-// MARK: - MainTabBarView + Path & Animation
+// MARK: - MainTabBarView + Indicator
 
 private extension MainTabBarView {
 
-    /// X центра таба в баре. Для крайних табов клампим так, чтобы вырез не зашёл в `cornerRadius`.
-    func tabCenterX(for tab: Tab) -> CGFloat {
-        let tabsCount = CGFloat(Tab.allCases.count)
-        let segmentWidth = bounds.width / tabsCount
-        let raw = segmentWidth * (CGFloat(tab.rawValue) + 0.5)
+    func moveIndicator(to tab: Tab) {
+        guard let slot = slots[tab],
+              let leading = indicatorLeading,
+              let trailing = indicatorTrailing else { return }
 
-        let halfBump = Constants.activeRadius
-            + Constants.cutoutHorizontalCurve
-            + Constants.cutoutCornerPadding
-        let minX = Constants.cornerRadius + halfBump
-        let maxX = bounds.width - Constants.cornerRadius - halfBump
+        NSLayoutConstraint.deactivate([leading, trailing])
+        let newLeading = indicatorView.leadingAnchor.constraint(
+            equalTo: slot.container.leadingAnchor,
+            constant: Constants.indicatorInset
+        )
+        let newTrailing = indicatorView.trailingAnchor.constraint(
+            equalTo: slot.container.trailingAnchor,
+            constant: -Constants.indicatorInset
+        )
+        NSLayoutConstraint.activate([newLeading, newTrailing])
+        indicatorLeading = newLeading
+        indicatorTrailing = newTrailing
 
-        return raw.clamped(to: minX...maxX)
+        layoutIfNeeded()
     }
 
-    func updateCirclePosition(animated: Bool) {
-        let center = tabCenterX(for: selectedTab)
-        activeCircleCenterX?.constant = center
-
-        guard animated else { return }
-
-        UIView.animate(
-            withDuration: Constants.animationDuration,
-            delay: 0,
-            usingSpringWithDamping: 0.7,
-            initialSpringVelocity: 0.4
-        ) {
-            self.layoutIfNeeded()
+    func applySelection(to tab: Tab) {
+        for (slotTab, slot) in slots {
+            let isSelected = slotTab == tab
+            slot.iconView.tintColor = isSelected ? .white : Style.inactiveColor
+            slot.label.textColor = isSelected ? .white : Style.inactiveColor
         }
-    }
-
-    func applySelection(to tab: Tab, animated: Bool) {
-        activeIcon.image = tabsByCase[tab]?.icon
-
-        let block: () -> Void = {
-            for (slotTab, slot) in self.slots {
-                let isSelected = slotTab == tab
-                slot.iconView.alpha = isSelected ? 0 : 1
-                slot.label.alpha = isSelected ? 0 : 1
-            }
-        }
-
-        if animated {
-            UIView.animate(withDuration: Constants.animationDuration, animations: block)
-        } else {
-            block()
-        }
-    }
-
-    func updateBarPath(animated: Bool) {
-        let path = barPath(for: selectedTab).cgPath
-
-        if animated {
-            backgroundLayer.removeAnimation(forKey: "path")
-            let animation = CABasicAnimation(keyPath: "path")
-            animation.fromValue = backgroundLayer.path
-            animation.toValue = path
-            animation.duration = Constants.animationDuration
-            animation.timingFunction = CAMediaTimingFunction(controlPoints: 0.4, 0.0, 0.2, 1.0)
-            backgroundLayer.add(animation, forKey: "path")
-        }
-
-        backgroundLayer.path = path
-        backgroundLayer.shadowPath = path
-    }
-
-    /// Строит путь плашки с круговым вырезом сверху под активный таб.
-    /// Все четыре угла скруглены — бар плавающий, а не приклеен к низу экрана.
-    func barPath(for tab: Tab) -> UIBezierPath {
-        let rect = bounds
-        let radius = Constants.cornerRadius
-        let cutoutCenterX = tabCenterX(for: tab)
-        let cutoutRadius = Constants.activeRadius + 6
-        let curveWidth = Constants.cutoutHorizontalCurve
-
-        let path = UIBezierPath()
-
-        // top edge — стартуем после левого верхнего скругления, идём вправо до выреза
-        path.move(to: CGPoint(x: radius, y: 0))
-        path.addLine(to: CGPoint(x: cutoutCenterX - cutoutRadius - curveWidth, y: 0))
-        path.addQuadCurve(
-            to: CGPoint(x: cutoutCenterX - cutoutRadius, y: cutoutRadius * 0.55),
-            controlPoint: CGPoint(x: cutoutCenterX - cutoutRadius, y: 0)
-        )
-        path.addArc(
-            withCenter: CGPoint(x: cutoutCenterX, y: cutoutRadius * 0.55),
-            radius: cutoutRadius,
-            startAngle: .pi,
-            endAngle: 0,
-            clockwise: false
-        )
-        path.addQuadCurve(
-            to: CGPoint(x: cutoutCenterX + cutoutRadius + curveWidth, y: 0),
-            controlPoint: CGPoint(x: cutoutCenterX + cutoutRadius, y: 0)
-        )
-        path.addLine(to: CGPoint(x: rect.width - radius, y: 0))
-        // top-right corner
-        path.addArc(
-            withCenter: CGPoint(x: rect.width - radius, y: radius),
-            radius: radius,
-            startAngle: -.pi / 2,
-            endAngle: 0,
-            clockwise: true
-        )
-        path.addLine(to: CGPoint(x: rect.width, y: rect.height - radius))
-        // bottom-right corner
-        path.addArc(
-            withCenter: CGPoint(x: rect.width - radius, y: rect.height - radius),
-            radius: radius,
-            startAngle: 0,
-            endAngle: .pi / 2,
-            clockwise: true
-        )
-        path.addLine(to: CGPoint(x: radius, y: rect.height))
-        // bottom-left corner
-        path.addArc(
-            withCenter: CGPoint(x: radius, y: rect.height - radius),
-            radius: radius,
-            startAngle: .pi / 2,
-            endAngle: .pi,
-            clockwise: true
-        )
-        path.addLine(to: CGPoint(x: 0, y: radius))
-        // top-left corner
-        path.addArc(
-            withCenter: CGPoint(x: radius, y: radius),
-            radius: radius,
-            startAngle: .pi,
-            endAngle: -.pi / 2,
-            clockwise: true
-        )
-        path.close()
-
-        return path
-    }
-}
-
-// MARK: - Comparable + Clamp helper
-
-private extension Comparable {
-
-    func clamped(to limits: ClosedRange<Self>) -> Self {
-        min(max(self, limits.lowerBound), limits.upperBound)
+        // Profile никогда не считается «selected» в индикаторе — он открывает sheet.
+        // Здесь визуал тех табов уже выставлен через цикл выше: индикатор переезжает только
+        // на page-табы, а Profile остаётся в инактивном цвете.
     }
 }
