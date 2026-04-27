@@ -178,16 +178,16 @@ private extension ProgressStatCard {
 
             titleLabel.centerYAnchor.constraint(equalTo: iconBackground.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: iconBackground.trailingAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: badge.leadingAnchor, constant: -8),
-
-            badge.centerYAnchor.constraint(equalTo: iconBackground.centerYAnchor),
-            badge.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.padding),
-            badge.heightAnchor.constraint(equalToConstant: Constants.badgeHeight),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -Constants.padding),
 
             valueRow.topAnchor.constraint(equalTo: iconBackground.bottomAnchor, constant: 12),
             valueRow.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.padding),
-            valueRow.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -Constants.padding),
+            valueRow.trailingAnchor.constraint(lessThanOrEqualTo: badge.leadingAnchor, constant: -8),
             valueRow.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.padding),
+
+            badge.centerYAnchor.constraint(equalTo: valueRow.centerYAnchor),
+            badge.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.padding),
+            badge.heightAnchor.constraint(equalToConstant: Constants.badgeHeight),
         ])
     }
 
