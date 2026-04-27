@@ -29,8 +29,9 @@ final class ProgressTrendChartView: UIView {
         static let xAxisHeight: CGFloat = 22
         static let yAxisSteps: Int = 5
         static let axisFontSize: CGFloat = 10
-        static let barCornerRadius: CGFloat = 6
+        static let barCornerRadius: CGFloat = 5
         static let barSpacing: CGFloat = 8
+        static let barHorizontalInset: CGFloat = 6
     }
 
     // MARK: - Private properties
@@ -206,7 +207,9 @@ private extension ProgressTrendChartView {
 
             let bar = UIView()
             bar.translatesAutoresizingMaskIntoConstraints = false
-            bar.backgroundColor = point.reachedGoal ? .systemGreen : .systemIndigo
+            bar.backgroundColor = point.reachedGoal
+                ? UIColor.systemGreen.withAlphaComponent(0.55)
+                : UIColor.systemIndigo.withAlphaComponent(0.85)
             bar.layer.cornerRadius = Constants.barCornerRadius
             bar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             column.addSubview(bar)
@@ -214,8 +217,8 @@ private extension ProgressTrendChartView {
             let ratio = CGFloat(min(maxValue, point.totalMl)) / CGFloat(maxValue)
             NSLayoutConstraint.activate([
                 bar.bottomAnchor.constraint(equalTo: column.bottomAnchor),
-                bar.leadingAnchor.constraint(equalTo: column.leadingAnchor),
-                bar.trailingAnchor.constraint(equalTo: column.trailingAnchor),
+                bar.leadingAnchor.constraint(equalTo: column.leadingAnchor, constant: Constants.barHorizontalInset),
+                bar.trailingAnchor.constraint(equalTo: column.trailingAnchor, constant: -Constants.barHorizontalInset),
                 bar.heightAnchor.constraint(equalTo: column.heightAnchor, multiplier: max(0.02, ratio)),
             ])
             bars.append(bar)
