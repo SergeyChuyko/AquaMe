@@ -30,6 +30,11 @@
 		FB000000000000000000033 /* SettingsUnitToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000033 /* SettingsUnitToggle.swift */; };
 		FB000000000000000000040 /* HydrationReminderMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000040 /* HydrationReminderMessage.swift */; };
 		FB000000000000000000041 /* RemindersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000041 /* RemindersService.swift */; };
+		FB000000000000000000050 /* WaterDayStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000050 /* WaterDayStatus.swift */; };
+		FB000000000000000000051 /* ProgressDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000051 /* ProgressDayCell.swift */; };
+		FB000000000000000000052 /* ProgressCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000052 /* ProgressCalendarView.swift */; };
+		FB000000000000000000053 /* ProgressStatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000053 /* ProgressStatCard.swift */; };
+		FB000000000000000000054 /* ProgressTrendChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100000000000000000054 /* ProgressTrendChartView.swift */; };
 		EA5B6A4C2F816128005357F6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A482F816128005357F6 /* AuthViewModel.swift */; };
 		EA5B6A4D2F816128005357F6 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A442F816128005357F6 /* AuthViewController.swift */; };
 		EA5B6A4E2F816128005357F6 /* AuthViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5B6A492F816128005357F6 /* AuthViewModelProtocol.swift */; };
@@ -104,6 +109,11 @@
 		FB100000000000000000033 /* SettingsUnitToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUnitToggle.swift; sourceTree = "<group>"; };
 		FB100000000000000000040 /* HydrationReminderMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationReminderMessage.swift; sourceTree = "<group>"; };
 		FB100000000000000000041 /* RemindersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersService.swift; sourceTree = "<group>"; };
+		FB100000000000000000050 /* WaterDayStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterDayStatus.swift; sourceTree = "<group>"; };
+		FB100000000000000000051 /* ProgressDayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressDayCell.swift; sourceTree = "<group>"; };
+		FB100000000000000000052 /* ProgressCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCalendarView.swift; sourceTree = "<group>"; };
+		FB100000000000000000053 /* ProgressStatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStatCard.swift; sourceTree = "<group>"; };
+		FB100000000000000000054 /* ProgressTrendChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressTrendChartView.swift; sourceTree = "<group>"; };
 		FB100000000000000000003 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		FB100000000000000000002 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA100000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -566,6 +576,10 @@
 			isa = PBXGroup;
 			children = (
 				FA100000000000000000032 /* ProgressView.swift */,
+				FB100000000000000000051 /* ProgressDayCell.swift */,
+				FB100000000000000000052 /* ProgressCalendarView.swift */,
+				FB100000000000000000053 /* ProgressStatCard.swift */,
+				FB100000000000000000054 /* ProgressTrendChartView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -700,6 +714,7 @@
 				FB100000000000000000004 /* UserProfile.swift */,
 				FB100000000000000000020 /* WaterRecord.swift */,
 				FB100000000000000000040 /* HydrationReminderMessage.swift */,
+				FB100000000000000000050 /* WaterDayStatus.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -900,6 +915,11 @@
 				FB000000000000000000033 /* SettingsUnitToggle.swift in Sources */,
 				FB000000000000000000040 /* HydrationReminderMessage.swift in Sources */,
 				FB000000000000000000041 /* RemindersService.swift in Sources */,
+				FB000000000000000000050 /* WaterDayStatus.swift in Sources */,
+				FB000000000000000000051 /* ProgressDayCell.swift in Sources */,
+				FB000000000000000000052 /* ProgressCalendarView.swift in Sources */,
+				FB000000000000000000053 /* ProgressStatCard.swift in Sources */,
+				FB000000000000000000054 /* ProgressTrendChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
