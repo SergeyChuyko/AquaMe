@@ -50,7 +50,7 @@ extension MainCoordinator {
 private extension MainCoordinator {
 
     /// Собирает MainViewController с тремя дочерними VC.
-    /// Каждый VC получает свою ViewModel через протокол.
+    /// Profile открывается боттом-шитом из четвёртой кнопки таб-бара, а не отдельной страницей.
     func buildMainViewController() -> MainViewController {
         let progressVC = ProgressViewController(viewModel: ProgressViewModel())
         let todayVC = TodayViewController(viewModel: TodayViewModel())
