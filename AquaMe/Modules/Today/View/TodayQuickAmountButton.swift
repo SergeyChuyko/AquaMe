@@ -89,14 +89,19 @@ final class TodayQuickAmountButton: UIControl {
 
     // MARK: - Press feedback
 
-    override var isHighlighted: Bool {
-        didSet {
-            if isHighlighted {
-                beginPress()
-            } else {
-                endPressDeferred()
-            }
-        }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        beginPress()
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        endPressDeferred()
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        endPressDeferred()
     }
 }
 

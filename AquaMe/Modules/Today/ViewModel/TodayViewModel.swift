@@ -74,7 +74,16 @@ final class TodayViewModel: TodayViewModelProtocol {
         guard amount > 0 else { return }
         guard !state.isSubtractionLocked else { return }
 
-        let signed = state.isRemoveMode ? -amount : amount
+        let signed: Int
+        if state.isRemoveMode {
+            // Не уходим ниже нуля: вычитаем не больше, чем сейчас накоплено.
+            let allowed = min(amount, state.totalDrunk)
+            guard allowed > 0 else { return }
+
+            signed = -allowed
+        } else {
+            signed = amount
+        }
         let record = WaterRecord(amount: signed)
 
         records.append(record)
