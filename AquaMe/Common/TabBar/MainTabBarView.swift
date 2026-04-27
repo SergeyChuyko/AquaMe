@@ -37,10 +37,10 @@ final class MainTabBarView: UIView {
     private enum Constants {
 
         static let barHeight: CGFloat = 64
-        static let cornerRadius: CGFloat = 24
-        static let activeRadius: CGFloat = 30
+        static let cornerRadius: CGFloat = 32
+        static let activeRadius: CGFloat = 28
         /// Сколько круг выглядывает над верхней кромкой бара.
-        static let activeBumpHeight: CGFloat = 26
+        static let activeBumpHeight: CGFloat = 14
         static let cutoutHorizontalCurve: CGFloat = 18
         static let iconSize: CGFloat = 22
         static let activeIconSize: CGFloat = 22
