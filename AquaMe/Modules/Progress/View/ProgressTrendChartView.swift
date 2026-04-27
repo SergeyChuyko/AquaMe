@@ -84,7 +84,7 @@ final class ProgressTrendChartView: UIView {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
-        stack.alignment = .bottom
+        stack.alignment = .fill
         stack.distribution = .fillEqually
         stack.spacing = Constants.barSpacing
 
