@@ -183,7 +183,7 @@ private extension ProgressViewModel {
                     date: date,
                     dayNumber: nil,
                     total: 0,
-                    status: .missed,
+                    status: .pending,
                     isToday: false
                 ))
             }
@@ -192,11 +192,11 @@ private extension ProgressViewModel {
         var cursor = monthStart
         while cursor < monthEnd {
             let total = dailyTotals[cursor] ?? 0
-            let isFuture = cursor > today
+            let isPast = cursor < today
             let status = WaterDayStatus.classify(
                 total: total,
                 dailyGoal: dailyGoal,
-                isFuture: isFuture
+                isPast: isPast
             )
             let dayNumber = calendar.component(.day, from: cursor)
 
@@ -223,7 +223,7 @@ private extension ProgressViewModel {
                 date: date,
                 dayNumber: nil,
                 total: 0,
-                status: .missed,
+                status: .pending,
                 isToday: false
             ))
         }

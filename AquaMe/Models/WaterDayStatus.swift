@@ -14,14 +14,19 @@ import Foundation
 /// Считается из суммарного выпитого за день и дневной нормы.
 enum WaterDayStatus: Equatable {
 
-    case future
+    /// Будущее или сегодняшний день, по которому цель ещё не достигнута, — нейтрально серый.
+    case pending
+    /// Прошедший день, в котором норма не выполнена, — красный.
     case missed
+    /// Норма выполнена — индиго.
     case goalMet
 
-    static func classify(total: Int, dailyGoal: Int, isFuture: Bool) -> WaterDayStatus {
-        if isFuture { return .future }
-        guard dailyGoal > 0 else { return .missed }
+    /// `isPast` означает строго прошедший день (вчера и раньше). Сегодня к past не относится.
+    static func classify(total: Int, dailyGoal: Int, isPast: Bool) -> WaterDayStatus {
+        guard dailyGoal > 0 else { return .pending }
 
-        return total >= dailyGoal ? .goalMet : .missed
+        if total >= dailyGoal { return .goalMet }
+
+        return isPast ? .missed : .pending
     }
 }

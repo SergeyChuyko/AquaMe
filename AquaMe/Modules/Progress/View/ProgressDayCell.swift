@@ -91,12 +91,12 @@ private extension ProgressDayCell {
             dayLabel.textColor = .white
 
         case .missed:
-            backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.28)
-            dayLabel.textColor = .label
+            backgroundColor = UIColor.systemRed.withAlphaComponent(0.85)
+            dayLabel.textColor = .white
 
-        case .future:
-            backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.12)
-            dayLabel.textColor = .tertiaryLabel
+        case .pending:
+            backgroundColor = UIColor.separator.withAlphaComponent(0.18)
+            dayLabel.textColor = .label
         }
     }
 }
