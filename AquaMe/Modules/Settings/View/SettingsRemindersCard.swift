@@ -53,6 +53,7 @@ final class SettingsRemindersCard: UIView {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         formatter.locale = Locale(identifier: "en_US_POSIX")
+
         return formatter
     }()
 
@@ -60,6 +61,7 @@ final class SettingsRemindersCard: UIView {
         let formatter = DateFormatter()
         formatter.dateFormat = "hh:mm a"
         formatter.locale = Locale(identifier: "en_US_POSIX")
+
         return formatter
     }()
 
@@ -186,6 +188,7 @@ final class SettingsRemindersCard: UIView {
         row.addSubview(timeSubtitle)
         row.addSubview(timeValue)
         row.addSubview(chevron)
+        row.addSubview(hiddenTimeField)
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTimeRowTap))
         row.addGestureRecognizer(tap)
@@ -244,7 +247,6 @@ private extension SettingsRemindersCard {
 
     @objc
     func handleTimeRowTap() {
-        addSubview(hiddenTimeField)
         hiddenTimeField.becomeFirstResponder()
     }
 

@@ -41,12 +41,32 @@ extension HydrationReminderMessage {
         HydrationReminderMessage(title: "Вода — твой бро 🤝", body: "Угости его собой"),
     ]
 
-    /// Случайное сообщение из библиотеки. Если по какой-то причине библиотека пуста,
-    /// возвращает запасной дефолт, чтобы код выше не падал.
+    /// Запасной дефолт на случай пустой библиотеки.
+    static let fallback = HydrationReminderMessage(
+        title: "Пора попить воды 💧",
+        body: "Глоток воды — и снова к делам"
+    )
+
+    /// Случайное сообщение из библиотеки. Используется как точечный fallback —
+    /// для планирования набора слотов сразу бери `shuffled(count:)`, чтобы
+    /// в один день одно и то же сообщение не пришло несколько раз.
     static func random() -> HydrationReminderMessage {
-        library.randomElement() ?? HydrationReminderMessage(
-            title: "Пора попить воды 💧",
-            body: "Глоток воды — и снова к делам"
-        )
+        library.randomElement() ?? fallback
+    }
+
+    /// Возвращает `count` сообщений без повторов (если они есть в библиотеке).
+    /// Если слотов больше, чем сообщений в библиотеке, добавляет ещё одну
+    /// перетасованную копию — повтор всё равно случится, но как можно позже.
+    static func shuffled(count: Int) -> [HydrationReminderMessage] {
+        guard count > 0 else { return [] }
+        guard !library.isEmpty else { return Array(repeating: fallback, count: count) }
+
+        var result = library.shuffled()
+
+        while result.count < count {
+            result.append(contentsOf: library.shuffled())
+        }
+
+        return Array(result.prefix(count))
     }
 }

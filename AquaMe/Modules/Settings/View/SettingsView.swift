@@ -325,6 +325,7 @@ private extension SettingsView {
         switch unit {
         case .ml:
             let liters = Double(ml) / 1000
+
             return String(format: "%.1fL", liters)
 
         case .oz:

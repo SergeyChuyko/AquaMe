@@ -118,13 +118,6 @@ final class SettingsValueCard: UIView {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
-
-    // MARK: - Hit testing
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        valueField.becomeFirstResponder()
-    }
 }
 
 // MARK: - SettingsValueCard + Public
@@ -157,6 +150,7 @@ extension SettingsValueCard: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+
         return true
     }
 }
@@ -168,6 +162,11 @@ private extension SettingsValueCard {
     @objc
     func handleEditingDidEnd() {
         delegate?.valueCard(self, didEnter: valueField.text ?? "")
+    }
+
+    @objc
+    func handleValueRowTap() {
+        valueField.becomeFirstResponder()
     }
 }
 
@@ -185,6 +184,10 @@ private extension SettingsValueCard {
         addSubview(badgeLabel)
         addSubview(valueRow)
         addSubview(footnoteLabel)
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleValueRowTap))
+        valueRow.addGestureRecognizer(tap)
+        valueRow.isUserInteractionEnabled = true
 
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constants.padding),

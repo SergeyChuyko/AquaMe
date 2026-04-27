@@ -17,8 +17,8 @@ protocol RemindersServiceProtocol: AnyObject {
     func requestAuthorization(completion: @escaping (Bool) -> Void)
 
     /// Отменяет старые уведомления и, если `enabled`, пересоздаёт расписание
-    /// от `startTime` ("HH:mm") до 22:00 с шагом 2 часа.
-    func reschedule(enabled: Bool, startTime: String)
+    /// от `startTime` ("HH:mm") до `endHour` с шагом `intervalHours` часа.
+    func reschedule(enabled: Bool, startTime: String, endHour: Int, intervalHours: Int)
 }
 
 // MARK: - RemindersService
@@ -34,8 +34,6 @@ final class RemindersService: RemindersServiceProtocol {
     private enum Constants {
 
         static let identifierPrefix = "aquame.hydration."
-        static let endHour = 22
-        static let intervalHours = 2
         static let timeFormat = "HH:mm"
     }
 
@@ -46,6 +44,7 @@ final class RemindersService: RemindersServiceProtocol {
         let formatter = DateFormatter()
         formatter.dateFormat = Constants.timeFormat
         formatter.locale = Locale(identifier: "en_US_POSIX")
+
         return formatter
     }()
 
@@ -62,13 +61,15 @@ final class RemindersService: RemindersServiceProtocol {
             if let error {
                 print("[Reminders] Authorization failed: \(error.localizedDescription)")
             }
+
             DispatchQueue.main.async { completion(granted) }
         }
     }
 
-    func reschedule(enabled: Bool, startTime: String) {
+    func reschedule(enabled: Bool, startTime: String, endHour: Int, intervalHours: Int) {
         center.getPendingNotificationRequests { [weak self] requests in
             guard let self else { return }
+
             let ids = requests
                 .map(\.identifier)
                 .filter { $0.hasPrefix(Constants.identifierPrefix) }
@@ -78,7 +79,8 @@ final class RemindersService: RemindersServiceProtocol {
                 print("[Reminders] Disabled, cancelled \(ids.count) pending")
                 return
             }
-            self.scheduleSlots(startTime: startTime)
+
+            self.scheduleSlots(startTime: startTime, endHour: endHour, intervalHours: intervalHours)
         }
     }
 }
@@ -88,8 +90,10 @@ final class RemindersService: RemindersServiceProtocol {
 private extension RemindersService {
 
     /// Создаёт по одному `UNCalendarNotificationTrigger` на каждое окно времени
-    /// от startTime до 22:00 с шагом 2 часа. Каждое окно репитится ежедневно.
-    func scheduleSlots(startTime: String) {
+    /// от startTime до endHour с шагом intervalHours. Каждое окно репитится ежедневно.
+    /// Тексты разводятся по слотам через `HydrationReminderMessage.shuffled(count:)`,
+    /// чтобы в один день одинаковые сообщения не повторялись.
+    func scheduleSlots(startTime: String, endHour: Int, intervalHours: Int) {
         guard let parsed = timeFormatter.date(from: startTime) else {
             print("[Reminders] Bad startTime: \(startTime)")
             return
@@ -98,23 +102,19 @@ private extension RemindersService {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.hour, .minute], from: parsed)
         guard let startHour = components.hour else { return }
+
         let minute = components.minute ?? 0
+        let slots = stride(from: startHour, through: endHour, by: intervalHours).map { $0 }
+        let messages = HydrationReminderMessage.shuffled(count: slots.count)
 
-        var hour = startHour
-        var index = 0
-
-        while hour <= Constants.endHour {
-            schedule(hour: hour, minute: minute, index: index)
-            hour += Constants.intervalHours
-            index += 1
+        for (index, hour) in slots.enumerated() {
+            schedule(hour: hour, minute: minute, index: index, message: messages[index])
         }
 
-        print("[Reminders] Scheduled \(index) slots starting at \(startTime)")
+        print("[Reminders] Scheduled \(slots.count) slots starting at \(startTime)")
     }
 
-    func schedule(hour: Int, minute: Int, index: Int) {
-        let message = HydrationReminderMessage.random()
-
+    func schedule(hour: Int, minute: Int, index: Int, message: HydrationReminderMessage) {
         let content = UNMutableNotificationContent()
         content.title = message.title
         content.body = message.body

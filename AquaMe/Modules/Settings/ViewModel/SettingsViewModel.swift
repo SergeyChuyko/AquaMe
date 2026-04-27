@@ -22,6 +22,11 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         static let weight: Double = 70
         static let age = 25
         static let reminderStartTime = "08:30"
+        /// Час окончания напоминаний. Пока константа — позже сюда же добавим
+        /// пользовательскую настройку «отбоя» рядом с reminderStartTime.
+        static let reminderEndHour = 22
+        /// Интервал между уведомлениями в часах.
+        static let reminderIntervalHours = 2
     }
 
     // MARK: - Public properties
@@ -73,12 +78,16 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     func didChangeWeight(_ value: Double) {
         let clamped = max(20, min(300, value))
         guard state.weight != clamped else { return }
+
         let recommended = UserProfile.calculateDailyGoal(
             weight: clamped,
             goal: profile?.goal ?? .stayHealthy
         )
         state.weight = clamped
         state.recommendedDailyGoal = recommended
+        /// По продуктовому решению Daily Target всегда следует за рекомендацией:
+        /// поменял вес — цель пересчиталась. Если юзер хочет свою цифру,
+        /// вводит её в Daily Target вручную ПОСЛЕ изменения веса.
         state.dailyGoal = recommended
         emit()
         update {
@@ -104,6 +113,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
 
     func didToggleReminders(_ isOn: Bool) {
         guard state.remindersEnabled != isOn else { return }
+
         state.remindersEnabled = isOn
         emit()
         update { $0.remindersEnabled = isOn }
@@ -111,8 +121,9 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         if isOn {
             reminders.requestAuthorization { [weak self] granted in
                 guard let self else { return }
+
                 if granted {
-                    self.reminders.reschedule(enabled: true, startTime: self.state.reminderStartTime)
+                    self.applySchedule(enabled: true)
                 } else {
                     self.state.remindersEnabled = false
                     self.emit()
@@ -120,18 +131,19 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 }
             }
         } else {
-            reminders.reschedule(enabled: false, startTime: state.reminderStartTime)
+            applySchedule(enabled: false)
         }
     }
 
     func didChangeReminderTime(_ value: String) {
         guard state.reminderStartTime != value else { return }
+
         state.reminderStartTime = value
         emit()
         update { $0.reminderStartTime = value }
 
         if state.remindersEnabled {
-            reminders.reschedule(enabled: true, startTime: value)
+            applySchedule(enabled: true)
         }
     }
 }
@@ -159,13 +171,19 @@ private extension SettingsViewModel {
                 self.emit()
 
                 if self.state.remindersEnabled {
-                    self.reminders.reschedule(
-                        enabled: true,
-                        startTime: self.state.reminderStartTime
-                    )
+                    self.applySchedule(enabled: true)
                 }
             }
         }
+    }
+
+    func applySchedule(enabled: Bool) {
+        reminders.reschedule(
+            enabled: enabled,
+            startTime: state.reminderStartTime,
+            endHour: Defaults.reminderEndHour,
+            intervalHours: Defaults.reminderIntervalHours
+        )
     }
 
     func update(_ change: (inout UserProfile) -> Void) {
