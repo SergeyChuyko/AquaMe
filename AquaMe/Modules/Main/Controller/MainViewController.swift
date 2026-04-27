@@ -132,11 +132,11 @@ private extension MainViewController {
 
     func setupConstraintsForContentView() {
         NSLayoutConstraint.activate([
-            /// Контент занимает всё пространство выше таб бара.
+            /// Контент идёт до самого низа экрана — таб-бар парит поверх.
             contentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: tabBarView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
 
@@ -162,11 +162,16 @@ private extension MainViewController {
     /// Встраивает все дочерние VC в contentView (hidden по умолчанию).
     /// Правильный способ добавления дочерних VC: addChild → addSubview → didMove.
     func setupChildViewControllers() {
+        // Контент идёт под плавающим таб-баром, поэтому добавляем нижний safe area
+        // равный высоте бара + два отступа, чтобы скролл не упирался в бар.
+        let extraBottomInset = Constants.tabBarHeight + Constants.tabBarBottomInset * 2
+
         pages.forEach { vc in
             addChild(vc)
             contentView.addSubview(vc.view)
             vc.view.translatesAutoresizingMaskIntoConstraints = false
             setupConstraintsForChildViewController(vc)
+            vc.additionalSafeAreaInsets.bottom = extraBottomInset
             vc.didMove(toParent: self)
             vc.view.isHidden = true
         }

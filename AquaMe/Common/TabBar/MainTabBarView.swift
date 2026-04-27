@@ -43,6 +43,7 @@ final class MainTabBarView: UIView {
         static let indicatorCornerRadius: CGFloat = 24
         static let iconSize: CGFloat = 22
         static let labelFontSize: CGFloat = 11
+        static let animationDuration: TimeInterval = 0.32
     }
 
     private enum Style {
@@ -139,8 +140,8 @@ extension MainTabBarView {
         guard tab != selectedTab else { return }
 
         selectedTab = tab
-        moveIndicator(to: tab)
-        applySelection(to: tab)
+        moveIndicator(to: tab, animated: true)
+        applySelection(to: tab, animated: true)
     }
 }
 
@@ -161,7 +162,7 @@ private extension MainTabBarView {
         addSubview(indicatorView)
         setupTabContainers()
         setupIndicatorConstraints()
-        applySelection(to: selectedTab)
+        applySelection(to: selectedTab, animated: false)
     }
 
     func setupTabContainers() {
@@ -254,7 +255,7 @@ private extension MainTabBarView {
 
 private extension MainTabBarView {
 
-    func moveIndicator(to tab: Tab) {
+    func moveIndicator(to tab: Tab, animated: Bool) {
         guard let slot = slots[tab],
               let leading = indicatorLeading,
               let trailing = indicatorTrailing else { return }
@@ -272,14 +273,40 @@ private extension MainTabBarView {
         indicatorLeading = newLeading
         indicatorTrailing = newTrailing
 
-        layoutIfNeeded()
+        guard animated else {
+            layoutIfNeeded()
+
+            return
+        }
+
+        UIView.animate(
+            withDuration: Constants.animationDuration,
+            delay: 0,
+            usingSpringWithDamping: 0.78,
+            initialSpringVelocity: 0.4
+        ) {
+            self.layoutIfNeeded()
+        }
     }
 
-    func applySelection(to tab: Tab) {
-        for (slotTab, slot) in slots {
-            let isSelected = slotTab == tab
-            slot.iconView.tintColor = isSelected ? .white : Style.inactiveColor
-            slot.label.textColor = isSelected ? .white : Style.inactiveColor
+    func applySelection(to tab: Tab, animated: Bool) {
+        let block: () -> Void = {
+            for (slotTab, slot) in self.slots {
+                let isSelected = slotTab == tab
+                slot.iconView.tintColor = isSelected ? .white : Style.inactiveColor
+                slot.label.textColor = isSelected ? .white : Style.inactiveColor
+            }
+        }
+
+        if animated {
+            UIView.transition(
+                with: self,
+                duration: Constants.animationDuration,
+                options: .transitionCrossDissolve,
+                animations: block
+            )
+        } else {
+            block()
         }
     }
 }
