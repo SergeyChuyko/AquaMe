@@ -13,7 +13,6 @@ import UIKit
 protocol MainTabBarViewDelegate: AnyObject {
 
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab)
-    func mainTabBarViewDidTapProfile(_ view: MainTabBarView)
 }
 
 // MARK: - MainTabBarView
@@ -118,6 +117,14 @@ final class MainTabBarView: UIView {
 
     // MARK: - Layout
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.shadowPath = UIBezierPath(
+            roundedRect: bounds,
+            cornerRadius: Constants.cornerRadius
+        ).cgPath
+    }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         applyDynamicColors()
@@ -146,6 +153,10 @@ private extension MainTabBarView {
         layer.cornerRadius = Constants.cornerRadius
         layer.borderWidth = Constants.borderWidth
         layer.borderColor = Style.borderColor.cgColor
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.10
+        layer.shadowRadius = 16
+        layer.shadowOffset = CGSize(width: 0, height: 6)
 
         addSubview(indicatorView)
         setupTabContainers()
@@ -230,12 +241,6 @@ private extension MainTabBarView {
     }
 
     func handleTap(on tab: Tab) {
-        if tab == .profile {
-            delegate?.mainTabBarViewDidTapProfile(self)
-
-            return
-        }
-
         selectTab(tab)
         delegate?.mainTabBarView(self, didSelectTab: tab)
     }
@@ -276,8 +281,5 @@ private extension MainTabBarView {
             slot.iconView.tintColor = isSelected ? .white : Style.inactiveColor
             slot.label.textColor = isSelected ? .white : Style.inactiveColor
         }
-        // Profile никогда не считается «selected» в индикаторе — он открывает sheet.
-        // Здесь визуал тех табов уже выставлен через цикл выше: индикатор переезжает только
-        // на page-табы, а Profile остаётся в инактивном цвете.
     }
 }

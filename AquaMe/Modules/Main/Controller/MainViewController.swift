@@ -23,7 +23,7 @@ final class MainViewController: UIViewController {
         /// который у MainTabBarView выходит за верхнюю границу — это рисуется вне `bounds`.
         static let tabBarHeight: CGFloat = 64
         static let tabBarHorizontalInset: CGFloat = 16
-        static let tabBarBottomInset: CGFloat = 12
+        static let tabBarBottomInset: CGFloat = 18
         static let profileSheetHeight: CGFloat = 480
     }
 
@@ -95,10 +95,6 @@ extension MainViewController: MainTabBarViewDelegate {
     /// Переключает на выбранную вкладку.
     func mainTabBarView(_ view: MainTabBarView, didSelectTab tab: MainTabBarView.Tab) {
         showPage(at: tab.rawValue)
-    }
-
-    func mainTabBarViewDidTapProfile(_ view: MainTabBarView) {
-        handleProfileTap()
     }
 }
 

@@ -49,14 +49,18 @@ extension MainCoordinator {
 
 private extension MainCoordinator {
 
-    /// Собирает MainViewController с тремя дочерними VC.
-    /// Profile открывается боттом-шитом из четвёртой кнопки таб-бара, а не отдельной страницей.
+    /// Собирает MainViewController с четырьмя дочерними VC.
+    /// Profile теперь полноэкранный таб; для редактирования он открывает Greeting/Goal flow.
     func buildMainViewController() -> MainViewController {
         let progressVC = ProgressViewController(viewModel: ProgressViewModel())
         let todayVC = TodayViewController(viewModel: TodayViewModel())
         let settingsVC = SettingsViewController(viewModel: SettingsViewModel())
+        let profileVC = ProfileSheetViewController(viewModel: ProfileSheetViewModel())
+        profileVC.onEditProfile = { [weak self] in
+            self?.showEditProfile()
+        }
 
-        return MainViewController(viewControllers: [progressVC, todayVC, settingsVC])
+        return MainViewController(viewControllers: [progressVC, todayVC, settingsVC, profileVC])
     }
 
     func showEditProfile() {
