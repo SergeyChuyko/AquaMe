@@ -206,7 +206,7 @@ private extension ProgressTrendChartView {
 
             let bar = UIView()
             bar.translatesAutoresizingMaskIntoConstraints = false
-            bar.backgroundColor = .systemIndigo
+            bar.backgroundColor = point.reachedGoal ? .systemGreen : .systemIndigo
             bar.layer.cornerRadius = Constants.barCornerRadius
             bar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             column.addSubview(bar)

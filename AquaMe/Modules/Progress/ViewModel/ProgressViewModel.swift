@@ -249,7 +249,11 @@ private extension ProgressViewModel {
 
             let total = dailyTotals[day] ?? 0
             let weekday = weekdayFormatter.string(from: day)
-            points.append(ProgressTrendPoint(weekdayShort: weekday, totalMl: total))
+            points.append(ProgressTrendPoint(
+                weekdayShort: weekday,
+                totalMl: total,
+                reachedGoal: total >= dailyGoal
+            ))
         }
 
         return points

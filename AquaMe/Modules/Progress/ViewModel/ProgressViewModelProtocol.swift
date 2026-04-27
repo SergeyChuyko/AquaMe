@@ -28,6 +28,7 @@ struct ProgressTrendPoint: Equatable {
 
     let weekdayShort: String
     let totalMl: Int
+    let reachedGoal: Bool
 }
 
 // MARK: - ProgressStats
