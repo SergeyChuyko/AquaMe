@@ -17,6 +17,13 @@ protocol WaterStorageProtocol: AnyObject {
     /// Загружает записи о воде за сегодня для текущего пользователя.
     func loadTodayRecords(completion: @escaping (Result<[WaterRecord], Error>) -> Void)
 
+    /// Загружает записи о воде в произвольном промежутке (start включён, end исключён).
+    func loadRecords(
+        from start: Date,
+        to end: Date,
+        completion: @escaping (Result<[WaterRecord], Error>) -> Void
+    )
+
     /// Сохраняет одну запись. Сетевая ошибка прокидывается в completion.
     /// Если completion = nil, ошибка молча логируется — fire-and-forget из ViewModel.
     func add(_ record: WaterRecord, completion: ((Result<Void, Error>) -> Void)?)
@@ -40,6 +47,12 @@ final class WaterStorage: WaterStorageProtocol {
 
         static let users = "users"
         static let water = "water"
+    }
+
+    private enum Limits {
+
+        /// Жёсткий потолок на размер выборки: 30 записей в день × 90 дней с запасом.
+        static let maxRecordsPerQuery = 3000
     }
 
     private enum StorageError: LocalizedError {
@@ -68,11 +81,6 @@ final class WaterStorage: WaterStorageProtocol {
     // MARK: - WaterStorageProtocol
 
     func loadTodayRecords(completion: @escaping (Result<[WaterRecord], Error>) -> Void) {
-        guard let collection = waterCollection() else {
-            completion(.failure(StorageError.notAuthenticated))
-            return
-        }
-
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())
         guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
@@ -80,9 +88,23 @@ final class WaterStorage: WaterStorageProtocol {
             return
         }
 
+        loadRecords(from: startOfDay, to: endOfDay, completion: completion)
+    }
+
+    func loadRecords(
+        from start: Date,
+        to end: Date,
+        completion: @escaping (Result<[WaterRecord], Error>) -> Void
+    ) {
+        guard let collection = waterCollection() else {
+            completion(.failure(StorageError.notAuthenticated))
+            return
+        }
+
         collection
-            .whereField("date", isGreaterThanOrEqualTo: Timestamp(date: startOfDay))
-            .whereField("date", isLessThan: Timestamp(date: endOfDay))
+            .whereField("date", isGreaterThanOrEqualTo: Timestamp(date: start))
+            .whereField("date", isLessThan: Timestamp(date: end))
+            .limit(to: Limits.maxRecordsPerQuery)
             .getDocuments { snapshot, error in
                 if let error {
                     completion(.failure(error))
