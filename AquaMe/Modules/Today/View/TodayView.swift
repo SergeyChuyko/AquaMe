@@ -55,6 +55,9 @@ final class TodayView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.alwaysBounceVertical = true
         view.showsVerticalScrollIndicator = false
+        // Чипы и плашки лежат внутри scrollView. По умолчанию scrollView откладывает
+        // touchesBegan на 0.15с, и быстрый тап не успевает попасть в наш handler.
+        view.delaysContentTouches = false
 
         return view
     }()
