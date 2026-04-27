@@ -104,16 +104,20 @@ final class TodayPresetCardView: UIView {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         animatePress(down: true)
+        applyActiveStyle()
+        fadeWorkItem?.cancel()
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         animatePress(down: false)
+        scheduleFadeBack()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         animatePress(down: false)
+        scheduleFadeBack()
     }
 }
 
@@ -129,6 +133,10 @@ extension TodayPresetCardView {
 
     func flashSelection() {
         applyActiveStyle()
+        scheduleFadeBack()
+    }
+
+    func scheduleFadeBack() {
         fadeWorkItem?.cancel()
 
         let item = DispatchWorkItem { [weak self] in

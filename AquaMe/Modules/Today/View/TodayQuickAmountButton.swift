@@ -87,6 +87,13 @@ final class TodayQuickAmountButton: UIControl {
     override var isHighlighted: Bool {
         didSet {
             animatePress(down: isHighlighted)
+
+            if isHighlighted {
+                applyActiveStyle()
+                fadeWorkItem?.cancel()
+            } else {
+                scheduleFadeBack()
+            }
         }
     }
 }
@@ -140,6 +147,10 @@ private extension TodayQuickAmountButton {
 
     func flashSelection() {
         applyActiveStyle()
+        scheduleFadeBack()
+    }
+
+    func scheduleFadeBack() {
         fadeWorkItem?.cancel()
 
         let item = DispatchWorkItem { [weak self] in
