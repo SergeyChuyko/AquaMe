@@ -232,7 +232,9 @@ final class ProgressCalendarLegendView: UIView {
 
         let goalDot = makeDot(color: .systemIndigo)
         let goalLabel = makeLabel(text: "Goal Met")
-        let missedDot = makeDot(color: UIColor.systemRed.withAlphaComponent(0.85))
+        let partialDot = makeDot(color: UIColor.systemPink.withAlphaComponent(0.45))
+        let partialLabel = makeLabel(text: "Partial")
+        let missedDot = makeDot(color: UIColor.separator.withAlphaComponent(0.30))
         let missedLabel = makeLabel(text: "Missed")
         let info = UIImageView(image: UIImage(systemName: "info.circle"))
         info.translatesAutoresizingMaskIntoConstraints = false
@@ -241,6 +243,7 @@ final class ProgressCalendarLegendView: UIView {
 
         let stack = UIStackView(arrangedSubviews: [
             goalDot, goalLabel,
+            partialDot, partialLabel,
             missedDot, missedLabel,
         ])
         stack.translatesAutoresizingMaskIntoConstraints = false

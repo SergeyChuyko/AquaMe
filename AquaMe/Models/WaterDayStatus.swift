@@ -14,12 +14,17 @@ import Foundation
 /// Считается из суммарного выпитого за день и дневной нормы.
 enum WaterDayStatus: Equatable {
 
-    /// Будущее или сегодняшний день, по которому цель ещё не достигнута, — нейтрально серый.
+    /// Будущее или сегодняшний день, по которому цель ещё не достигнута, — нейтрально-светлый.
     case pending
-    /// Прошедший день, в котором норма не выполнена, — красный.
+    /// Прошедший день, в котором выпито мало (< partialThreshold от нормы) — серый.
     case missed
+    /// Прошедший день, частично закрытый (от partialThreshold до нормы) — розовый.
+    case partial
     /// Норма выполнена — индиго.
     case goalMet
+
+    /// День «частично» если выпито хотя бы столько от нормы.
+    static let partialThreshold: Double = 0.5
 
     /// `isPast` означает строго прошедший день (вчера и раньше). Сегодня к past не относится.
     static func classify(total: Int, dailyGoal: Int, isPast: Bool) -> WaterDayStatus {
@@ -27,6 +32,10 @@ enum WaterDayStatus: Equatable {
 
         if total >= dailyGoal { return .goalMet }
 
-        return isPast ? .missed : .pending
+        guard isPast else { return .pending }
+
+        let ratio = Double(total) / Double(dailyGoal)
+
+        return ratio >= partialThreshold ? .partial : .missed
     }
 }
